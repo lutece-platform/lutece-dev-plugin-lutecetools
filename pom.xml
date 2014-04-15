@@ -41,6 +41,12 @@
         <jiraProjectName>LUTECETOOL</jiraProjectName>
         <jiraComponentId>12350</jiraComponentId>
     </properties>
-    
+
+    <scm>
+        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/tools/plugin-lutecetools</connection>
+        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/tools/plugin-lutecetools</developerConnection>
+        <url>http://dev.lutece.paris.fr/svn/lutece/tools/plugin-lutecetools</url>
+    </scm>
+        
     
 </project>
