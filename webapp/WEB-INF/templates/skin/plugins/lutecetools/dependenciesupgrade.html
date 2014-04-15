@@ -1,0 +1,39 @@
+<div class="row">
+
+    <div class="well hero">
+        <h1>Mise à niveau des dépendances</h1>
+    </div>
+    <div class="col-md-6">
+        <form action="jsp/site/Portal.jsp" >
+            <input type="hidden" name="page" value="dependenciesupgrade" />    
+            <input type="hidden" name="action" value="process" />    
+
+
+            <h3>Dépendances en entrée</h3>
+            <p>
+                Coller dans le champ ci-dessous la liste des plugins pour lesquels
+                vous souhaitez construire les déclarations de dépendances incluant les dernières 
+                versions "releasées".
+            </p>
+            <div class="form-group">
+                <textarea class="form-control" name="source" rows="6" >${input}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="format" class="col-sm-4 control-label">Format de sortie : </label>
+                <div class="col-sm-8">
+                    <input type="radio" name="format" value="text"> Texte 
+                    <input type="radio" name="format" value="xml" checked > XML <br>
+                </div>
+            </div>
+            <br>
+            <br>
+            <button class="btn btn-primary" type="submit"> Calculer </button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <h3>Dépendances en sortie</h3>
+        <textarea class="form-control" name="output" rows="16" >${output}</textarea>
+    </div>
+
+</div>

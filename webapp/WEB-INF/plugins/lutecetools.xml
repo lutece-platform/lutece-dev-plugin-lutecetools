@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<plug-in>
+    <name>lutecetools</name>
+    <class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
+    <version>1.0.0</version>
+    <documentation></documentation>
+    <installation></installation>
+    <changes></changes>
+    <user-guide></user-guide>
+    <description>lutecetools.plugin.description</description>
+    <provider>lutecetools.plugin.provider</provider>
+    <provider-url>http://dev.lutece.paris.fr</provider-url>
+    <icon-url>images/admin/skin/feature_default_icon.png</icon-url>
+    <copyright>Copyright (c) 2013 City of Paris</copyright>
+    <db-pool-required>1</db-pool-required>
+    
+    <!-- Admin features parameters -->
+    <admin-features>
+    </admin-features>    
+  	<!-- XPages parameters -->
+    <applications>
+        <application>
+            <application-id>lutecetools</application-id>
+            <application-class>fr.paris.lutece.plugins.lutecetools.web.LuteceToolsApp</application-class>
+        </application>
+        <application>
+            <application-id>dependenciesupgrade</application-id>
+            <application-class>fr.paris.lutece.plugins.lutecetools.web.DependenciesUpgradeApp</application-class>
+        </application>
+    </applications>
+
+</plug-in>
