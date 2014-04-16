@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.lutecetools.business.Dependency;
 import fr.paris.lutece.util.xml.XmlUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -79,7 +80,7 @@ public class DependenciesService
             MavenRepoService.setReleaseVersion( dependency );
             list.add( dependency );
         }
-
+        Collections.sort( list );
         return list;
     }
 

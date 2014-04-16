@@ -44,11 +44,9 @@ public class PomHandler extends DefaultHandler
     private static final String TAG_VERSION = "version";
     private static final String TAG_ARTIFACT_ID = "artifactId";
     private static final String TAG_JIRA = "jiraProjectName";
-    
     private String _strParentPomVersion;
     private String _strCoreVersion;
     private String _strJiraKey;
-
     boolean bPomParent = false;
     boolean bVersion = false;
     boolean bArtifactId = false;
@@ -64,13 +62,11 @@ public class PomHandler extends DefaultHandler
     {
         return _strCoreVersion;
     }
-    
+
     public String getJiraKey(  )
     {
         return _strJiraKey;
     }
-    
-    
 
     @Override
     public void startElement( String uri, String localName, String qName, Attributes attributes )
@@ -123,20 +119,19 @@ public class PomHandler extends DefaultHandler
         if ( bPomParent && bVersion )
         {
             _strParentPomVersion = new String( ch, start, length );
-        } 
+        }
         else if ( bArtifactId )
         {
             String strArtifactId = new String( ch, start, length );
-            bCore =  strArtifactId.equals( "lutece-core" );
+            bCore = strArtifactId.equals( "lutece-core" );
         }
-        else if( bCore && bVersion )
+        else if ( bCore && bVersion )
         {
             _strCoreVersion = new String( ch, start, length );
         }
-        else if( bJira )
+        else if ( bJira )
         {
             _strJiraKey = new String( ch, start, length );
         }
-            
     }
 }

@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * This class provides a simple implementation of an XPage
  */
-@Controller( xpageName = "dependenciesupgrade", pageTitleProperty = "lutecetools.pageTitle", pagePathProperty = "lutecetools.pagePathLabel" )
+@Controller( xpageName = "dependenciesupgrade", pageTitleI18nKey = "lutecetools.xpage.dependencies.pageTitle", pagePathI18nKey = "lutecetools.xpage.dependencies.pagePath" )
 public class DependenciesUpgradeApp extends MVCApplication
 {
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/dependenciesupgrade.html";

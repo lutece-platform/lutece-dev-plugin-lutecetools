@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * This class provides a simple implementation of an XPage
  */
-@Controller( xpageName = "components", pageTitleProperty = "lutecetools.pageTitle", pagePathProperty = "lutecetools.pagePathLabel" )
+@Controller( xpageName = "components", pageTitleI18nKey = "lutecetools.xpage.components.pageTitle", pagePathI18nKey = "lutecetools.xpage.components.pagePath" )
 public class ComponentListApp extends MVCApplication
 {
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/components.html";

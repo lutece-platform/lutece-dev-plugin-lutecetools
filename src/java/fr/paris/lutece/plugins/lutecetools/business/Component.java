@@ -38,7 +38,7 @@ package fr.paris.lutece.plugins.lutecetools.business;
  *
  * @author pierre
  */
-public class Component
+public class Component implements Comparable
 {
     private String _strArtifactId;
     private String _strVersion;
@@ -136,4 +136,16 @@ public class Component
         _strJiraKey = strJiraKey;
     }
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public int compareTo( Object o )
+    {
+        Component c = (Component) o;
+        String strName1 = getArtifactId(  ).substring( getArtifactId(  ).indexOf( "-" ) + 1 );
+        String strName2 = c.getArtifactId(  ).substring( c.getArtifactId(  ).indexOf( "-" ) + 1 );
+
+        return strName1.compareTo( strName2 );
+    }
 }

@@ -41,19 +41,27 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
+
+import org.jsoup.Jsoup;
+
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import org.jsoup.select.Elements;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.io.StringReader;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -64,13 +72,14 @@ public class MavenRepoService extends AbstractCacheableService
     private static final String PROPERTY_MAVEN_REPO_URL = "lutecetools.maven.repository.url";
     private static final String URL_MAVEN_REPO = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL );
     private static final String PROPERTY_MAVEN_PATH_PLUGINS = "lutecetools.maven.repository.path.plugins";
-    private static final String URL_PLUGINS = URL_MAVEN_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
+    private static final String URL_PLUGINS = URL_MAVEN_REPO +
+        AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
     private static final String PROPERTY_MAVEN_PATH_SITE_POM = "lutecetools.maven.repository.path.site-pom";
-    private static final String URL_SITE_POM = URL_MAVEN_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_SITE_POM );
+    private static final String URL_SITE_POM = URL_MAVEN_REPO +
+        AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_SITE_POM );
     private static final String KEY_SITE_POM_VERSION = "lutecetools.pom.site.version";
     private static final String RELEASE_NOT_FOUND = "Release not found";
     private static final String CACHE_SERVICE_NAME = "LuteceTools Maven Repository Cache Service";
-    
     private static MavenRepoService _singleton;
 
     /**
@@ -183,6 +192,8 @@ public class MavenRepoService extends AbstractCacheableService
                 e.getMessage(  ), e );
         }
 
+        Collections.sort( list );
+
         return list;
     }
 
@@ -224,19 +235,25 @@ public class MavenRepoService extends AbstractCacheableService
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance(  );
             SAXParser saxParser = saxParserFactory.newSAXParser(  );
             PomHandler handler = new PomHandler(  );
-            saxParser.parse( new InputSource(new StringReader(strPom)), handler );
-            component.setParentPomVersion( handler.getParentPomVersion(  ));
-            component.setCoreVersion( handler.getCoreVersion());
-            component.setJiraKey( handler.getJiraKey());
+            saxParser.parse( new InputSource( new StringReader( strPom ) ), handler );
+            component.setParentPomVersion( handler.getParentPomVersion(  ) );
+            component.setCoreVersion( handler.getCoreVersion(  ) );
+            component.setJiraKey( handler.getJiraKey(  ) );
         }
         catch ( IOException e )
         {
             AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving pom infos : " + e.getMessage(  ), e );
-        } catch (HttpAccessException e) {
+        }
+        catch ( HttpAccessException e )
+        {
             AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving pom infos : " + e.getMessage(  ), e );
-        } catch (ParserConfigurationException e) {
+        }
+        catch ( ParserConfigurationException e )
+        {
             AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving pom infos : " + e.getMessage(  ), e );
-        } catch (SAXException e) {
+        }
+        catch ( SAXException e )
+        {
             AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving pom infos : " + e.getMessage(  ), e );
         }
     }
