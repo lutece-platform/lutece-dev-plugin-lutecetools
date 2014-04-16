@@ -76,7 +76,7 @@ public class DependenciesService
             dependency.setArtifactId( name );
             dependency.setGroupId( "fr.paris.lutece.plugins" );
             dependency.setComponentType( "lutece-plugin" );
-            VersionService.setReleaseVersion( dependency );
+            MavenRepoService.setReleaseVersion( dependency );
             list.add( dependency );
         }
 

@@ -24,6 +24,10 @@
             <application-class>fr.paris.lutece.plugins.lutecetools.web.LuteceToolsApp</application-class>
         </application>
         <application>
+            <application-id>components</application-id>
+            <application-class>fr.paris.lutece.plugins.lutecetools.web.ComponentListApp</application-class>
+        </application>
+        <application>
             <application-id>dependenciesupgrade</application-id>
             <application-class>fr.paris.lutece.plugins.lutecetools.web.DependenciesUpgradeApp</application-class>
         </application>
