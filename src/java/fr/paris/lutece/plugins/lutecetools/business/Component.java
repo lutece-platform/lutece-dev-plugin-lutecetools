@@ -44,6 +44,9 @@ public class Component implements Comparable
     private String _strVersion;
     private String _strCoreVersion;
     private String _strParentPomVersion;
+    private String _strSnapshotVersion;
+    private String _strSnapshotCoreVersion;
+    private String _strSnapshotParentPomVersion;
     private String _strJiraKey;
 
     /**
@@ -148,4 +151,60 @@ public class Component implements Comparable
 
         return strName1.compareTo( strName2 );
     }
+
+    /**
+     * Returns the SnapshotVersion
+     * @return The SnapshotVersion
+     */
+    public String getSnapshotVersion(  )
+    {
+        return _strSnapshotVersion;
+    }
+
+    /**
+     * Sets the SnapshotVersion
+     * @param strSnapshotVersion The SnapshotVersion
+     */
+    public void setSnapshotVersion( String strSnapshotVersion )
+    {
+        _strSnapshotVersion = strSnapshotVersion;
+    }
+
+    /**
+     * Returns the SnapshotCoreVersion
+     * @return The SnapshotCoreVersion
+     */
+    public String getSnapshotCoreVersion(  )
+    {
+        return _strSnapshotCoreVersion;
+    }
+
+    /**
+     * Sets the SnapshotCoreVersion
+     * @param strSnapshotCoreVersion The SnapshotCoreVersion
+     */
+    public void setSnapshotCoreVersion( String strSnapshotCoreVersion )
+    {
+        _strSnapshotCoreVersion = strSnapshotCoreVersion;
+    }
+
+    /**
+     * Returns the SnapshotParentPomVersion
+     * @return The SnapshotParentPomVersion
+     */
+    public String getSnapshotParentPomVersion(  )
+    {
+        return _strSnapshotParentPomVersion;
+    }
+
+    /**
+     * Sets the SnapshotParentPomVersion
+     * @param strSnapshotParentPomVersion The SnapshotParentPomVersion
+     */
+    public void setSnapshotParentPomVersion( String strSnapshotParentPomVersion )
+    {
+        _strSnapshotParentPomVersion = strSnapshotParentPomVersion;
+    }
+
+
 }
