@@ -64,7 +64,7 @@ public class ComponentListApp extends MVCApplication
     {
         Map<String, Object> model = getModel(  );
 
-        model.put( MARK_COMPONENTS_LIST, MavenRepoService.instance(  ).getComponentsList(  ) );
+        model.put( MARK_COMPONENTS_LIST, MavenRepoService.instance(  ).getComponents(  ) );
 
         return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
     }

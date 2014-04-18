@@ -55,6 +55,6 @@ public class MavenRepoServiceTest extends LuteceTestCase
     {
         System.out.println( "getComponentsList" );
 
-        List<Component> result = MavenRepoService.instance(  ).getComponentsList(  );
+        List<Component> result = MavenRepoService.instance(  ).getComponents(  );
     }
 }
