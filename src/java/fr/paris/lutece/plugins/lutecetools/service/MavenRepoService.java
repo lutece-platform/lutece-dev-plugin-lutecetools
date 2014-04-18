@@ -188,6 +188,7 @@ public class MavenRepoService extends AbstractCacheableService
                 e.getMessage(  ), e );
         }
 
+        Collections.sort(list);
         return list;
     }
 
