@@ -205,6 +205,4 @@ public class Component implements Comparable
     {
         _strSnapshotParentPomVersion = strSnapshotParentPomVersion;
     }
-
-
 }

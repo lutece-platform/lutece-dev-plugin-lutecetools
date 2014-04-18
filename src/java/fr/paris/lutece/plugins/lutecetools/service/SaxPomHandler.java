@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 
-public class PomHandler extends DefaultHandler
+public class SaxPomHandler extends DefaultHandler
 {
     private static final String TAG_PARENT = "parent";
     private static final String TAG_VERSION = "version";

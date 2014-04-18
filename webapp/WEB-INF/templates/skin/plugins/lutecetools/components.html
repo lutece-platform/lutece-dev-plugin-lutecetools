@@ -14,16 +14,26 @@
                  <th colspan="2">#i18n{lutecetools.components.labelCoreVersion}</th>
                  <th>#i18n{lutecetools.components.labelLinks}</th>
              </tr>   
+             <tr>
+                 <th>&nbsp;</th>
+                 <th class="small">Release</th>
+                 <th class="small">Snapshot</th>
+                 <th class="small">Release</th>
+                 <th class="small">Snapshot</th>
+                 <th class="small">Release</th>
+                 <th class="small">Snapshot</th>
+                 <th>&nbsp;</th>
+             </tr>   
          
          <#list components_list as component>
          <tr>
-             <td>${component.artifactId}</td>
-             <td>${component.version}</td>
-             <td>${component.snapshotVersion}</td>
-             <td>${component.parentPomVersion!"Not found"}</td>
-             <td>${component.snapshotParentPomVersion!"Not found"}</td>
-             <td>${component.coreVersion!"Not found"}</td>
-             <td>${component.snapshotCoreVersion!"Not found"}</td>
+             <td class="small">${component.artifactId}</td>
+             <td class="small">${component.version}</td>
+             <td class="small">${component.snapshotVersion!"Not found"}</td>
+             <td class="small">${component.parentPomVersion!"Not found"}</td>
+             <td class="small">${component.snapshotParentPomVersion!"Not found"}</td>
+             <td class="small">${component.coreVersion!"Not found"}</td>
+             <td class="small">${component.snapshotCoreVersion!"Not found"}</td>
              <td>
                  <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}" title="JIRA">
                      <img src="images/skin/plugins/lutecetools/jira.png" alt="Jira logo" width="24" height="24"/>

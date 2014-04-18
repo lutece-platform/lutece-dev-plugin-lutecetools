@@ -115,7 +115,7 @@ public class Dependency implements Comparable
     {
         _strComponentType = strComponentType;
     }
-    
+
     /**
      * {@inheritDoc }
      */
@@ -128,5 +128,4 @@ public class Dependency implements Comparable
 
         return strName1.compareTo( strName2 );
     }
-
 }

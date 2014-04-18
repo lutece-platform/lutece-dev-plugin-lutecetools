@@ -35,4 +35,13 @@
         </application>
     </applications>
 
+    <daemons>
+        <daemon>
+            <daemon-id>lutecetoolsCacheUpdater</daemon-id>
+            <daemon-name>lutecetools.daemon.cacheUpdater.name</daemon-name>
+            <daemon-description>lutecetools.daemon.cacheUpdater.description</daemon-description>
+            <daemon-class>fr.paris.lutece.plugins.lutecetools.service.CacheUpdaterDaemon</daemon-class>
+        </daemon>
+    </daemons>
+    
 </plug-in>

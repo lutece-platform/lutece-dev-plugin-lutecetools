@@ -80,7 +80,9 @@ public class DependenciesService
             MavenRepoService.setReleaseVersion( dependency );
             list.add( dependency );
         }
+
         Collections.sort( list );
+
         return list;
     }
 
