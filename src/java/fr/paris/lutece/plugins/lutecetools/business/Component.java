@@ -35,8 +35,7 @@ package fr.paris.lutece.plugins.lutecetools.business;
 
 
 /**
- *
- * @author pierre
+ * Component
  */
 public class Component implements Comparable
 {
@@ -140,19 +139,6 @@ public class Component implements Comparable
     }
 
     /**
-     * {@inheritDoc }
-     */
-    @Override
-    public int compareTo( Object o )
-    {
-        Component c = (Component) o;
-        String strName1 = getArtifactId(  ).substring( getArtifactId(  ).indexOf( "-" ) + 1 );
-        String strName2 = c.getArtifactId(  ).substring( c.getArtifactId(  ).indexOf( "-" ) + 1 );
-
-        return strName1.compareTo( strName2 );
-    }
-
-    /**
      * Returns the SnapshotVersion
      * @return The SnapshotVersion
      */
@@ -204,5 +190,29 @@ public class Component implements Comparable
     public void setSnapshotParentPomVersion( String strSnapshotParentPomVersion )
     {
         _strSnapshotParentPomVersion = strSnapshotParentPomVersion;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public int compareTo( Object o )
+    {
+        Component c = (Component) o;
+        String strName1 = getArtifactId(  ).substring( getArtifactId(  ).indexOf( "-" ) + 1 );
+        String strName2 = c.getArtifactId(  ).substring( c.getArtifactId(  ).indexOf( "-" ) + 1 );
+
+        return strName1.compareTo( strName2 );
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public boolean equals( Object o )
+    {
+        Component c = (Component) o;
+
+        return getArtifactId(  ).equals( c.getArtifactId(  ) );
     }
 }

@@ -38,6 +38,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 
+/**
+ * SaxPomHandler
+ */
 public class SaxPomHandler extends DefaultHandler
 {
     private static final String TAG_PARENT = "parent";
@@ -47,89 +50,110 @@ public class SaxPomHandler extends DefaultHandler
     private String _strParentPomVersion;
     private String _strCoreVersion;
     private String _strJiraKey;
-    boolean bPomParent = false;
-    boolean bVersion = false;
-    boolean bArtifactId = false;
-    boolean bCore = false;
-    boolean bJira = false;
+    private boolean _bPomParent = false;
+    private boolean _bVersion = false;
+    private boolean _bArtifactId = false;
+    private boolean _bCore = false;
+    private boolean _bJira = false;
 
+    /**
+     * Returns Parent Pom version
+     * @return The Parent Pom version
+     */
     public String getParentPomVersion(  )
     {
         return _strParentPomVersion;
     }
 
+    /**
+     * Returns Core version
+     * @return The Core version
+     */
     public String getCoreVersion(  )
     {
         return _strCoreVersion;
     }
 
+    /**
+     * Returns JIRA key
+     * @return The JIRA key
+     */
     public String getJiraKey(  )
     {
         return _strJiraKey;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void startElement( String uri, String localName, String qName, Attributes attributes )
         throws SAXException
     {
         if ( qName.equalsIgnoreCase( TAG_PARENT ) )
         {
-            bPomParent = true;
+            _bPomParent = true;
         }
         else if ( qName.equalsIgnoreCase( TAG_VERSION ) )
         {
-            bVersion = true;
+            _bVersion = true;
         }
         else if ( qName.equalsIgnoreCase( TAG_ARTIFACT_ID ) )
         {
-            bArtifactId = true;
+            _bArtifactId = true;
         }
         else if ( qName.equalsIgnoreCase( TAG_JIRA ) )
         {
-            bJira = true;
+            _bJira = true;
         }
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void endElement( String uri, String localName, String qName )
         throws SAXException
     {
         if ( qName.equalsIgnoreCase( TAG_PARENT ) )
         {
-            bPomParent = false;
+            _bPomParent = false;
         }
         else if ( qName.equalsIgnoreCase( TAG_VERSION ) )
         {
-            bVersion = false;
+            _bVersion = false;
         }
         else if ( qName.equalsIgnoreCase( TAG_ARTIFACT_ID ) )
         {
-            bArtifactId = false;
+            _bArtifactId = false;
         }
         else if ( qName.equalsIgnoreCase( TAG_JIRA ) )
         {
-            bJira = false;
+            _bJira = false;
         }
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void characters( char[] ch, int start, int length )
         throws SAXException
     {
-        if ( bPomParent && bVersion )
+        if ( _bPomParent && _bVersion )
         {
             _strParentPomVersion = new String( ch, start, length );
         }
-        else if ( bArtifactId )
+        else if ( _bArtifactId )
         {
             String strArtifactId = new String( ch, start, length );
-            bCore = strArtifactId.equals( "lutece-core" );
+            _bCore = strArtifactId.equals( "lutece-core" );
         }
-        else if ( bCore && bVersion )
+        else if ( _bCore && _bVersion )
         {
             _strCoreVersion = new String( ch, start, length );
         }
-        else if ( bJira )
+        else if ( _bJira )
         {
             _strJiraKey = new String( ch, start, length );
         }

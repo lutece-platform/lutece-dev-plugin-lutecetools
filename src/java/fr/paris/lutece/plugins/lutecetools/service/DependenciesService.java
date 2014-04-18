@@ -52,6 +52,7 @@ public class DependenciesService
     private static final String TAG_VERSION = "version";
     private static final String TAG_TYPE = "type";
     private static final String FORMAT_TEXT = "text";
+    private static final String INDENT = "    ";
 
     public static String process( String strSource, String strFormat )
     {
@@ -93,10 +94,10 @@ public class DependenciesService
         for ( Dependency dependency : list )
         {
             XmlUtil.beginElement( sb, TAG_DEPENDENCY );
-            XmlUtil.addElement( sb.append( "    " ), TAG_GROUP_ID, dependency.getGroupId(  ) );
-            XmlUtil.addElement( sb.append( "    " ), TAG_ARTIFACT_ID, dependency.getArtifactId(  ) );
-            XmlUtil.addElement( sb.append( "    " ), TAG_VERSION, dependency.getVersion(  ) );
-            XmlUtil.addElement( sb.append( "    " ), TAG_TYPE, dependency.getComponentType(  ) );
+            XmlUtil.addElement( sb.append( INDENT ), TAG_GROUP_ID, dependency.getGroupId(  ) );
+            XmlUtil.addElement( sb.append( INDENT ), TAG_ARTIFACT_ID, dependency.getArtifactId(  ) );
+            XmlUtil.addElement( sb.append( INDENT ), TAG_VERSION, dependency.getVersion(  ) );
+            XmlUtil.addElement( sb.append( INDENT ), TAG_TYPE, dependency.getComponentType(  ) );
             XmlUtil.endElement( sb, TAG_DEPENDENCY );
         }
 

@@ -128,4 +128,15 @@ public class Dependency implements Comparable
 
         return strName1.compareTo( strName2 );
     }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public boolean equals( Object o )
+    {
+        Dependency c = (Dependency) o;
+
+        return getArtifactId(  ).equals( c.getArtifactId(  ) );
+    }
 }

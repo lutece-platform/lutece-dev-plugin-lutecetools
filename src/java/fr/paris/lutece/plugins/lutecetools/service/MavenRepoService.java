@@ -63,7 +63,7 @@ import javax.xml.parsers.SAXParserFactory;
 /**
  * Version Service
  */
-public class MavenRepoService extends AbstractCacheableService
+public final class MavenRepoService extends AbstractCacheableService
 {
     private static final String PROPERTY_MAVEN_REPO_URL = "lutecetools.maven.repository.url";
     private static final String URL_MAVEN_REPO = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL );
@@ -82,6 +82,7 @@ public class MavenRepoService extends AbstractCacheableService
     private static final String URL_SNAPSHOT_REPO = AppPropertiesService.getProperty( PROPERTY_SNAPSHOT_REPO_URL );
     private static final String URL_SNAPSHOT_PLUGINS = URL_SNAPSHOT_REPO +
         AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
+    private static final String EXCEPTION_MESSAGE = "LuteceTools - MavenRepoService : Error retrieving pom infos : ";
     private static MavenRepoService _singleton;
 
     /**
@@ -96,7 +97,7 @@ public class MavenRepoService extends AbstractCacheableService
      *
      * @return the unique instance
      */
-    public static MavenRepoService instance(  )
+    public static synchronized MavenRepoService instance(  )
     {
         if ( _singleton == null )
         {
@@ -188,7 +189,8 @@ public class MavenRepoService extends AbstractCacheableService
                 e.getMessage(  ), e );
         }
 
-        Collections.sort(list);
+        Collections.sort( list );
+
         return list;
     }
 
@@ -212,7 +214,7 @@ public class MavenRepoService extends AbstractCacheableService
             getPomInfos( component );
 
             long t2 = new Date(  ).getTime(  );
-            AppLogService.info( "Lutece Tools - Fetching Maven Info for '" + component.getArtifactId(  ) +
+            AppLogService.debug( "Lutece Tools - Fetching Maven Info for '" + component.getArtifactId(  ) +
                 "' - duration : " + ( t2 - t1 + "ms" ) );
             putInCache( strComponent, component );
         }
@@ -244,6 +246,12 @@ public class MavenRepoService extends AbstractCacheableService
         }
     }
 
+    /**
+     * Retreive POM infos for a given component
+     * @param component The component
+     * @param strPomUrl The POM URL
+     * @param bSnapshot false for release, true for snapshot
+     */
     private void getPomInfos( Component component, String strPomUrl, boolean bSnapshot )
     {
         try
@@ -270,22 +278,27 @@ public class MavenRepoService extends AbstractCacheableService
         }
         catch ( IOException e )
         {
-            AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving pom infos : " + e.getMessage(  ), e );
+            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage(  ), e );
         }
         catch ( HttpAccessException e )
         {
-            AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving pom infos : " + e.getMessage(  ), e );
+            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage(  ), e );
         }
         catch ( ParserConfigurationException e )
         {
-            AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving pom infos : " + e.getMessage(  ), e );
+            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage(  ), e );
         }
         catch ( SAXException e )
         {
-            AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving pom infos : " + e.getMessage(  ), e );
+            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage(  ), e );
         }
     }
 
+    /**
+     * Retrieve the POM URL for the latest snapshot
+     * @param component THe component
+     * @return The URL
+     */
     private String getSnapshotPomUrl( Component component )
     {
         String strPomUrl = null;
@@ -325,7 +338,7 @@ public class MavenRepoService extends AbstractCacheableService
      * @param strHtml The HTML code
      * @return The list
      */
-    private static List<String> getAnchorsList2( String strHtml )
+    static List<String> getAnchorsList2( String strHtml )
     {
         List<String> list = new ArrayList<String>(  );
         String strPattern = "<a[^>]*>(.+?)</a>";
@@ -366,6 +379,9 @@ public class MavenRepoService extends AbstractCacheableService
         return list;
     }
 
+    /**
+     * Update the cache (reset and rebuild)
+     */
     public void updateCache(  )
     {
         resetCache(  );
