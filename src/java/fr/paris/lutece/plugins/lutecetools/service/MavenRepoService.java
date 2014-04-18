@@ -75,7 +75,7 @@ public class MavenRepoService extends AbstractCacheableService
         AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_SITE_POM );
     private static final String KEY_SITE_POM_VERSION = "lutecetools.pom.site.version";
     private static final String RELEASE_NOT_FOUND = "Release not found";
-    private static final String CACHE_SERVICE_NAME = "LuteceTools Maven Repository Cache Service";
+    private static final String CACHE_SERVICE_NAME = "LuteceToolsMavenCacheService";
 
     // SNAPSHOT
     private static final String PROPERTY_SNAPSHOT_REPO_URL = "lutecetools.snapshot.repository.url";
