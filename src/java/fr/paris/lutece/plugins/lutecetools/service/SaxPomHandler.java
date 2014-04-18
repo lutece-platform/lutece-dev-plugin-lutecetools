@@ -50,11 +50,11 @@ public class SaxPomHandler extends DefaultHandler
     private String _strParentPomVersion;
     private String _strCoreVersion;
     private String _strJiraKey;
-    private boolean _bPomParent = false;
-    private boolean _bVersion = false;
-    private boolean _bArtifactId = false;
-    private boolean _bCore = false;
-    private boolean _bJira = false;
+    private boolean _bPomParent;
+    private boolean _bVersion;
+    private boolean _bArtifactId;
+    private boolean _bCore;
+    private boolean _bJira;
 
     /**
      * Returns Parent Pom version

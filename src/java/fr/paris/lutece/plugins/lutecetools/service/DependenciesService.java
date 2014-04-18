@@ -44,7 +44,7 @@ import java.util.List;
 /**
  * Dependencies Service
  */
-public class DependenciesService
+public final class DependenciesService
 {
     private static final String TAG_DEPENDENCY = "dependency";
     private static final String TAG_GROUP_ID = "groupId";
@@ -54,6 +54,19 @@ public class DependenciesService
     private static final String FORMAT_TEXT = "text";
     private static final String INDENT = "    ";
 
+    /**
+     * private constructor
+     */
+    private DependenciesService(  )
+    {
+    }
+
+    /**
+     * Process dependencies generation
+     * @param strSource The source
+     * @param strFormat The output
+     * @return The dependencies
+     */
     public static String process( String strSource, String strFormat )
     {
         String[] components = strSource.split( "\\s+" );
@@ -68,6 +81,11 @@ public class DependenciesService
         return getDependenciesXML( list );
     }
 
+    /**
+     * Gets the dependencies list
+     * @param components The array of components
+     * @return The list
+     */
     private static List<Dependency> getDependenciesList( String[] components )
     {
         List<Dependency> list = new ArrayList<Dependency>(  );
@@ -87,6 +105,11 @@ public class DependenciesService
         return list;
     }
 
+    /**
+     * Returns the dependencies formatted with XML format
+     * @param list The dependencies list
+     * @return The output
+     */
     private static String getDependenciesXML( List<Dependency> list )
     {
         StringBuffer sb = new StringBuffer(  );
@@ -104,6 +127,11 @@ public class DependenciesService
         return sb.toString(  );
     }
 
+    /**
+     * Returns the dependencies formatted with Text format
+     * @param list The dependencies list
+     * @return The output
+     */
     private static String getDependenciesText( List<Dependency> list )
     {
         StringBuilder sb = new StringBuilder(  );

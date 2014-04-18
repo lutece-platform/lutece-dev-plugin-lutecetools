@@ -37,52 +37,14 @@ package fr.paris.lutece.plugins.lutecetools.business;
 /**
  * Component
  */
-public class Component implements Comparable
+public class Component extends AbstractComponent implements Comparable
 {
-    private String _strArtifactId;
-    private String _strVersion;
     private String _strCoreVersion;
     private String _strParentPomVersion;
     private String _strSnapshotVersion;
     private String _strSnapshotCoreVersion;
     private String _strSnapshotParentPomVersion;
     private String _strJiraKey;
-
-    /**
-     * Returns the ArtifactId
-     * @return The ArtifactId
-     */
-    public String getArtifactId(  )
-    {
-        return _strArtifactId;
-    }
-
-    /**
-     * Sets the ArtifactId
-     * @param strArtifactId The ArtifactId
-     */
-    public void setArtifactId( String strArtifactId )
-    {
-        _strArtifactId = strArtifactId;
-    }
-
-    /**
-     * Returns the Version
-     * @return The Version
-     */
-    public String getVersion(  )
-    {
-        return _strVersion;
-    }
-
-    /**
-     * Sets the Version
-     * @param strVersion The Version
-     */
-    public void setVersion( String strVersion )
-    {
-        _strVersion = strVersion;
-    }
 
     /**
      * Returns the CoreVersion
@@ -190,29 +152,5 @@ public class Component implements Comparable
     public void setSnapshotParentPomVersion( String strSnapshotParentPomVersion )
     {
         _strSnapshotParentPomVersion = strSnapshotParentPomVersion;
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public int compareTo( Object o )
-    {
-        Component c = (Component) o;
-        String strName1 = getArtifactId(  ).substring( getArtifactId(  ).indexOf( "-" ) + 1 );
-        String strName2 = c.getArtifactId(  ).substring( c.getArtifactId(  ).indexOf( "-" ) + 1 );
-
-        return strName1.compareTo( strName2 );
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public boolean equals( Object o )
-    {
-        Component c = (Component) o;
-
-        return getArtifactId(  ).equals( c.getArtifactId(  ) );
     }
 }

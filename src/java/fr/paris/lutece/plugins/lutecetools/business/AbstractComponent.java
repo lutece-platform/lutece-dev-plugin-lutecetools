@@ -35,46 +35,79 @@ package fr.paris.lutece.plugins.lutecetools.business;
 
 
 /**
- * Dependency
+ * Component
  */
-public class Dependency extends AbstractComponent
+public abstract class AbstractComponent implements Comparable
 {
-    private String _strGroupId;
-    private String _strComponentType;
+    private String _strArtifactId;
+    private String _strVersion;
 
     /**
-     * Returns the GroupId
-     * @return The GroupId
+     * Returns the ArtifactId
+     * @return The ArtifactId
      */
-    public String getGroupId(  )
+    public String getArtifactId(  )
     {
-        return _strGroupId;
+        return _strArtifactId;
     }
 
     /**
-     * Sets the GroupId
-     * @param strGroupId The GroupId
+     * Sets the ArtifactId
+     * @param strArtifactId The ArtifactId
      */
-    public void setGroupId( String strGroupId )
+    public void setArtifactId( String strArtifactId )
     {
-        _strGroupId = strGroupId;
+        _strArtifactId = strArtifactId;
     }
 
     /**
-     * Returns the ComponentType
-     * @return The ComponentType
+     * Returns the Version
+     * @return The Version
      */
-    public String getComponentType(  )
+    public String getVersion(  )
     {
-        return _strComponentType;
+        return _strVersion;
     }
 
     /**
-     * Sets the ComponentType
-     * @param strComponentType The ComponentType
+     * Sets the Version
+     * @param strVersion The Version
      */
-    public void setComponentType( String strComponentType )
+    public void setVersion( String strVersion )
     {
-        _strComponentType = strComponentType;
+        _strVersion = strVersion;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public int compareTo( Object o )
+    {
+        AbstractComponent c = (AbstractComponent) o;
+        String strName1 = getArtifactId(  ).substring( getArtifactId(  ).indexOf( "-" ) + 1 );
+        String strName2 = c.getArtifactId(  ).substring( c.getArtifactId(  ).indexOf( "-" ) + 1 );
+
+        return strName1.compareTo( strName2 );
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public boolean equals( Object o )
+    {
+        AbstractComponent c = (AbstractComponent) o;
+
+        return getArtifactId(  ).equals( c.getArtifactId(  ) );
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public int hashCode(  )
+    {
+        return super.hashCode(  );
     }
 }
