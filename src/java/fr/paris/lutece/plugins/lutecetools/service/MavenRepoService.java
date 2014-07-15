@@ -152,7 +152,14 @@ public final class MavenRepoService extends AbstractCacheableService
             String strHtml = httpAccess.doGet(strUrl);
             List<String> listElement = getAnchorsList(strHtml);
 
-            return listElement.get(listElement.size() - 1);
+            for( String strAnchor : listElement )
+            {
+                if( strAnchor.matches( "^[\\d].*"))
+                {
+                    strVersion = strAnchor;
+                }
+            }
+            return strVersion;
         }
         catch (HttpAccessException e)
         {
