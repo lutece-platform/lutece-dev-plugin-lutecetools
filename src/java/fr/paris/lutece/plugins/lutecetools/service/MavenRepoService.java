@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.lutecetools.service;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.business.Dependency;
-import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -66,7 +65,7 @@ import javax.xml.parsers.SAXParserFactory;
 /**
  * Version Service
  */
-public final class MavenRepoService extends AbstractCacheableService
+public final class MavenRepoService
 {
     private static final String PROPERTY_MAVEN_REPO_URL = "lutecetools.maven.repository.url";
     private static final String URL_MAVEN_REPO = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL );
@@ -78,7 +77,6 @@ public final class MavenRepoService extends AbstractCacheableService
         AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_SITE_POM );
     private static final String KEY_SITE_POM_VERSION = "lutecetools.pom.site.version";
     private static final String RELEASE_NOT_FOUND = "Release not found";
-    private static final String CACHE_SERVICE_NAME = "LuteceToolsMavenCacheService";
 
     // SNAPSHOT
     private static final String PROPERTY_SNAPSHOT_REPO_URL = "lutecetools.snapshot.repository.url";
@@ -86,9 +84,7 @@ public final class MavenRepoService extends AbstractCacheableService
     private static final String URL_SNAPSHOT_PLUGINS = URL_SNAPSHOT_REPO +
         AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
     private static final String EXCEPTION_MESSAGE = "LuteceTools - MavenRepoService : Error retrieving pom infos : ";
-    
     private static final int THREAD_COUNT = 30;
-    
     private static MavenRepoService _singleton;
 
     /**
@@ -108,19 +104,9 @@ public final class MavenRepoService extends AbstractCacheableService
         if ( _singleton == null )
         {
             _singleton = new MavenRepoService(  );
-            _singleton.initCache(  );
         }
 
         return _singleton;
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public String getName(  )
-    {
-        return CACHE_SERVICE_NAME;
     }
 
     /**
@@ -292,12 +278,12 @@ public final class MavenRepoService extends AbstractCacheableService
      */
     public static Component getComponent( String strArtifactId )
     {
-        Component component = (Component) _singleton.getFromCache( strArtifactId );
+        Component component = ComponentService.load( strArtifactId );
 
         if ( component == null )
         {
             component = fetchComponent( strArtifactId );
-            _singleton.putInCache( strArtifactId, component );
+            ComponentService.save( component );
         }
 
         return component;
@@ -506,7 +492,7 @@ public final class MavenRepoService extends AbstractCacheableService
     {
         updateComponents(  );
     }
-    
+
     //////////////////////////////////////////////////////////////////////////////
     // THREADS CLASSES
 
@@ -547,7 +533,7 @@ public final class MavenRepoService extends AbstractCacheableService
     {
         private final String _strArtifactId;
 
-        /** The Thread constructor 
+        /** The Thread constructor
          * @param strArtifactId  The artifact ID
          */
         UpdateThread( String strArtifactId )
@@ -560,7 +546,7 @@ public final class MavenRepoService extends AbstractCacheableService
         public void run(  )
         {
             Component component = fetchComponent( _strArtifactId );
-            _singleton.putInCache( _strArtifactId, component );
+            ComponentService.save( component );
         }
     }
 }
