@@ -18,6 +18,13 @@
         <min-core-version>5.0.0</min-core-version>
         <max-core-version/>	
     </core-version-dependency>
+    
+    
+    <javascript-files>
+        <javascript-files-scope>xpage</javascript-files-scope>
+        <javascript-file>lutecetools/jquery.metadata.js</javascript-file>
+        <javascript-file>lutecetools/jquery.tablesorter.js</javascript-file>
+    </javascript-files>
 
      <!-- XPages parameters -->
     <applications>

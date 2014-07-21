@@ -84,7 +84,16 @@ public final class MavenRepoService
     private static final String URL_SNAPSHOT_PLUGINS = URL_SNAPSHOT_REPO +
         AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
     private static final String EXCEPTION_MESSAGE = "LuteceTools - MavenRepoService : Error retrieving pom infos : ";
-    private static final int THREAD_COUNT = 30;
+    private static final String PROPERTY_THREADS_FETCH_COUNT = "lutecetools.threads.fetch.count";
+    private static final String PROPERTY_THREADS_FETCH_WAIT = "lutecetools.threads.fetch.waitTime";
+    private static final String PROPERTY_THREADS_UPDATE_COUNT = "lutecetools.threads.update.count";
+    private static final String PROPERTY_THREADS_UPDATE_WAIT = "lutecetools.threads.update.waitTime";
+    private static final int THREADS_FETCH_COUNT = AppPropertiesService.getPropertyInt( PROPERTY_THREADS_FETCH_COUNT, 10 );
+    private static final int THREADS_FETCH_WAIT = AppPropertiesService.getPropertyInt( PROPERTY_THREADS_FETCH_WAIT, 180 );
+    private static final int THREADS_UPDATE_COUNT = AppPropertiesService.getPropertyInt( PROPERTY_THREADS_UPDATE_COUNT,
+            10 );
+    private static final int THREADS_UPDATE_WAIT = AppPropertiesService.getPropertyInt( PROPERTY_THREADS_UPDATE_WAIT,
+            180 );
     private static MavenRepoService _singleton;
 
     /**
@@ -173,7 +182,7 @@ public final class MavenRepoService
         List<Component> list = new ArrayList<Component>(  );
         long t0 = new Date(  ).getTime(  );
 
-        ExecutorService executor = Executors.newFixedThreadPool( THREAD_COUNT );
+        ExecutorService executor = Executors.newFixedThreadPool( THREADS_FETCH_COUNT );
 
         for ( String strArtifactId : getComponentsList(  ) )
         {
@@ -185,7 +194,7 @@ public final class MavenRepoService
 
         try
         {
-            executor.awaitTermination( 300, TimeUnit.SECONDS );
+            executor.awaitTermination( THREADS_FETCH_WAIT, TimeUnit.SECONDS );
 
             long t1 = new Date(  ).getTime(  );
             long lDuration = t1 - t0;
@@ -212,7 +221,7 @@ public final class MavenRepoService
         List<Component> list = new ArrayList<Component>(  );
         long t0 = new Date(  ).getTime(  );
 
-        ExecutorService executor = Executors.newFixedThreadPool( THREAD_COUNT );
+        ExecutorService executor = Executors.newFixedThreadPool( THREADS_UPDATE_COUNT );
 
         for ( String strArtifactId : getComponentsList(  ) )
         {
@@ -224,7 +233,7 @@ public final class MavenRepoService
 
         try
         {
-            executor.awaitTermination( 300, TimeUnit.SECONDS );
+            executor.awaitTermination( THREADS_UPDATE_WAIT, TimeUnit.SECONDS );
 
             long t1 = new Date(  ).getTime(  );
             long lDuration = t1 - t0;
