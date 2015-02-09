@@ -33,11 +33,14 @@
  */
 package fr.paris.lutece.plugins.lutecetools.web;
 
+import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.Map;
 
@@ -52,7 +55,11 @@ public class ComponentListApp extends MVCApplication
 {
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/components.html";
     private static final String MARK_COMPONENTS_LIST = "components_list";
+    private static final String MARK_GITHUB_FILTER = "github_filter";
+    private static final String MARK_DISPLAY_CORE_VERSIONS = "core_versions";
     private static final String VIEW_HOME = "home";
+    private static final String PARAMETER_GITHUB = "github";
+    private static final String PARAMETER_CORE_VERSIONS = "core";
 
     /**
      * Returns the content of the page lutecetools.
@@ -62,10 +69,36 @@ public class ComponentListApp extends MVCApplication
     @View( value = VIEW_HOME, defaultView = true )
     public XPage viewHome( HttpServletRequest request )
     {
+        String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
+        String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
+        boolean bDisplayCoreVersions = (strDisplayCoreVersions != null) && strDisplayCoreVersions.equals( "on" );
+        boolean bGitHubFilter = (strGitHubFilter != null) && ( strGitHubFilter.equals( "on" ));
+        
         Map<String, Object> model = getModel(  );
 
-        model.put( MARK_COMPONENTS_LIST, MavenRepoService.instance(  ).getComponents(  ) );
+        List<Component> listComponents = MavenRepoService.instance(  ).getComponents(  );
+        
+        if( bGitHubFilter )
+        {
+            listComponents = filterGitHub( listComponents );
+        }
+        model.put( MARK_COMPONENTS_LIST, listComponents );
+        model.put( MARK_GITHUB_FILTER, bGitHubFilter );
+        model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );
 
         return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
+    }
+
+    private List<Component> filterGitHub(List<Component> listComponents)
+    {
+        List<Component> list = new ArrayList<Component>();
+        for( Component c : listComponents )
+        {
+            if( c.getGitHubStatus() > 0 )
+            {
+                list.add(c);
+            }
+        }
+        return list;
     }
 }

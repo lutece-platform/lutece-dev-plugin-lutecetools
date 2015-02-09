@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.lutecetools.business;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 
 /**
  * Component
@@ -45,6 +47,9 @@ public class Component extends AbstractComponent implements Comparable
     private String _strSnapshotCoreVersion;
     private String _strSnapshotParentPomVersion;
     private String _strJiraKey;
+    private String _strScmUrl;
+    private String _strSnapshotScmUrl;
+    private boolean _bGitHubRepo;
 
     /**
      * Returns the CoreVersion
@@ -153,4 +158,101 @@ public class Component extends AbstractComponent implements Comparable
     {
         _strSnapshotParentPomVersion = strSnapshotParentPomVersion;
     }
+    
+    /**
+     * 
+     * @param bGitHub The GitHUb status
+     */
+    public void setGitHubRepo( boolean bGitHub )
+    {
+        _bGitHubRepo = bGitHub;
+    }
+    
+    /**
+     * 
+     * @return The GitHUb status
+     */
+    public boolean getGitHubRepo()
+    {
+        return _bGitHubRepo;
+    }
+
+    /**
+     * @return the Scm Url
+     */
+    public String getScmUrl()
+    {
+        return  ( _strScmUrl == null ) ? "" : _strScmUrl;
+    }
+
+    /**
+     * @param strScmUrl the Scm Url to set
+     */
+    public void setScmUrl(String strScmUrl)
+    {
+        _strScmUrl = strScmUrl;
+    }
+
+    /**
+     * @return the Scm Url
+     */
+    public String getSnapshotScmUrl()
+    {
+        return ( _strSnapshotScmUrl == null ) ? "" : _strSnapshotScmUrl;
+    }
+
+    /**
+     * @param strScmUrl the Scm Url to set
+     */
+    public void setSnapshotScmUrl(String strScmUrl)
+    {
+        _strSnapshotScmUrl = strScmUrl;
+    }
+
+    /**
+     * @return the GitHub Status
+     */
+    @JsonIgnore
+    public int getGitHubStatus()
+    {
+        int nStatus = 0;
+        if( getGitHubRepo()  ) nStatus++;
+        if( getScmUrl().contains( "github" )  ) nStatus++;
+        if( getSnapshotScmUrl().contains( "github" )  ) nStatus++;
+        
+        return nStatus;
+    }
+
+    /**
+     * @return the GitHub Status
+     */
+    @JsonIgnore
+    public String getGitHubErrors()
+    {
+        StringBuilder sbErrors = new StringBuilder();
+    
+        if( getGitHubRepo()  )
+        {
+            if( getScmUrl().contains( ".git" )  ) 
+            {
+                sbErrors.append( "Bad SCM info in the released POM. ");
+            }
+            if( getSnapshotScmUrl().contains( ".git" )  ) 
+            {
+                sbErrors.append( "Bad SCM info in the snapshot POM. ");
+            }
+            if( ! "3.0".equals( _strParentPomVersion))             
+            {
+                sbErrors.append( "Bad parent POM in release POM. should be global-pom 3.0");
+            }
+            if( ! "3.0".equals( _strSnapshotParentPomVersion))             
+            {
+                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom 3.0");
+            }
+
+        }
+        return sbErrors.toString();
+    }
+
+
 }

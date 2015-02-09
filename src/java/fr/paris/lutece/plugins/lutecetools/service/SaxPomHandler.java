@@ -47,14 +47,19 @@ public class SaxPomHandler extends DefaultHandler
     private static final String TAG_VERSION = "version";
     private static final String TAG_ARTIFACT_ID = "artifactId";
     private static final String TAG_JIRA = "jiraProjectName";
+    private static final String TAG_SCM = "scm";
+    private static final String TAG_URL = "url";
     private String _strParentPomVersion;
     private String _strCoreVersion;
     private String _strJiraKey;
+    private String _strScmUrl;
     private boolean _bPomParent;
     private boolean _bVersion;
     private boolean _bArtifactId;
     private boolean _bCore;
     private boolean _bJira;
+    private boolean _bSCM;
+    private boolean _bURL;
 
     /**
      * Returns Parent Pom version
@@ -84,6 +89,16 @@ public class SaxPomHandler extends DefaultHandler
     }
 
     /**
+     * Returns the SCM URL
+     * @return The SCM URL
+     */
+    public String getScmUrl()
+    {
+        return _strScmUrl;
+    }
+    
+    
+    /**
      * {@inheritDoc }
      */
     @Override
@@ -105,6 +120,14 @@ public class SaxPomHandler extends DefaultHandler
         else if ( qName.equalsIgnoreCase( TAG_JIRA ) )
         {
             _bJira = true;
+        }
+        else if ( qName.equalsIgnoreCase( TAG_SCM ) )
+        {
+            _bSCM = true;
+        }
+        else if ( qName.equalsIgnoreCase( TAG_URL ) )
+        {
+            _bURL = true;
         }
     }
 
@@ -130,6 +153,14 @@ public class SaxPomHandler extends DefaultHandler
         else if ( qName.equalsIgnoreCase( TAG_JIRA ) )
         {
             _bJira = false;
+        }
+        else if ( qName.equalsIgnoreCase( TAG_SCM ) )
+        {
+            _bSCM = false;
+        }
+        else if ( qName.equalsIgnoreCase( TAG_URL ) )
+        {
+            _bURL = false;
         }
     }
 
@@ -157,5 +188,10 @@ public class SaxPomHandler extends DefaultHandler
         {
             _strJiraKey = new String( ch, start, length );
         }
+        else if ( _bSCM && _bURL )
+        {
+            _strScmUrl = new String( ch, start, length );
+        }
     }
+
 }

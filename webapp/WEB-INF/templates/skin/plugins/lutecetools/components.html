@@ -4,26 +4,38 @@
     <div class="well hero">
         <h1>#i18n{lutecetools.components.title}</h1>
         <br>
-        #i18n{lutecetools.components.count} : ${components_list?size}
+        <form method="GET" action="jsp/site/Portal.jsp">
+            #i18n{lutecetools.components.count} : <strong> ${components_list?size} </strong>
+            <input type="hidden" name="page" value="components" />
+            <input type="checkbox" name="github" <#if github_filter> checked </#if> /> Filtrer sur les projets GitHub
+            <input type="checkbox" name="core"  <#if core_versions> checked </#if> /> Afficher les versions du core
+            <button class="btn btn-primary btn-xs" type="submit" >Refresh</button>
+        </form>
         <br>
         <div class="table-responsive">
             <table id="components-table" class="table table-striped table-condensed tablesorter">
-                <tr>
-                    <th>#i18n{lutecetools.components.labelComponent}</th>
-                    <th colspan="2">#i18n{lutecetools.components.labelVersion}</th>
-                    <th colspan="2">#i18n{lutecetools.components.labelParentPomVersion}</th>
-                    <th colspan="2">#i18n{lutecetools.components.labelCoreVersion}</th>
-                    <th>#i18n{lutecetools.components.labelLinks}</th>
-                </tr>   
                 <thead>
                     <tr>
+                        <th>#i18n{lutecetools.components.labelComponent}</th>
+                        <th>GitHub</th>
+                        <th colspan="2">#i18n{lutecetools.components.labelVersion}</th>
+                        <th colspan="2">#i18n{lutecetools.components.labelParentPomVersion}</th>
+                        <#if core_versions>
+                            <th colspan="2">#i18n{lutecetools.components.labelCoreVersion}</th>
+                        </#if>
+                        <th>#i18n{lutecetools.components.labelLinks}</th>
+                    </tr>   
+                    <tr>
                         <th>&nbsp;</th>
+                        <th>status</th>
                         <th class="small">Snapshot</th>
                         <th class="small">Release</th>
                         <th class="small">Snapshot</th>
                         <th class="small">Release</th>
+                        <#if core_versions>
                         <th class="small">Snapshot</th>
                         <th class="small">Release</th>
+                        </#if>
                         <th>&nbsp;</th>
                     </tr> 
                 </thead>
@@ -31,12 +43,49 @@
                     <#list components_list as component>
                     <tr>
                         <td class="small">${component.artifactId}</td>
-                        <td class="small">${component.snapshotVersion!"Not found"}</td>
-                        <td class="small">${component.version}</td>
+                        <td>
+                            <#if component.gitHubStatus == 1>
+                                <img src="images/skin/plugins/lutecetools/github-status1.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
+                            </#if>
+                            <#if component.gitHubStatus == 2>
+                                <img src="images/skin/plugins/lutecetools/github-status2.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
+                            </#if>
+                            <#if component.gitHubStatus == 3>
+                                <img src="images/skin/plugins/lutecetools/github-status3.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
+                            </#if>
+                        </td>
+                        <td class="small">
+                            <#if component.snapshotScmUrl?contains("git")>
+                            <a href="${component.snapshotScmUrl}">
+                                <img src="images/skin/plugins/lutecetools/github.png" alt="GitHub logo" width="24" height="24">
+                            </a>
+                            </#if>
+                            <#if component.snapshotScmUrl?contains("svn")>
+                            <a href="${component.snapshotScmUrl}">
+                                <img src="images/skin/plugins/lutecetools/subversion.png" alt="GitHub logo" width="24" height="24">
+                            </a>
+                            </#if>
+                            ${component.snapshotVersion!"Not found"}
+                        </td>
+                        <td class="small">
+                            <#if component.scmUrl?contains("git")>
+                            <a href="${component.scmUrl}">
+                                <img src="images/skin/plugins/lutecetools/github.png" alt="GitHub logo" width="24" height="24">
+                            </a>
+                            </#if>
+                            <#if component.scmUrl?contains("svn")>
+                            <a href="${component.scmUrl}" >
+                                <img src="images/skin/plugins/lutecetools/subversion.png" alt="GitHub logo" width="24" height="24">
+                            </a>
+                            </#if>
+                            ${component.version}
+                        </td>
                         <td class="small">${component.snapshotParentPomVersion!"Not found"}</td>
                         <td class="small">${component.parentPomVersion!"Not found"}</td>
+                        <#if core_versions>
                         <td class="small">${component.snapshotCoreVersion!"Not found"}</td>
                         <td class="small">${component.coreVersion!"Not found"}</td>
+                        </#if>
                         <td>
                             <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}" title="JIRA">
                                 <img src="images/skin/plugins/lutecetools/jira.png" alt="Jira logo" width="24" height="24"/>
