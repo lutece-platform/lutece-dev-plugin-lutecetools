@@ -51,9 +51,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -84,18 +81,13 @@ public final class MavenRepoService
     private static final String URL_SNAPSHOT_PLUGINS = URL_SNAPSHOT_REPO +
         AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
     private static final String EXCEPTION_MESSAGE = "LuteceTools - MavenRepoService : Error retrieving pom infos : ";
-    private static final String PROPERTY_THREADS_FETCH_COUNT = "lutecetools.threads.fetch.count";
-    private static final String PROPERTY_THREADS_FETCH_WAIT = "lutecetools.threads.fetch.waitTime";
-    private static final String PROPERTY_THREADS_UPDATE_COUNT = "lutecetools.threads.update.count";
-    private static final String PROPERTY_THREADS_UPDATE_WAIT = "lutecetools.threads.update.waitTime";
-    private static final int THREADS_FETCH_COUNT = AppPropertiesService.getPropertyInt( PROPERTY_THREADS_FETCH_COUNT, 10 );
-    private static final int THREADS_FETCH_WAIT = AppPropertiesService.getPropertyInt( PROPERTY_THREADS_FETCH_WAIT, 180 );
-    private static final int THREADS_UPDATE_COUNT = AppPropertiesService.getPropertyInt( PROPERTY_THREADS_UPDATE_COUNT,
-            10 );
-    private static final int THREADS_UPDATE_WAIT = AppPropertiesService.getPropertyInt( PROPERTY_THREADS_UPDATE_WAIT,
-            180 );
+    private static final String PROPERTY_NON_AVAILABLE = "lutecetools.nonAvailable";
+    private static final String NON_AVAILABLE = AppPropertiesService.getProperty( PROPERTY_NON_AVAILABLE );
+    private static final String PROPERTY_UPDATE_DELAY = "lutecetools.update.delay";
+    private static final long DEFAULT_UPDATE_DELAY = 7200000L; // 2 hours
+    private static final long UPDATE_DELAY = AppPropertiesService.getPropertyLong( PROPERTY_UPDATE_DELAY,
+            DEFAULT_UPDATE_DELAY );
     private static MavenRepoService _singleton;
-    
 
     /**
      * Private constructor
@@ -178,110 +170,44 @@ public final class MavenRepoService
      *
      * @return the component list
      */
-    
-/*   
-    public List<Component> getComponents(  )
+    public ComponentsInfos getComponents(  )
     {
+        ComponentsInfos ci = new ComponentsInfos(  );
         List<Component> list = new ArrayList<Component>(  );
-        long t0 = new Date(  ).getTime(  );
-
-        ExecutorService executor = Executors.newFixedThreadPool( THREADS_FETCH_COUNT );
-
-        List<String> listComponents = getComponentsList(  ); 
-        AppLogService.info( "LuteceTools : " + listComponents.size() + " components found. Start fetching components ..." );
-        
-        for ( String strArtifactId : listComponents )
-        {
-            Runnable worker = new FetchThread( strArtifactId, list );
-            executor.execute( worker );
-        }
-
-        executor.shutdown(  );
-
-        try
-        {
-            executor.awaitTermination( THREADS_FETCH_WAIT, TimeUnit.SECONDS );
-
-            long t1 = new Date(  ).getTime(  );
-            long lDuration = t1 - t0;
-            AppLogService.info( "MavenRepoService - getComponents : All threads have finished! elapsed time = " +
-                lDuration );
-        }
-        catch ( InterruptedException ex )
-        {
-            AppLogService.info( "MavenRepoService - getComponents : Some thread have not finished!" );
-        }
-
-        Collections.sort( list );
-
-        return list;
-    }
-*/
-    
-    public List<Component> getComponents(  )
-    {
-        List<Component> list = new ArrayList<Component>();
-        List<String> listComponents = getComponentsList(  ); 
-        int nTotal = listComponents.size();
+        List<String> listComponents = getComponentsListFromRepository(  );
+        int nTotal = listComponents.size(  );
         AppLogService.info( "LuteceTools : " + nTotal + " components found. Start fetching components ..." );
-        
+
         int nCount = 0;
+        int nAvailable = 0;
+
         for ( String strArtifactId : listComponents )
         {
-            list.add( getComponent(strArtifactId));
+            Component c = getComponent( strArtifactId, false );
+            list.add( c );
             nCount++;
-            AppLogService.info( "LuteceTools : " + nCount + "/" + nTotal + " components fetched" );
+
+            if ( !c.getVersion(  ).equals( NON_AVAILABLE ) )
+            {
+                nAvailable++;
+            }
         }
+
+        AppLogService.info( "LuteceTools : " + nAvailable + "/" + nTotal + " components available" );
         Collections.sort( list );
 
-        return list;
-    }
-    
-    /**
-     * Gets the component list
-     *
-     * @return the component list
-     */
-    public List<Component> updateComponents(  )
-    {
-        List<Component> list = new ArrayList<Component>(  );
-        long t0 = new Date(  ).getTime(  );
+        ci.setComponentCount( nCount );
+        ci.setComponentAvailable( nAvailable );
+        ci.setListComponents( list );
 
-        ExecutorService executor = Executors.newFixedThreadPool( THREADS_UPDATE_COUNT );
-
-        for ( String strArtifactId : getComponentsList(  ) )
-        {
-            Runnable worker = new UpdateThread( strArtifactId );
-            
-            executor.execute( worker );
-        }
-
-        executor.shutdown(  );
-
-        try
-        {
-            executor.awaitTermination( THREADS_UPDATE_WAIT, TimeUnit.SECONDS );
-
-            long t1 = new Date(  ).getTime(  );
-            long lDuration = t1 - t0;
-            AppLogService.info( "MavenRepoService - updateComponents : All threads have finished! elapsed time = " +
-                lDuration );
-        }
-        catch ( InterruptedException ex )
-        {
-            AppLogService.info( "MavenRepoService - updateComponents : Some thread have not finished!" );
-        }
-
-        Collections.sort( list );
-
-        return list;
+        return ci;
     }
 
     /**
      * Get the components list
      * @return The list
      */
-    public static List<String> getComponentsList(  )
+    public static List<String> getComponentsListFromRepository(  )
     {
         List<String> list = new ArrayList(  );
 
@@ -310,21 +236,34 @@ public final class MavenRepoService
      * Gets a component using cache feature
      *
      * @param strArtifactId The component name
+     * @param bFetch
      * @return The component
      */
-    public static Component getComponent( String strArtifactId )
+    public static Component getComponent( String strArtifactId, boolean bFetch )
     {
         Component component = ComponentService.load( strArtifactId );
 
         if ( component == null )
         {
-            AppLogService.info( "Fetching artifact : " + strArtifactId );
-            component = fetchComponent( strArtifactId );
-            ComponentService.save( component );
-        }
-        else
-        {
-            AppLogService.info( "Artifact " + strArtifactId + " get from cache" );
+            if ( bFetch )
+            {
+                component = fetchComponent( strArtifactId );
+                ComponentService.save( component );
+            }
+            else
+            {
+                component = new Component(  );
+                component.setArtifactId( strArtifactId );
+                component.setCoreVersion( NON_AVAILABLE );
+                component.setParentPomVersion( NON_AVAILABLE );
+                component.setScmUrl( NON_AVAILABLE );
+                component.setSnapshotVersion( NON_AVAILABLE );
+                component.setSnapshotCoreVersion( NON_AVAILABLE );
+                component.setSnapshotParentPomVersion( NON_AVAILABLE );
+                component.setJiraKey( NON_AVAILABLE );
+                component.setVersion( NON_AVAILABLE );
+                component.setGitHubRepo( false );
+            }
         }
 
         return component;
@@ -347,8 +286,8 @@ public final class MavenRepoService
         long t2 = new Date(  ).getTime(  );
         AppLogService.debug( "Lutece Tools - Fetching Maven Info for '" + component.getArtifactId(  ) +
             "' - duration : " + ( t2 - t1 + "ms" ) );
-        GitHubService.instance().setGitHubInfos(component);
-        
+        GitHubService.instance(  ).setGitHubInfos( component );
+
         return component;
     }
 
@@ -534,68 +473,43 @@ public final class MavenRepoService
      */
     public void updateCache(  )
     {
-       /* updateComponents(  ); FIXME */
-    }
+        List<String> listComponents = getComponentsListFromRepository(  );
 
-    //////////////////////////////////////////////////////////////////////////////
-    // THREADS CLASSES
-
-    /**
-     * Thread for fetching component from the Maven repository
-     */
-    private class FetchThread implements Runnable
-    {
-        private final String _strArtifactId;
-        private final List<Component> _listComponents;
-
-        /**
-         * Thread constructor
-         * @param strArtifactId The artifact ID
-         * @param listComponents The component list in which add the component
-         */
-        public FetchThread( String strArtifactId, List<Component> listComponents )
+        for ( String strArtifactId : listComponents )
         {
-            _strArtifactId = strArtifactId;
-            _listComponents = listComponents;
-            
-        }
+            Component component = ComponentService.load( strArtifactId );
 
-        /**
-         * The thread task
-         */
-        @Override
-        public void run(  )
-        {
-            AppLogService.info( "Thread is fetching artifact : " + _strArtifactId );
-            Component component = MavenRepoService.getComponent( _strArtifactId );
-            _listComponents.add( component );
-            AppLogService.info( "Thread has fetched artifact : " + _strArtifactId );
+            if ( shouldBeUpdated( component ) )
+            {
+                AppLogService.info( "Thread is fetching artifact : " + strArtifactId );
+
+                component = fetchComponent( strArtifactId );
+                ComponentService.save( component );
+                AppLogService.info( "Thread has fetched artifact : " + strArtifactId );
+            }
+            else
+            {
+                AppLogService.info( "Component" + strArtifactId + " is up to date" );
+            }
         }
     }
 
     /**
-     * Thread for cache updating
+     * Returns true if the component should be updated
+     * @param component The component
+     * @return true if the component should be updated
      */
-    private class UpdateThread implements Runnable
+    private boolean shouldBeUpdated( Component component )
     {
-        private final String _strArtifactId;
-
-        /** The Thread constructor
-         * @param strArtifactId  The artifact ID
-         */
-        UpdateThread( String strArtifactId )
+        // The component is missing
+        if ( component == null )
         {
-            _strArtifactId = strArtifactId;
+            return true;
         }
 
-        /** The Thread task */
-        @Override
-        public void run(  )
-        {
-            AppLogService.info( "Thread is fetching artifact : " + _strArtifactId );
-            Component component = fetchComponent( _strArtifactId );
-            ComponentService.save( component );
-            AppLogService.info( "Thread has fetched artifact : " + _strArtifactId );
-        }
+        // The last update is too far
+        long lNow = new Date(  ).getTime(  );
+
+        return ( lNow - component.getLastUpdate(  ) ) > UPDATE_DELAY;
     }
 }

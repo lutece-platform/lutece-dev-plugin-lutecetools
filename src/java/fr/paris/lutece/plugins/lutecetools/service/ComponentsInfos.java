@@ -33,34 +33,85 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
-import org.junit.Test;
+import fr.paris.lutece.plugins.lutecetools.business.Component;
 
-import org.kohsuke.github.GHRepository;
-
-import java.util.Map;
+import java.util.List;
 
 
 /**
  *
  * @author pierre
  */
-public class GitHubServiceTest
+public class ComponentsInfos
 {
+    private int _nComponentCount;
+    private int _nComponentAvailable;
+    private List<Component> _listComponents;
+    private boolean _bComplete;
+
     /**
-     * Test of getRepositories method, of class GitHubService.
+     * @return the nComponentCount
      */
-    @Test
-    public void testGetRepositories(  )
+    public int getComponentCount(  )
     {
-        System.out.println( "getRepositories" );
+        return _nComponentCount;
+    }
 
-        String strOrganization = "lutece-platform";
-        GitHubService instance = new GitHubService(  );
-        Map<String, GHRepository> map = instance.getRepositories( strOrganization );
+    /**
+     * @param nComponentCount the nComponentCount to set
+     */
+    public void setComponentCount( int nComponentCount )
+    {
+        _nComponentCount = nComponentCount;
+    }
 
-        for ( String repo : map.keySet(  ) )
+    /**
+     * @return the nComponentAvailable
+     */
+    public int getComponentAvailable(  )
+    {
+        return _nComponentAvailable;
+    }
+
+    /**
+     * @param nComponentAvailable the nComponentAvailable to set
+     */
+    public void setComponentAvailable( int nComponentAvailable )
+    {
+        _nComponentAvailable = nComponentAvailable;
+    }
+
+    /**
+     * @return the listComponents
+     */
+    public List<Component> getListComponents(  )
+    {
+        return _listComponents;
+    }
+
+    /**
+     * @param listComponents the listComponents to set
+     */
+    public void setListComponents( List<Component> listComponents )
+    {
+        _listComponents = listComponents;
+    }
+
+    /**
+     * @return the bComplete
+     */
+    public boolean isComplete(  )
+    {
+        return _nComponentAvailable == _nComponentCount;
+    }
+
+    public int getPercentAvailable(  )
+    {
+        if ( _nComponentCount == 0 )
         {
-            System.out.println( repo );
+            return 100;
         }
+
+        return ( _nComponentAvailable * 100 ) / _nComponentCount;
     }
 }

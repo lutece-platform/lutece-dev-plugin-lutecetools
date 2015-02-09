@@ -34,14 +34,15 @@
 package fr.paris.lutece.plugins.lutecetools.web;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.plugins.lutecetools.service.ComponentsInfos;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
+
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,34 +72,37 @@ public class ComponentListApp extends MVCApplication
     {
         String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
-        boolean bDisplayCoreVersions = (strDisplayCoreVersions != null) && strDisplayCoreVersions.equals( "on" );
-        boolean bGitHubFilter = (strGitHubFilter != null) && ( strGitHubFilter.equals( "on" ));
-        
+        boolean bDisplayCoreVersions = ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( "on" );
+        boolean bGitHubFilter = ( strGitHubFilter != null ) && ( strGitHubFilter.equals( "on" ) );
+
         Map<String, Object> model = getModel(  );
 
-        List<Component> listComponents = MavenRepoService.instance(  ).getComponents(  );
-        
-        if( bGitHubFilter )
+        ComponentsInfos ci = MavenRepoService.instance(  ).getComponents(  );
+
+        if ( bGitHubFilter )
         {
-            listComponents = filterGitHub( listComponents );
+            ci.setListComponents( filterGitHub( ci.getListComponents(  ) ) );
         }
-        model.put( MARK_COMPONENTS_LIST, listComponents );
+
+        model.put( MARK_COMPONENTS_LIST, ci );
         model.put( MARK_GITHUB_FILTER, bGitHubFilter );
         model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );
 
         return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
     }
 
-    private List<Component> filterGitHub(List<Component> listComponents)
+    private List<Component> filterGitHub( List<Component> listComponents )
     {
-        List<Component> list = new ArrayList<Component>();
-        for( Component c : listComponents )
+        List<Component> list = new ArrayList<Component>(  );
+
+        for ( Component c : listComponents )
         {
-            if( c.getGitHubStatus() > 0 )
+            if ( c.getGitHubStatus(  ) > 0 )
             {
-                list.add(c);
+                list.add( c );
             }
         }
+
         return list;
     }
 }

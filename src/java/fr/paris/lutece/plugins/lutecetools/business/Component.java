@@ -50,6 +50,7 @@ public class Component extends AbstractComponent implements Comparable
     private String _strScmUrl;
     private String _strSnapshotScmUrl;
     private boolean _bGitHubRepo;
+    private long _lLastUpdate;
 
     /**
      * Returns the CoreVersion
@@ -158,21 +159,21 @@ public class Component extends AbstractComponent implements Comparable
     {
         _strSnapshotParentPomVersion = strSnapshotParentPomVersion;
     }
-    
+
     /**
-     * 
+     *
      * @param bGitHub The GitHUb status
      */
     public void setGitHubRepo( boolean bGitHub )
     {
         _bGitHubRepo = bGitHub;
     }
-    
+
     /**
-     * 
+     *
      * @return The GitHUb status
      */
-    public boolean getGitHubRepo()
+    public boolean getGitHubRepo(  )
     {
         return _bGitHubRepo;
     }
@@ -180,15 +181,15 @@ public class Component extends AbstractComponent implements Comparable
     /**
      * @return the Scm Url
      */
-    public String getScmUrl()
+    public String getScmUrl(  )
     {
-        return  ( _strScmUrl == null ) ? "" : _strScmUrl;
+        return ( _strScmUrl == null ) ? "" : _strScmUrl;
     }
 
     /**
      * @param strScmUrl the Scm Url to set
      */
-    public void setScmUrl(String strScmUrl)
+    public void setScmUrl( String strScmUrl )
     {
         _strScmUrl = strScmUrl;
     }
@@ -196,7 +197,7 @@ public class Component extends AbstractComponent implements Comparable
     /**
      * @return the Scm Url
      */
-    public String getSnapshotScmUrl()
+    public String getSnapshotScmUrl(  )
     {
         return ( _strSnapshotScmUrl == null ) ? "" : _strSnapshotScmUrl;
     }
@@ -204,7 +205,7 @@ public class Component extends AbstractComponent implements Comparable
     /**
      * @param strScmUrl the Scm Url to set
      */
-    public void setSnapshotScmUrl(String strScmUrl)
+    public void setSnapshotScmUrl( String strScmUrl )
     {
         _strSnapshotScmUrl = strScmUrl;
     }
@@ -213,13 +214,25 @@ public class Component extends AbstractComponent implements Comparable
      * @return the GitHub Status
      */
     @JsonIgnore
-    public int getGitHubStatus()
+    public int getGitHubStatus(  )
     {
         int nStatus = 0;
-        if( getGitHubRepo()  ) nStatus++;
-        if( getScmUrl().contains( "github" )  ) nStatus++;
-        if( getSnapshotScmUrl().contains( "github" )  ) nStatus++;
-        
+
+        if ( getGitHubRepo(  ) )
+        {
+            nStatus++;
+        }
+
+        if ( getScmUrl(  ).contains( "github" ) )
+        {
+            nStatus++;
+        }
+
+        if ( getSnapshotScmUrl(  ).contains( "github" ) )
+        {
+            nStatus++;
+        }
+
         return nStatus;
     }
 
@@ -227,32 +240,49 @@ public class Component extends AbstractComponent implements Comparable
      * @return the GitHub Status
      */
     @JsonIgnore
-    public String getGitHubErrors()
+    public String getGitHubErrors(  )
     {
-        StringBuilder sbErrors = new StringBuilder();
-    
-        if( getGitHubRepo()  )
+        StringBuilder sbErrors = new StringBuilder(  );
+
+        if ( getGitHubRepo(  ) )
         {
-            if( getScmUrl().contains( ".git" )  ) 
+            if ( !getScmUrl(  ).contains( ".git" ) )
             {
-                sbErrors.append( "Bad SCM info in the released POM. ");
-            }
-            if( getSnapshotScmUrl().contains( ".git" )  ) 
-            {
-                sbErrors.append( "Bad SCM info in the snapshot POM. ");
-            }
-            if( ! "3.0".equals( _strParentPomVersion))             
-            {
-                sbErrors.append( "Bad parent POM in release POM. should be global-pom 3.0");
-            }
-            if( ! "3.0".equals( _strSnapshotParentPomVersion))             
-            {
-                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom 3.0");
+                sbErrors.append( "Bad SCM info in the released POM. \n" );
             }
 
+            if ( !getSnapshotScmUrl(  ).contains( ".git" ) )
+            {
+                sbErrors.append( "Bad SCM info in the snapshot POM. \n" );
+            }
+
+            if ( !"3.0".equals( _strParentPomVersion ) )
+            {
+                sbErrors.append( "Bad parent POM in release POM. should be global-pom 3.0. \n" );
+            }
+
+            if ( !"3.0".equals( _strSnapshotParentPomVersion ) )
+            {
+                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom 3.0. \n" );
+            }
         }
-        return sbErrors.toString();
+
+        return sbErrors.toString(  );
     }
 
+    /**
+     * @return the LastUpdate
+     */
+    public long getLastUpdate(  )
+    {
+        return _lLastUpdate;
+    }
 
+    /**
+     * @param lLastUpdate the Last Update to set
+     */
+    public void setLastUpdate( long lLastUpdate )
+    {
+        _lLastUpdate = lLastUpdate;
+    }
 }

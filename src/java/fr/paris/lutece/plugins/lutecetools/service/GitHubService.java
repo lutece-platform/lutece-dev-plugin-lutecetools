@@ -7,12 +7,16 @@ package fr.paris.lutece.plugins.lutecetools.service;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.portal.service.util.AppLogService;
-import java.io.IOException;
-import java.util.Map;
+
 import org.kohsuke.github.GHBranch;
 import org.kohsuke.github.GHOrganization;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
+
+import java.io.IOException;
+
+import java.util.Map;
+
 
 /**
  *
@@ -23,30 +27,32 @@ public class GitHubService
     private static GitHubService _singleton;
     Map<String, GHRepository> _mapRepositories;
 
-    public static synchronized GitHubService instance()
+    public static synchronized GitHubService instance(  )
     {
-        if (_singleton == null)
+        if ( _singleton == null )
         {
-            _singleton = new GitHubService();
-            _singleton.init();
+            _singleton = new GitHubService(  );
+            _singleton.init(  );
         }
+
         return _singleton;
     }
 
-    private void init()
+    private void init(  )
     {
         _mapRepositories = getRepositories( "lutece-platform" );
     }
 
-    public void setGitHubInfos(Component component)
+    public void setGitHubInfos( Component component )
     {
-        if( _mapRepositories != null )
+        if ( _mapRepositories != null )
         {
-            for( String strRepo : _mapRepositories.keySet() )
+            for ( String strRepo : _mapRepositories.keySet(  ) )
             {
-                if ( strRepo.contains(component.getArtifactId()))
+                if ( strRepo.contains( component.getArtifactId(  ) ) )
                 {
-                    component.setGitHubRepo(true);
+                    component.setGitHubRepo( true );
+
                     /*
                     GHRepository repo = _mapRepositories.get( strRepo );
                     try
@@ -63,22 +69,22 @@ public class GitHubService
         }
     }
 
-    public Map<String, GHRepository> getRepositories(String strOrganization)
+    public Map<String, GHRepository> getRepositories( String strOrganization )
     {
         Map<String, GHRepository> mapRepositories = null;
+
         try
         {
-            GitHub github = GitHub.connectAnonymously();
+            GitHub github = GitHub.connectAnonymously(  );
             GHOrganization organization = github.getOrganization( strOrganization );
-            mapRepositories = organization.getRepositories();
-            AppLogService.info( "GitHub Service initialized - " + mapRepositories.size() + " repositories found.");
-
+            mapRepositories = organization.getRepositories(  );
+            AppLogService.info( "GitHub Service initialized - " + mapRepositories.size(  ) + " repositories found." );
         }
-        catch (IOException ex)
+        catch ( IOException ex )
         {
-            AppLogService.error("Unable to access GitHub repositories", ex);
+            AppLogService.error( "Unable to access GitHub repositories", ex );
         }
+
         return mapRepositories;
     }
-
 }

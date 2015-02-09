@@ -41,6 +41,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 
+import java.util.Date;
+
 
 /**
  * ComponentService
@@ -58,6 +60,8 @@ public class ComponentService
     {
         try
         {
+            component.setLastUpdate( new Date(  ).getTime(  ) );
+
             String strJSON = getAsJSON( component );
             DatastoreService.setDataValue( DSKEY_PREFIX + component.getArtifactId(  ), strJSON );
         }
@@ -74,13 +78,14 @@ public class ComponentService
      */
     public static Component load( String strArtifactId )
     {
+        Component component = null;
         String strJSON = DatastoreService.getDataValue( DSKEY_PREFIX + strArtifactId, null );
 
         if ( strJSON != null )
         {
             try
             {
-                return loadFromJSON( strJSON );
+                component = loadFromJSON( strJSON );
             }
             catch ( IOException ex )
             {
@@ -88,7 +93,7 @@ public class ComponentService
             }
         }
 
-        return null;
+        return component;
     }
 
     /**

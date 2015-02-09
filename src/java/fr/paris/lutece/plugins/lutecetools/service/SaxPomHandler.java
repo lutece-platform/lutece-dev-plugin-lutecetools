@@ -92,12 +92,11 @@ public class SaxPomHandler extends DefaultHandler
      * Returns the SCM URL
      * @return The SCM URL
      */
-    public String getScmUrl()
+    public String getScmUrl(  )
     {
         return _strScmUrl;
     }
-    
-    
+
     /**
      * {@inheritDoc }
      */
@@ -193,5 +192,4 @@ public class SaxPomHandler extends DefaultHandler
             _strScmUrl = new String( ch, start, length );
         }
     }
-
 }

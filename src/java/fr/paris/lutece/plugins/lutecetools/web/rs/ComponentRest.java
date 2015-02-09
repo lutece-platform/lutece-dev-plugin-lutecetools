@@ -104,7 +104,7 @@ public class ComponentRest
         StringBuffer sbXML = new StringBuffer( XmlUtil.getXmlHeader(  ) );
         XmlUtil.beginElement( sbXML, KEY_COMPONENTS );
 
-        for ( String strArtifactId : MavenRepoService.getComponentsList(  ) )
+        for ( String strArtifactId : MavenRepoService.getComponentsListFromRepository(  ) )
         {
             XmlUtil.addElement( sbXML, KEY_ID, strArtifactId );
         }
@@ -123,7 +123,7 @@ public class ComponentRest
         JSONObject json = new JSONObject(  );
         JSONArray jsonComponents = new JSONArray(  );
 
-        for ( String strArtifactId : MavenRepoService.getComponentsList(  ) )
+        for ( String strArtifactId : MavenRepoService.getComponentsListFromRepository(  ) )
         {
             JSONObject jsonComponent = new JSONObject(  );
             jsonComponent.accumulate( KEY_ID, strArtifactId );
@@ -179,7 +179,7 @@ public class ComponentRest
 
         try
         {
-            Component component = MavenRepoService.instance(  ).getComponent( strArtifactId );
+            Component component = MavenRepoService.instance(  ).getComponent( strArtifactId, true );
 
             if ( component != null )
             {
@@ -211,7 +211,7 @@ public class ComponentRest
 
         try
         {
-            Component component = MavenRepoService.instance(  ).getComponent( strArtifactId );
+            Component component = MavenRepoService.instance(  ).getComponent( strArtifactId, true );
 
             if ( component != null )
             {

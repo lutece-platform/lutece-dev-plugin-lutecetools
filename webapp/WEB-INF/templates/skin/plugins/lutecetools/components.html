@@ -1,15 +1,34 @@
-
 <div class="row">
 
     <div class="well hero">
         <h1>#i18n{lutecetools.components.title}</h1>
         <br>
+        <#if !components_list.complete>
+        <h3>Recherche des informations en cours ...</h3>
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="${components_list.percentAvailable}" aria-valuemin="0" aria-valuemax="100" style="width: ${components_list.percentAvailable}%;">
+            ${components_list.percentAvailable}%
+            </div>
+        </div>
+        </#if>
         <form method="GET" action="jsp/site/Portal.jsp">
-            #i18n{lutecetools.components.count} : <strong> ${components_list?size} </strong>
-            <input type="hidden" name="page" value="components" />
-            <input type="checkbox" name="github" <#if github_filter> checked </#if> /> Filtrer sur les projets GitHub
-            <input type="checkbox" name="core"  <#if core_versions> checked </#if> /> Afficher les versions du core
-            <button class="btn btn-primary btn-xs" type="submit" >Refresh</button>
+            <input type="hidden" name="page" value="components" /> 
+            <div class="row">
+                <div class="col-md-4">
+                    #i18n{lutecetools.components.count} : <strong> ${components_list.listComponents?size} </strong>  
+                </div>
+                <div class="col-md-3">
+                    <input type="checkbox" name="github" <#if github_filter> checked </#if> /> Filtrer sur les projets GitHub
+                </div>
+                <div class="col-md-3">
+                   <input type="checkbox" name="core"  <#if core_versions> checked </#if> /> Afficher les versions du core 
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary btn-xs" type="submit" >
+                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Refresh
+                    </button>
+                </div>
+            </div>
         </form>
         <br>
         <div class="table-responsive">
@@ -40,7 +59,7 @@
                     </tr> 
                 </thead>
                 <tboby>
-                    <#list components_list as component>
+                    <#list components_list.listComponents as component>
                     <tr>
                         <td class="small">${component.artifactId}</td>
                         <td>

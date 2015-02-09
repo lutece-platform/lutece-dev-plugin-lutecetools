@@ -33,12 +33,9 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
-import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import org.junit.Test;
-
-import java.util.List;
 
 
 /**
@@ -55,6 +52,6 @@ public class MavenRepoServiceTest extends LuteceTestCase
     {
         System.out.println( "getComponentsList" );
 
-        List<Component> result = MavenRepoService.instance(  ).getComponents(  );
+        ComponentsInfos result = MavenRepoService.instance(  ).getComponents(  );
     }
 }
