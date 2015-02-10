@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.lutecetools.business;
 
+import java.util.List;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 
@@ -51,6 +52,7 @@ public class Component extends AbstractComponent implements Comparable
     private String _strSnapshotScmUrl;
     private boolean _bGitHubRepo;
     private long _lLastUpdate;
+    private List<String> _listBranches;
 
     /**
      * Returns the CoreVersion
@@ -209,6 +211,24 @@ public class Component extends AbstractComponent implements Comparable
     {
         _strSnapshotScmUrl = strScmUrl;
     }
+    
+    /**
+     * Sets the branches list
+     * @param listBranches branches list
+     */
+    public void setBranchesList( List<String> listBranches )
+    {
+        _listBranches = listBranches;
+    }
+    
+    /**
+     * Returns the branches list
+     * @return branches list
+     */
+    public List<String> getBranchesList(  )
+    {
+        return _listBranches;
+    }
 
     /**
      * @return the GitHub Status
@@ -229,6 +249,11 @@ public class Component extends AbstractComponent implements Comparable
         }
 
         if ( getSnapshotScmUrl(  ).contains( "github" ) )
+        {
+            nStatus++;
+        }
+        
+        if ( (_listBranches != null) && ( _listBranches.contains( "develop")))
         {
             nStatus++;
         }
@@ -264,6 +289,10 @@ public class Component extends AbstractComponent implements Comparable
             if ( !"3.0".equals( _strSnapshotParentPomVersion ) )
             {
                 sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom 3.0. \n" );
+            }
+            if ( (_listBranches != null) && ( ! _listBranches.contains( "develop")))
+            {
+                sbErrors.append( "Branch 'develop' is missing. \n" );
             }
         }
 

@@ -53,7 +53,7 @@ public class GitHubServiceTest
     public void testGetRepositories(  )
     {
         System.out.println( "getRepositories" );
-
+    
         String strOrganization = "lutece-platform";
         GitHubService instance = new GitHubService(  );
         Map<String, GHRepository> map = instance.getRepositories( strOrganization );
@@ -61,6 +61,7 @@ public class GitHubServiceTest
         for ( String repo : map.keySet(  ) )
         {
             System.out.println( repo );
-        }
+}
     }
+    
 }
