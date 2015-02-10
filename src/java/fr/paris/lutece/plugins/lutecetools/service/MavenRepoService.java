@@ -473,6 +473,7 @@ public final class MavenRepoService
      */
     public void updateCache(  )
     {
+        GitHubService.updateGitHubRepositoriesList();
         List<String> listComponents = getComponentsListFromRepository(  );
 
         for ( String strArtifactId : listComponents )

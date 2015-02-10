@@ -25,20 +25,25 @@ import java.util.Map;
 public class GitHubService
 {
     private static GitHubService _singleton;
-    Map<String, GHRepository> _mapRepositories;
+    private static Map<String, GHRepository> _mapRepositories;
 
     public static synchronized GitHubService instance(  )
     {
         if ( _singleton == null )
         {
             _singleton = new GitHubService(  );
-            _singleton.init(  );
+            init(  );
         }
 
         return _singleton;
     }
 
-    private void init(  )
+    private static void init(  )
+    {
+        updateGitHubRepositoriesList();
+    }
+    
+    public static void updateGitHubRepositoriesList()
     {
         _mapRepositories = getRepositories( "lutece-platform" );
     }
@@ -69,7 +74,7 @@ public class GitHubService
         }
     }
 
-    public Map<String, GHRepository> getRepositories( String strOrganization )
+    private static Map<String, GHRepository> getRepositories( String strOrganization )
     {
         Map<String, GHRepository> mapRepositories = null;
 
