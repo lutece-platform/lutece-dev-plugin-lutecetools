@@ -36,7 +36,7 @@
                 <thead>
                     <tr>
                         <th>#i18n{lutecetools.components.labelComponent}</th>
-                        <th>GitHub</th>
+                        <th colspan="2">GitHub</th>
                         <th colspan="2">#i18n{lutecetools.components.labelVersion}</th>
                         <th colspan="2">#i18n{lutecetools.components.labelParentPomVersion}</th>
                         <#if core_versions>
@@ -47,6 +47,7 @@
                     <tr>
                         <th>&nbsp;</th>
                         <th>status</th>
+                        <th>branches</th>
                         <th class="small">Snapshot</th>
                         <th class="small">Release</th>
                         <th class="small">Snapshot</th>
@@ -63,14 +64,21 @@
                     <tr>
                         <td class="small">${component.artifactId}</td>
                         <td>
-                            <#if component.gitHubStatus == 1>
-                                <img src="images/skin/plugins/lutecetools/github-status1.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
+                            <#if component.gitHubStatus lt 3 >
+                                <img src="images/skin/plugins/lutecetools/github-red.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
                             </#if>
-                            <#if component.gitHubStatus == 2>
+                            <#if component.gitHubStatus == 3 >
                                 <img src="images/skin/plugins/lutecetools/github-status2.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
                             </#if>
-                            <#if component.gitHubStatus == 3>
+                            <#if component.gitHubStatus == 4 >
                                 <img src="images/skin/plugins/lutecetools/github-status3.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
+                            </#if>
+                        </td>
+                        <td class="small">
+                            <#if component.branchesList??>
+                               <#list component.branchesList as branch>
+                               ${branch}<br>
+                               </#list>
                             </#if>
                         </td>
                         <td class="small">
