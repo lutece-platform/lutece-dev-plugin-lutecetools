@@ -67,14 +67,14 @@
                     <tr>
                         <td class="small">${component.artifactId}</td>
                         <td>
-                            <#if component.gitHubStatus lt 3 >
+                            <#if component.gitHubStatus gt 0 && component.gitHubStatus lt 3>
                                 <img src="images/skin/plugins/lutecetools/github-red.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
                             </#if>
                             <#if component.gitHubStatus == 3 >
-                                <img src="images/skin/plugins/lutecetools/github-status2.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-orange.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
                             </#if>
                             <#if component.gitHubStatus == 4 >
-                                <img src="images/skin/plugins/lutecetools/github-status3.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-green.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
                             </#if>
                         </td>
                         <td class="small">

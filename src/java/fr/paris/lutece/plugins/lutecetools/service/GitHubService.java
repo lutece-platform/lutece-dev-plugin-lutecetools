@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.lutecetools.service;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import org.kohsuke.github.GHBranch;
 import org.kohsuke.github.GHOrganization;
@@ -54,6 +55,9 @@ import java.util.Map;
  */
 public class GitHubService
 {
+    private static final String PROPERTY_GITHUB_ACCOUNT_NAME = "lutecetools.github.account.name";
+    private static final String PROPERTY_GITHUB_ACCOUNT_TOKEN = "lutecetools.github.account.token";
+
     private static GitHubService _singleton;
     private static Map<String, GHRepository> _mapRepositories;
 
@@ -113,7 +117,9 @@ public class GitHubService
 
         try
         {
-            GitHub github = GitHub.connectAnonymously(  );
+            String strAccount = AppPropertiesService.getProperty( PROPERTY_GITHUB_ACCOUNT_NAME );
+            String strToken = AppPropertiesService.getProperty( PROPERTY_GITHUB_ACCOUNT_TOKEN );
+            GitHub github = GitHub.connect( strAccount , strToken );
             GHOrganization organization = github.getOrganization( strOrganization );
             mapRepositories = organization.getRepositories(  );
             AppLogService.info( "GitHub Service initialized - " + mapRepositories.size(  ) + " repositories found." );
