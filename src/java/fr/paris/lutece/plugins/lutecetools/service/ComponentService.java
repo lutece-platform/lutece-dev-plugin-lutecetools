@@ -103,11 +103,11 @@ public class ComponentService
      */
     public static void clearCache( )
     {
-        AppLogService.info( "LuteceToos : clear the cache of the component list ...");
+        AppLogService.info( "LuteceTools : clear the cache of the component list ...");
         AppDaemonService.stopDaemon(DAEMON_KEY);
         DatastoreService.removeInstanceDataByPrefix( DSKEY_PREFIX );
         AppDaemonService.startDaemon(DAEMON_KEY);
-        AppLogService.info( "LuteceToos : cache cleared.");
+        AppLogService.info( "LuteceTools : cache cleared.");
     }
     
     /**
