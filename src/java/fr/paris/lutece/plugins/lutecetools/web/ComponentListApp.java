@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2013, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -96,18 +96,18 @@ public class ComponentListApp extends MVCApplication
 
         return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
     }
-    
+
     /**
      * Refresh action processing
      * @param request The HTTP request
      * @return The page
-     */    
+     */
     @Action( ACTION_REFRESH )
     public XPage refresh( HttpServletRequest request )
     {
-        return redirect(request, VIEW_HOME , getViewParameters(request) );
+        return redirect( request, VIEW_HOME, getViewParameters( request ) );
     }
-    
+
     /**
      * Clear Cache action processing
      * @param request The HTTP request
@@ -116,12 +116,13 @@ public class ComponentListApp extends MVCApplication
     @Action( ACTION_CLEAR_CACHE )
     public XPage clearCache( HttpServletRequest request )
     {
-        ComponentService.clearCache();
-        return redirect(request, VIEW_HOME , getViewParameters(request) );
+        ComponentService.clearCache(  );
+
+        return redirect( request, VIEW_HOME, getViewParameters( request ) );
     }
-    
+
     /**
-     * Filter a list of component to keep only github hosted ones 
+     * Filter a list of component to keep only github hosted ones
      * @param listComponents The list to filter
      * @return The filtered list
      */
@@ -145,19 +146,22 @@ public class ComponentListApp extends MVCApplication
      * @param request The HTTP Request
      * @return The parameters
      */
-    private Map<String, String> getViewParameters(HttpServletRequest request)
+    private Map<String, String> getViewParameters( HttpServletRequest request )
     {
-        Map<String, String> mapParameters = new HashMap<String, String>( );
+        Map<String, String> mapParameters = new HashMap<String, String>(  );
         String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
-        if( ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) ))
+
+        if ( ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) ) )
         {
             mapParameters.put( PARAMETER_GITHUB, VALUE_ON );
         }
-        if( ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON ))
+
+        if ( ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON ) )
         {
             mapParameters.put( PARAMETER_CORE_VERSIONS, VALUE_ON );
         }
+
         return mapParameters;
     }
 }

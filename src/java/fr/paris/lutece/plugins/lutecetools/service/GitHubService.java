@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2013, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,21 +43,20 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Map;
 
 
 /**
- *
- * @author pierre
+ * GitHub Service
  */
 public class GitHubService
 {
     private static final String PROPERTY_GITHUB_ACCOUNT_NAME = "lutecetools.github.account.name";
     private static final String PROPERTY_GITHUB_ACCOUNT_TOKEN = "lutecetools.github.account.token";
-
+    private static final String PROPERTY_GITHUB_ORGANIZATION = "lutecetools.github.organization";
     private static GitHubService _singleton;
     private static Map<String, GHRepository> _mapRepositories;
 
@@ -72,16 +71,26 @@ public class GitHubService
         return _singleton;
     }
 
+    /**
+     * Initialization
+     */
     private static void init(  )
     {
-        updateGitHubRepositoriesList();
-    }
-    
-    public static void updateGitHubRepositoriesList()
-    {
-        _mapRepositories = getRepositories( "lutece-platform" );
+        updateGitHubRepositoriesList(  );
     }
 
+    /**
+     * Update repositories info from GitHub
+     */
+    public static void updateGitHubRepositoriesList(  )
+    {
+        _mapRepositories = getRepositories( AppPropertiesService.getProperty( PROPERTY_GITHUB_ORGANIZATION ) );
+    }
+
+    /**
+     * Set GitHub infos to a component
+     * @param component The component
+     */
     public void setGitHubInfos( Component component )
     {
         if ( _mapRepositories != null )
@@ -91,26 +100,35 @@ public class GitHubService
                 if ( strRepo.contains( component.getArtifactId(  ) ) )
                 {
                     component.setGitHubRepo( true );
+
                     GHRepository repo = _mapRepositories.get( strRepo );
+
                     try
                     {
-                        Map<String, GHBranch> mapBraches = repo.getBranches();
-                        List<String> listBranches = new ArrayList<String>();
-                        for( String strBranch : mapBraches.keySet() )
+                        Map<String, GHBranch> mapBraches = repo.getBranches(  );
+                        List<String> listBranches = new ArrayList<String>(  );
+
+                        for ( String strBranch : mapBraches.keySet(  ) )
                         {
                             listBranches.add( strBranch );
                         }
-                        component.setBranchesList(listBranches);
+
+                        component.setBranchesList( listBranches );
                     }
-                    catch (IOException ex)
+                    catch ( IOException ex )
                     {
-                        AppLogService.error( "Error retrieving GH branches " + ex.getMessage() , ex );
+                        AppLogService.error( "Error retrieving GH branches " + ex.getMessage(  ), ex );
                     }
                 }
             }
         }
     }
 
+    /**
+     * Gets all repositories of a given organization
+     * @param strOrganization The organization
+     * @return A map that contains repositories
+     */
     static Map<String, GHRepository> getRepositories( String strOrganization )
     {
         Map<String, GHRepository> mapRepositories = null;
@@ -119,7 +137,7 @@ public class GitHubService
         {
             String strAccount = AppPropertiesService.getProperty( PROPERTY_GITHUB_ACCOUNT_NAME );
             String strToken = AppPropertiesService.getProperty( PROPERTY_GITHUB_ACCOUNT_TOKEN );
-            GitHub github = GitHub.connect( strAccount , strToken );
+            GitHub github = GitHub.connect( strAccount, strToken );
             GHOrganization organization = github.getOrganization( strOrganization );
             mapRepositories = organization.getRepositories(  );
             AppLogService.info( "GitHub Service initialized - " + mapRepositories.size(  ) + " repositories found." );

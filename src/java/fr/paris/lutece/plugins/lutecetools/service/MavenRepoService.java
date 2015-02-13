@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2013, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -473,7 +473,8 @@ public final class MavenRepoService
      */
     public void updateCache(  )
     {
-        GitHubService.updateGitHubRepositoriesList();
+        GitHubService.updateGitHubRepositoriesList(  );
+
         List<String> listComponents = getComponentsListFromRepository(  );
 
         for ( String strArtifactId : listComponents )

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2013, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@ public class GitHubServiceTest
     public void testGetRepositories(  )
     {
         System.out.println( "getRepositories" );
-    
+
         String strOrganization = "lutece-platform";
         GitHubService instance = new GitHubService(  );
         Map<String, GHRepository> map = instance.getRepositories( strOrganization );
@@ -61,7 +61,6 @@ public class GitHubServiceTest
         for ( String repo : map.keySet(  ) )
         {
             System.out.println( repo );
-}
+        }
     }
-    
 }

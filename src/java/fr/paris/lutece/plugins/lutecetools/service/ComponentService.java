@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2013, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -101,15 +101,15 @@ public class ComponentService
     /**
      * Clear cache by removing datastore data
      */
-    public static void clearCache( )
+    public static void clearCache(  )
     {
-        AppLogService.info( "LuteceTools : clear the cache of the component list ...");
-        AppDaemonService.stopDaemon(DAEMON_KEY);
+        AppLogService.info( "LuteceTools : clear the cache of the component list ..." );
+        AppDaemonService.stopDaemon( DAEMON_KEY );
         DatastoreService.removeInstanceDataByPrefix( DSKEY_PREFIX );
-        AppDaemonService.startDaemon(DAEMON_KEY);
-        AppLogService.info( "LuteceTools : cache cleared.");
+        AppDaemonService.startDaemon( DAEMON_KEY );
+        AppLogService.info( "LuteceTools : cache cleared." );
     }
-    
+
     /**
      * Convert a component into JSON
      * @param component The component

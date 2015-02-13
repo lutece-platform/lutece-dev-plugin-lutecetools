@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2013, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,9 @@
  */
 package fr.paris.lutece.plugins.lutecetools.business;
 
-import java.util.List;
 import org.codehaus.jackson.annotate.JsonIgnore;
+
+import java.util.List;
 
 
 /**
@@ -211,7 +212,7 @@ public class Component extends AbstractComponent implements Comparable
     {
         _strSnapshotScmUrl = strScmUrl;
     }
-    
+
     /**
      * Sets the branches list
      * @param listBranches branches list
@@ -220,7 +221,7 @@ public class Component extends AbstractComponent implements Comparable
     {
         _listBranches = listBranches;
     }
-    
+
     /**
      * Returns the branches list
      * @return branches list
@@ -252,8 +253,8 @@ public class Component extends AbstractComponent implements Comparable
         {
             nStatus++;
         }
-        
-        if ( (_listBranches != null) && ( _listBranches.contains( "develop")))
+
+        if ( ( _listBranches != null ) && ( _listBranches.contains( "develop" ) ) )
         {
             nStatus++;
         }
@@ -290,7 +291,8 @@ public class Component extends AbstractComponent implements Comparable
             {
                 sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom 3.0. \n" );
             }
-            if ( (_listBranches != null) && ( ! _listBranches.contains( "develop")))
+
+            if ( ( _listBranches != null ) && ( !_listBranches.contains( "develop" ) ) )
             {
                 sbErrors.append( "Branch 'develop' is missing. \n" );
             }
