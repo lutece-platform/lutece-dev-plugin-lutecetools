@@ -24,8 +24,11 @@
                    <input type="checkbox" name="core"  <#if core_versions> checked </#if> /> Afficher les versions du core 
                 </div>
                 <div class="col-md-2">
-                    <button class="btn btn-primary btn-xs" type="submit" >
-                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Refresh
+                    <button class="btn btn-primary btn-xs" type="submit" title="Refresh" name="action_refresh">
+                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> 
+                    </button>
+                    <button class="btn btn-danger btn-xs" type="submit" title="Clear cache" name="action_clearCache" >
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 
                     </button>
                 </div>
             </div>

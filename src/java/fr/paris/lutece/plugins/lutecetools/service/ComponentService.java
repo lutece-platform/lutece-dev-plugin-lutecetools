@@ -97,6 +97,14 @@ public class ComponentService
     }
 
     /**
+     * Clear cache by removing datastore data
+     */
+    public static void clearCache( )
+    {
+        DatastoreService.removeInstanceDataByPrefix( DSKEY_PREFIX );
+    }
+    
+    /**
      * Convert a component into JSON
      * @param component The component
      * @return JSON

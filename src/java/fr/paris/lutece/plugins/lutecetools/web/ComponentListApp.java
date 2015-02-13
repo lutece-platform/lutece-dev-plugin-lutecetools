@@ -34,14 +34,17 @@
 package fr.paris.lutece.plugins.lutecetools.web;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.plugins.lutecetools.service.ComponentService;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentsInfos;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
+import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,8 +62,11 @@ public class ComponentListApp extends MVCApplication
     private static final String MARK_GITHUB_FILTER = "github_filter";
     private static final String MARK_DISPLAY_CORE_VERSIONS = "core_versions";
     private static final String VIEW_HOME = "home";
+    private static final String ACTION_REFRESH = "refresh";
+    private static final String ACTION_CLEAR_CACHE = "clearCache";
     private static final String PARAMETER_GITHUB = "github";
     private static final String PARAMETER_CORE_VERSIONS = "core";
+    private static final String VALUE_ON = "on";
 
     /**
      * Returns the content of the page lutecetools.
@@ -72,8 +78,8 @@ public class ComponentListApp extends MVCApplication
     {
         String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
-        boolean bDisplayCoreVersions = ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( "on" );
-        boolean bGitHubFilter = ( strGitHubFilter != null ) && ( strGitHubFilter.equals( "on" ) );
+        boolean bDisplayCoreVersions = ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON );
+        boolean bGitHubFilter = ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) );
 
         Map<String, Object> model = getModel(  );
 
@@ -90,7 +96,35 @@ public class ComponentListApp extends MVCApplication
 
         return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
     }
-
+    
+    /**
+     * Refresh action processing
+     * @param request The HTTP request
+     * @return The page
+     */    
+    @Action( ACTION_REFRESH )
+    public XPage refresh( HttpServletRequest request )
+    {
+        return redirect(request, VIEW_HOME , getViewParameters(request) );
+    }
+    
+    /**
+     * Clear Cache action processing
+     * @param request The HTTP request
+     * @return The page
+     */
+    @Action( ACTION_CLEAR_CACHE )
+    public XPage clearCache( HttpServletRequest request )
+    {
+        ComponentService.clearCache();
+        return redirect(request, VIEW_HOME , getViewParameters(request) );
+    }
+    
+    /**
+     * Filter a list of component to keep only github hosted ones 
+     * @param listComponents The list to filter
+     * @return The filtered list
+     */
     private List<Component> filterGitHub( List<Component> listComponents )
     {
         List<Component> list = new ArrayList<Component>(  );
@@ -104,5 +138,26 @@ public class ComponentListApp extends MVCApplication
         }
 
         return list;
+    }
+
+    /**
+     * Get the parameters send with the action to resend to the view
+     * @param request The HTTP Request
+     * @return The parameters
+     */
+    private Map<String, String> getViewParameters(HttpServletRequest request)
+    {
+        Map<String, String> mapParameters = new HashMap<String, String>( );
+        String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
+        String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
+        if( ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) ))
+        {
+            mapParameters.put( PARAMETER_GITHUB, VALUE_ON );
+        }
+        if( ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON ))
+        {
+            mapParameters.put( PARAMETER_CORE_VERSIONS, VALUE_ON );
+        }
+        return mapParameters;
     }
 }
