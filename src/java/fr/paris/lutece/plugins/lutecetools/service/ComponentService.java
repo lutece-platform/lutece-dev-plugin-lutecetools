@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.portal.service.daemon.AppDaemonService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
@@ -50,6 +51,7 @@ import java.util.Date;
 public class ComponentService
 {
     private static final String DSKEY_PREFIX = "lutecetools.database.";
+    private static final String DAEMON_KEY = "lutecetoolsCacheUpdater";
     private static final ObjectMapper _mapper = new ObjectMapper(  );
 
     /**
@@ -101,7 +103,11 @@ public class ComponentService
      */
     public static void clearCache( )
     {
+        AppLogService.info( "LuteceToos : clear the cache of the component list ...");
+        AppDaemonService.stopDaemon(DAEMON_KEY);
         DatastoreService.removeInstanceDataByPrefix( DSKEY_PREFIX );
+        AppDaemonService.startDaemon(DAEMON_KEY);
+        AppLogService.info( "LuteceToos : cache cleared.");
     }
     
     /**
