@@ -120,10 +120,15 @@
                         <td class="small">${component.coreVersion!"Not found"}</td>
                         </#if>
                         <td>
-                            <#if component.jiraStatus == 4 >
+                            <#if component.jiraStatus == 0 >
+                                <img src="images/skin/plugins/lutecetools/jira-red.png" title="${component.jiraErrors}" alt="Jira status RED" width="24" height="24">
+                            </#if>
+                            <#if component.jiraStatus == 1 >
+                                <img src="images/skin/plugins/lutecetools/jira-orange.png" title="${component.jiraErrors}" alt="Jira status ORANGE" width="24" height="24">
+                            </#if>
+                            <#if component.jiraStatus == 2 >
                                 <img src="images/skin/plugins/lutecetools/jira-green.png" title="${component.jiraErrors}" alt="Jira status GREEN" width="24" height="24">
                             </#if>
-                      
                         </td>
                         <td>
                             ${component.jiraLastUnreleasedVersion!"Not found"}

@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Version;
@@ -100,9 +101,13 @@ public class JiraService
                 Issue issue = client.getIssueClient().getIssue( component.getJiraKey() ).claim();
             }
         } 
+        catch( RestClientException ex )
+        {
+            AppLogService.error( "Error getting Jira Infos for Key : '" + component.getJiraKey() + "' : "+ ex.getMessage(), ex);
+        }
         catch (URISyntaxException ex)
         {
-            AppLogService.error( "Error using Jira Client API : " + ex.getMessage(), ex);
+            AppLogService.error( "Error getting Jira Infos for Key : '" + component.getJiraKey() + "' : "+ ex.getMessage(), ex);
         } 
         finally
         {
