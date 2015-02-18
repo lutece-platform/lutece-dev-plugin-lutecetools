@@ -101,14 +101,10 @@ public class JiraService
                 Issue issue = client.getIssueClient().getIssue( component.getJiraKey() ).claim();
             }
         } 
-        catch( RestClientException ex )
+        catch( Exception ex )
         {
             AppLogService.error( "Error getting Jira Infos for Key : '" + component.getJiraKey() + "' : "+ ex.getMessage(), ex);
         }
-        catch (URISyntaxException ex)
-        {
-            AppLogService.error( "Error getting Jira Infos for Key : '" + component.getJiraKey() + "' : "+ ex.getMessage(), ex);
-        } 
         finally
         {
             if( client != null )

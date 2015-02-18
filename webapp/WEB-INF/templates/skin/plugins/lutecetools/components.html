@@ -132,6 +132,11 @@
                         </td>
                         <td>
                             ${component.jiraLastUnreleasedVersion!"Not found"}
+                            <#if component.jiraUnresolvedIssuesCount == 0 >
+                                <span class="label label-success"> ${component.jiraUnresolvedIssuesCount} / ${component.jiraIssuesCount}</span>
+                            <#else>
+                                <span class="label label-danger"> ${component.jiraUnresolvedIssuesCount} / ${component.jiraIssuesCount}</span>
+                            </#if>
                         </td>
                         <td>
                             <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}" title="JIRA">
