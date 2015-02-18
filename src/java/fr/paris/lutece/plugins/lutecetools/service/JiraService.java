@@ -38,6 +38,7 @@ import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Version;
+import com.atlassian.jira.rest.client.api.domain.VersionRelatedIssuesCount;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import fr.paris.lutece.plugins.lutecetools.business.Component;
@@ -93,12 +94,19 @@ public class JiraService
                     versionLastReleased = version;
                 }
             }
-            if( versionLastUnreleased != null )
+            if( versionLastReleased != null )
             {
                 component.setJiraLastReleasedVersion( versionLastReleased.getName() );
+            }
+            if( versionLastUnreleased != null )
+            {
                 component.setJiraLastUnreleasedVersion( versionLastUnreleased.getName() );
-                versionLastReleased.getId();
-                Issue issue = client.getIssueClient().getIssue( component.getJiraKey() ).claim();
+                String strURI = URL_JIRA_SERVER + "rest/" + versionLastReleased.getId();
+                int nUnresolvedIssues = client.getVersionRestClient().getNumUnresolvedIssues( new URI( strURI )).claim();
+                component.setJiraUnresolvedIssuesCount(nUnresolvedIssues);
+                VersionRelatedIssuesCount vRelatedIssues = client.getVersionRestClient().getVersionRelatedIssuesCount( new URI( strURI )).claim();
+                component.setJiraIssuesCount( vRelatedIssues.getNumAffectedIssues() );
+                component.setJiraUnresolvedIssuesCount(vRelatedIssues.getNumFixedIssues());
             }
         } 
         catch( Exception ex )

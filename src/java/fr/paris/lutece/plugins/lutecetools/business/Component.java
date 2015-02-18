@@ -404,11 +404,11 @@ public class Component extends AbstractComponent implements Comparable
     {
         StringBuilder sbErrors = new StringBuilder(  );
 
-        if ( ! getVersion() .equals( _strJiraLastReleasedVersion ) )
+        if ( ( getVersion() != null ) && ! getVersion().equals( _strJiraLastReleasedVersion ) )
         {
              sbErrors.append( "Last Jira released version is not matching the last version in maven repository. \n" );
         }
-        if ( ! getSnapshotVersion() .startsWith(_strJiraLastUnreleasedVersion ) )
+        if ( ( getSnapshotVersion() != null ) && ! getSnapshotVersion() .startsWith(_strJiraLastUnreleasedVersion ) )
         {
              sbErrors.append( "Current Jira roadmap version is not matching current snapshot version. \n" );
         }
