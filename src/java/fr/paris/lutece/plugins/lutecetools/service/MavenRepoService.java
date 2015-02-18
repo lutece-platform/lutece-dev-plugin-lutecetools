@@ -287,7 +287,8 @@ public final class MavenRepoService
         AppLogService.debug( "Lutece Tools - Fetching Maven Info for '" + component.getArtifactId(  ) +
             "' - duration : " + ( t2 - t1 + "ms" ) );
         GitHubService.instance(  ).setGitHubInfos( component );
-
+        JiraService.instance().setJiraInfos( component );
+        
         return component;
     }
 

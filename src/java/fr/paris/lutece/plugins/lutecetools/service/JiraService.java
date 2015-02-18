@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Version;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
@@ -71,29 +72,39 @@ public class JiraService
         _auth = new AnonymousAuthenticationHandler();
     }
     
-    public void setInfos( Component component )
+    public void setJiraInfos( Component component )
     {        
         JiraRestClient client = null;
         try
         {
             client = _factory.create( new URI(URL_JIRA_SERVER), _auth );
             Project project = client.getProjectClient().getProject( component.getJiraKey()).claim();
-            Version lastUnreleasedVersion = null;
+            Version versionLastReleased = null;
+            Version versionLastUnreleased = null;
             for( Version version : project.getVersions())
             {
-                if( version.isReleased() )
+                if( ! version.isReleased() )
                 {
-                    lastUnreleasedVersion = version;
+                    versionLastUnreleased = version;
+                }
+                else
+                {
+                    versionLastReleased = version;
                 }
             }
-            if( lastUnreleasedVersion != null )
+            if( versionLastUnreleased != null )
             {
-//                component.setJiraUnreleasedVersion( lastUnreleasedVersion.getName() );
+                component.setJiraLastReleasedVersion( versionLastReleased.getName() );
+                component.setJiraLastUnreleasedVersion( versionLastUnreleased.getName() );
+                versionLastReleased.getId();
+                Issue issue = client.getIssueClient().getIssue( component.getJiraKey() ).claim();
             }
-        } catch (URISyntaxException ex)
+        } 
+        catch (URISyntaxException ex)
         {
             AppLogService.error( "Error using Jira Client API : " + ex.getMessage(), ex);
-        } finally
+        } 
+        finally
         {
             if( client != null )
             {

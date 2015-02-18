@@ -45,6 +45,7 @@
                         <#if core_versions>
                             <th colspan="2">#i18n{lutecetools.components.labelCoreVersion}</th>
                         </#if>
+                        <th colspan="2">Jira</th>
                         <th>#i18n{lutecetools.components.labelLinks}</th>
                     </tr>   
                     <tr>
@@ -59,6 +60,8 @@
                         <th class="small">Snapshot</th>
                         <th class="small">Release</th>
                         </#if>
+                        <th class="small">Status</th>
+                        <th class="small">Unreleased version</th>
                         <th>&nbsp;</th>
                     </tr> 
                 </thead>
@@ -68,13 +71,13 @@
                         <td class="small">${component.artifactId}</td>
                         <td>
                             <#if component.gitHubStatus gt 0 && component.gitHubStatus lt 3>
-                                <img src="images/skin/plugins/lutecetools/github-red.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-red.png" title="${component.gitHubErrors}" alt="GitHub status RED" width="24" height="24">
                             </#if>
                             <#if component.gitHubStatus == 3 >
-                                <img src="images/skin/plugins/lutecetools/github-orange.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-orange.png" title="${component.gitHubErrors}" alt="GitHub status ORANGE" width="24" height="24">
                             </#if>
                             <#if component.gitHubStatus == 4 >
-                                <img src="images/skin/plugins/lutecetools/github-green.png" title="${component.gitHubErrors}" alt="GitHub logo" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-green.png" title="${component.gitHubErrors}" alt="GitHub status GREEN" width="24" height="24">
                             </#if>
                         </td>
                         <td class="small">
@@ -116,6 +119,15 @@
                         <td class="small">${component.snapshotCoreVersion!"Not found"}</td>
                         <td class="small">${component.coreVersion!"Not found"}</td>
                         </#if>
+                        <td>
+                            <#if component.jiraStatus == 4 >
+                                <img src="images/skin/plugins/lutecetools/jira-green.png" title="${component.jiraErrors}" alt="Jira status GREEN" width="24" height="24">
+                            </#if>
+                      
+                        </td>
+                        <td>
+                            ${component.jiraLastUnreleasedVersion!"Not found"}
+                        </td>
                         <td>
                             <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}" title="JIRA">
                                 <img src="images/skin/plugins/lutecetools/jira.png" alt="Jira logo" width="24" height="24"/>
