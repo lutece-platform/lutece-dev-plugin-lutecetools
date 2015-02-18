@@ -15,6 +15,19 @@
 
     <repositories>
         <repository>
+            <id>atlassian-public</id>
+            <url>https://m2proxy.atlassian.com/repository/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+        </repository>
+        <repository>
             <id>lutece</id>
             <name>luteceRepository</name>
             <url>http://dev.lutece.paris.fr/maven_repository</url>
@@ -44,7 +57,11 @@
             <artifactId>github-api</artifactId>
             <version>1.59</version>
         </dependency>        
-        
+        <dependency>
+            <groupId>com.atlassian.jira</groupId>
+            <artifactId>jira-rest-java-client-core</artifactId>
+            <version>2.0.0-m31</version>
+        </dependency>   
     </dependencies>
 
     <properties>
@@ -57,8 +74,8 @@
         <connection>scm:git:https://github.com/lutece-platform/lutece-dev-plugin-lutecetools.git</connection>
         <developerConnection>scm:git:https://github.com/lutece-platform/lutece-dev-plugin-lutecetools.git</developerConnection>
         <url>https://github.com/lutece-platform/lutece-dev-plugin-lutecetools.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
         
     
 </project>
