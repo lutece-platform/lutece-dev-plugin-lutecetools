@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.lutecetools.service;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
+import com.atlassian.jira.rest.client.api.VersionRestClient;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Version;
@@ -54,6 +55,7 @@ import java.net.URISyntaxException;
 public class JiraService
 {
     private static final String URL_JIRA_SERVER = "http://dev.lutece.paris.fr/jira/";
+    private static final String URL_API_VERSION = URL_JIRA_SERVER + "rest/api/2/version/";
     private static JiraService _singleton;
     private static AsynchronousJiraRestClientFactory _factory;
     private static AnonymousAuthenticationHandler _auth;
@@ -101,12 +103,16 @@ public class JiraService
             if( versionLastUnreleased != null )
             {
                 component.setJiraLastUnreleasedVersion( versionLastUnreleased.getName() );
-                String strURI = URL_JIRA_SERVER + "rest/" + versionLastReleased.getId();
-                int nUnresolvedIssues = client.getVersionRestClient().getNumUnresolvedIssues( new URI( strURI )).claim();
+                String strURI = URL_API_VERSION + versionLastUnreleased.getId();
+                URI uriVersion = new URI( strURI );
+                VersionRestClient clientVersion = client.getVersionRestClient();
+                int nUnresolvedIssues = clientVersion.getNumUnresolvedIssues( uriVersion ).claim();
                 component.setJiraUnresolvedIssuesCount(nUnresolvedIssues);
-                VersionRelatedIssuesCount vRelatedIssues = client.getVersionRestClient().getVersionRelatedIssuesCount( new URI( strURI )).claim();
-                component.setJiraIssuesCount( vRelatedIssues.getNumAffectedIssues() );
-                component.setJiraUnresolvedIssuesCount(vRelatedIssues.getNumFixedIssues());
+                VersionRelatedIssuesCount vRelatedIssues = clientVersion.getVersionRelatedIssuesCount( uriVersion ).claim();
+                component.setJiraIssuesCount(vRelatedIssues.getNumFixedIssues());
+                System.out.println( "AffectedIssues : " + vRelatedIssues.getNumAffectedIssues() );
+                System.out.println( "FixedIssues : " + vRelatedIssues.getNumFixedIssues() );
+                System.out.println( "Unresolved : " + nUnresolvedIssues );
             }
         } 
         catch( Exception ex )

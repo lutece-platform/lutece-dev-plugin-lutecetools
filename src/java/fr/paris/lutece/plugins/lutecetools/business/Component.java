@@ -384,11 +384,11 @@ public class Component extends AbstractComponent implements Comparable
     {
         int nStatus = 0;
 
-        if ( ! getVersion() .equals( _strJiraLastReleasedVersion ) )
+        if ( ( getVersion() != null ) && getVersion().equals( _strJiraLastReleasedVersion ) )
         {
             nStatus++;
         }
-        if ( getSnapshotVersion() .startsWith(_strJiraLastUnreleasedVersion ) )
+        if ( ( getSnapshotVersion() != null ) &&  (_strJiraLastUnreleasedVersion != null) && getSnapshotVersion().startsWith(_strJiraLastUnreleasedVersion ) )
         {
             nStatus++;
         }
@@ -408,7 +408,7 @@ public class Component extends AbstractComponent implements Comparable
         {
              sbErrors.append( "Last Jira released version is not matching the last version in maven repository. \n" );
         }
-        if ( ( getSnapshotVersion() != null ) && ! getSnapshotVersion() .startsWith(_strJiraLastUnreleasedVersion ) )
+        if ( ( getSnapshotVersion() != null ) &&  (_strJiraLastUnreleasedVersion != null) && ! getSnapshotVersion() .startsWith(_strJiraLastUnreleasedVersion ) )
         {
              sbErrors.append( "Current Jira roadmap version is not matching current snapshot version. \n" );
         }

@@ -45,7 +45,7 @@
                         <#if core_versions>
                             <th colspan="2">#i18n{lutecetools.components.labelCoreVersion}</th>
                         </#if>
-                        <th colspan="2">Jira</th>
+                        <th colspan="3">Jira</th>
                         <th>#i18n{lutecetools.components.labelLinks}</th>
                     </tr>   
                     <tr>
@@ -61,7 +61,7 @@
                         <th class="small">Release</th>
                         </#if>
                         <th class="small">Status</th>
-                        <th class="small">Unreleased version</th>
+                        <th class="small" colspan="2">Unreleased version</th>
                         <th>&nbsp;</th>
                     </tr> 
                 </thead>
@@ -130,13 +130,20 @@
                                 <img src="images/skin/plugins/lutecetools/jira-green.png" title="${component.jiraErrors}" alt="Jira status GREEN" width="24" height="24">
                             </#if>
                         </td>
-                        <td>
+                        <td class="small">
                             ${component.jiraLastUnreleasedVersion!"Not found"}
-                            <#if component.jiraUnresolvedIssuesCount == 0 >
-                                <span class="label label-success"> ${component.jiraUnresolvedIssuesCount} / ${component.jiraIssuesCount}</span>
-                            <#else>
-                                <span class="label label-danger"> ${component.jiraUnresolvedIssuesCount} / ${component.jiraIssuesCount}</span>
-                            </#if>
+                        </td>
+                        <td>
+                            <#assign fixed = component.jiraIssuesCount - component.jiraUnresolvedIssuesCount />
+                            <#assign unresolved = component.jiraUnresolvedIssuesCount />
+                            <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}#selectedTab=com.atlassian.jira.plugin.system.project%3Aroadmap-panel" >
+                                <span class="label label-success"> ${fixed}</span>
+                                <#if unresolved == 0>
+                                    <span class="label label-success"> ${unresolved}</span>
+                                <#else>
+                                    <span class="label label-danger"> ${unresolved}</span>
+                                </#if>
+                            </a>
                         </td>
                         <td>
                             <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}" title="JIRA">
