@@ -66,6 +66,7 @@
                     </tr> 
                 </thead>
                 <tboby>
+                    <#assign githubOk = 0>
                     <#list components_list.listComponents as component>
                     <tr>
                         <td class="small">${component.artifactId}</td>
@@ -78,6 +79,7 @@
                             </#if>
                             <#if component.gitHubStatus == 4 >
                                 <img src="images/skin/plugins/lutecetools/github-green.png" title="${component.gitHubErrors}" alt="GitHub status GREEN" width="24" height="24">
+                                <#assign githubOk = githubOk + 1>
                             </#if>
                         </td>
                         <td class="small">
@@ -144,6 +146,11 @@
                                     <span class="label label-danger"> ${unresolved}</span>
                                 </#if>
                             </a>
+                            <#if fixed gt 0 && unresolved == 0>
+                            <a href="http://dev.lutece.paris.fr/site-release/">
+                                <img src="images/skin/plugins/lutecetools/release.png" title="Release" alt="release" width="24" height="24">
+                            </a>
+                            </#if>
                         </td>
                         <td>
                             <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}" title="JIRA">
@@ -157,6 +164,7 @@
                         </td>
                     </tr>
                     </#list>
+                    Projets GitHub OK : ${githubOk}
                 </tboby>
             </table>
         </div>
