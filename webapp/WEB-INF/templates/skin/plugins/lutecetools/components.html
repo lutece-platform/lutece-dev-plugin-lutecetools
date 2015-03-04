@@ -67,6 +67,7 @@
                 </thead>
                 <tboby>
                     <#assign githubOk = 0>
+                    <#assign jiraOk = 0>
                     <#list components_list.listComponents as component>
                     <tr>
                         <td class="small">${component.artifactId}</td>
@@ -130,6 +131,7 @@
                             </#if>
                             <#if component.jiraStatus == 2 >
                                 <img src="images/skin/plugins/lutecetools/jira-green.png" title="${component.jiraErrors}" alt="Jira status GREEN" width="24" height="24">
+                                <#assign jiraOk = jiraOk + 1>
                             </#if>
                         </td>
                         <td class="small">
@@ -147,7 +149,7 @@
                                 </#if>
                             </a>
                             <#if fixed gt 0 && unresolved == 0>
-                            <a href="http://dev.lutece.paris.fr/site-release/">
+                            <a href="https://dev.lutece.paris.fr/site-release/">
                                 <img src="images/skin/plugins/lutecetools/release.png" title="Release" alt="release" width="24" height="24">
                             </a>
                             </#if>
@@ -164,7 +166,10 @@
                         </td>
                     </tr>
                     </#list>
-                    Projets GitHub OK : ${githubOk}
+                    <img src="images/skin/plugins/lutecetools/github-green.png" title="Projets GitHub OK" alt="GitHub status GREEN" width="20" height="20">
+                    <small>: ${githubOk}</small>
+                    <img src="images/skin/plugins/lutecetools/jira-green.png" title="Jira OK" alt="Jira status GREEN" width="20" height="20">
+                    <small>: ${jiraOk}</small>
                 </tboby>
             </table>
         </div>
