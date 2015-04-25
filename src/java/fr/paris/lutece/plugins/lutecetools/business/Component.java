@@ -54,6 +54,10 @@ public class Component extends AbstractComponent implements Comparable
     private boolean _bGitHubRepo;
     private long _lLastUpdate;
     private List<String> _listBranches;
+    private String _strJiraLastReleasedVersion;
+    private String _strJiraLastUnreleasedVersion;
+    private int _nJiraIssuesCount;
+    private int _nJiraUnresolvedIssuesCount;
 
     /**
      * Returns the CoreVersion
@@ -107,6 +111,78 @@ public class Component extends AbstractComponent implements Comparable
     public void setJiraKey( String strJiraKey )
     {
         _strJiraKey = strJiraKey;
+    }
+
+    /**
+     * Returns the JiraLastReleasedVersion
+     * @return The JiraLastReleasedVersion
+     */
+    public String getJiraLastReleasedVersion(  )
+    {
+        return _strJiraLastReleasedVersion;
+    }
+
+    /**
+     * Sets the JiraLastReleasedVersion
+     * @param strJiraLastReleasedVersion The JiraLastReleasedVersion
+     */
+    public void setJiraLastReleasedVersion( String strJiraLastReleasedVersion )
+    {
+        _strJiraLastReleasedVersion = strJiraLastReleasedVersion;
+    }
+
+    /**
+     * Returns the JiraLastUnreleasedVersion
+     * @return The JiraLastUnreleasedVersion
+     */
+    public String getJiraLastUnreleasedVersion(  )
+    {
+        return _strJiraLastUnreleasedVersion;
+    }
+
+    /**
+     * Sets the JiraLastUnreleasedVersion
+     * @param strJiraLastUnreleasedVersion The JiraLastUnreleasedVersion
+     */
+    public void setJiraLastUnreleasedVersion( String strJiraLastUnreleasedVersion )
+    {
+        _strJiraLastUnreleasedVersion = strJiraLastUnreleasedVersion;
+    }
+
+    /**
+     * Returns the JiraIssuesCount
+     * @return The JiraIssuesCount
+     */
+    public int getJiraIssuesCount(  )
+    {
+        return _nJiraIssuesCount;
+    }
+
+    /**
+     * Sets the JiraIssuesCount
+     * @param nJiraIssuesCount The JiraIssuesCount
+     */
+    public void setJiraIssuesCount( int nJiraIssuesCount )
+    {
+        _nJiraIssuesCount = nJiraIssuesCount;
+    }
+
+    /**
+     * Returns the JiraUnresolvedIssuesCount
+     * @return The JiraUnresolvedIssuesCount
+     */
+    public int getJiraUnresolvedIssuesCount(  )
+    {
+        return _nJiraUnresolvedIssuesCount;
+    }
+
+    /**
+     * Sets the JiraUnresolvedIssuesCount
+     * @param nJiraUnresolvedIssuesCount The JiraUnresolvedIssuesCount
+     */
+    public void setJiraUnresolvedIssuesCount( int nJiraUnresolvedIssuesCount )
+    {
+        _nJiraUnresolvedIssuesCount = nJiraUnresolvedIssuesCount;
     }
 
     /**
@@ -301,6 +377,48 @@ public class Component extends AbstractComponent implements Comparable
         return sbErrors.toString(  );
     }
 
+    
+    /**
+     * @return the Jira Status
+     */
+    @JsonIgnore
+    public int getJiraStatus(  )
+    {
+        int nStatus = 0;
+
+        if ( ( getVersion() != null ) && getVersion().equals( _strJiraLastReleasedVersion ) )
+        {
+            nStatus++;
+        }
+        if ( ( getSnapshotVersion() != null ) &&  (_strJiraLastUnreleasedVersion != null) && getSnapshotVersion().startsWith(_strJiraLastUnreleasedVersion ) )
+        {
+            nStatus++;
+        }
+
+        return nStatus;
+    }
+
+    /**
+     * @return the Jira Status
+     */
+    @JsonIgnore
+    public String getJiraErrors(  )
+    {
+        StringBuilder sbErrors = new StringBuilder(  );
+
+        if ( ( getVersion() != null ) && ! getVersion().equals( _strJiraLastReleasedVersion ) )
+        {
+             sbErrors.append( "Last Jira released version is not matching the last version in maven repository. \n" );
+        }
+        if ( ( getSnapshotVersion() != null ) &&  (_strJiraLastUnreleasedVersion != null) && ! getSnapshotVersion() .startsWith(_strJiraLastUnreleasedVersion ) )
+        {
+             sbErrors.append( "Current Jira roadmap version is not matching current snapshot version. \n" );
+        }
+
+        return sbErrors.toString(  );
+    }
+   
+    
     /**
      * @return the LastUpdate
      */
