@@ -35,10 +35,12 @@ package fr.paris.lutece.plugins.lutecetools.web.rs;
 
 public final class Constants
 {
-    public static final String COMPONENT_PATH = "component";
-    public static final String PLUGIN_PATH = "lutecetools/";
-    public static final String ID_PATH = "id";
-    public static final String ALL_PATH = "s";
-    public static final String FORMAT_QUERY = "format";
+    public static final String PATH_COMPONENT = "component";
+    public static final String PATH_PLUGIN = "lutecetools/";
+    public static final String PATH_STATS = "stats";
+    public static final String PATH_ID = "id";
+    public static final String PATH_ALL = "s";
+    public static final String PARAMETER_FORMAT = "format";
     public static final String MEDIA_TYPE_JSON = "json";
+    public static final String MEDIA_TYPE_XML = "xml";
 }

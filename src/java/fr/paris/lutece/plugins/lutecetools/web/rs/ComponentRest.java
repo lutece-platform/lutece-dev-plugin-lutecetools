@@ -58,7 +58,7 @@ import javax.ws.rs.core.Response;
 /**
  * Page resource
  */
-@Path( RestConstants.BASE_PATH + Constants.PLUGIN_PATH + Constants.COMPONENT_PATH )
+@Path( RestConstants.BASE_PATH + Constants.PATH_PLUGIN + Constants.PATH_COMPONENT )
 public class ComponentRest
 {
     private static final String KEY_COMPONENTS = "components";
@@ -72,9 +72,9 @@ public class ComponentRest
     private static final String KEY_SNAPSHOT_PARENT_POM_VERSION = "snapshot_parent_pom_version";
 
     @GET
-    @Path( Constants.ALL_PATH )
+    @Path( Constants.PATH_ALL )
     public Response getComponents( @HeaderParam( HttpHeaders.ACCEPT )
-    String accept, @QueryParam( Constants.FORMAT_QUERY )
+    String accept, @QueryParam( Constants.PARAMETER_FORMAT )
     String format ) throws IOException
     {
         String entity;
@@ -144,10 +144,10 @@ public class ComponentRest
      * @throws IOException if an error occurs
      */
     @GET
-    @Path( "/{" + Constants.ID_PATH + "}" )
-    public Response getComponent( @PathParam( Constants.ID_PATH )
+    @Path( "/{" + Constants.PATH_ID + "}" )
+    public Response getComponent( @PathParam( Constants.PATH_ID )
     String strArtifactId, @HeaderParam( HttpHeaders.ACCEPT )
-    String accept, @QueryParam( Constants.FORMAT_QUERY )
+    String accept, @QueryParam( Constants.PARAMETER_FORMAT )
     String format ) throws IOException
     {
         String entity;
@@ -179,7 +179,7 @@ public class ComponentRest
 
         try
         {
-            Component component = MavenRepoService.instance(  ).getComponent( strArtifactId, true );
+            Component component = MavenRepoService.getComponent( strArtifactId, true );
 
             if ( component != null )
             {
@@ -211,7 +211,7 @@ public class ComponentRest
 
         try
         {
-            Component component = MavenRepoService.instance(  ).getComponent( strArtifactId, true );
+            Component component = MavenRepoService.getComponent( strArtifactId, true );
 
             if ( component != null )
             {
