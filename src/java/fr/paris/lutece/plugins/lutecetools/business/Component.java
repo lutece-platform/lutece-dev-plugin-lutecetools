@@ -434,4 +434,36 @@ public class Component extends AbstractComponent implements Comparable
     {
         _lLastUpdate = lLastUpdate;
     }
+    
+    /**
+     * Readable implementation
+     * @return The component as a string
+     */
+    @JsonIgnore
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Component : ").append( getArtifactId() );
+        sb.append("\n  GitHub status: ").append( getGitHubStatus() );
+        sb.append("\n  [release] Version: ").append( getVersion() );
+        sb.append("\n  [release] Core version: ").append( getCoreVersion() );
+        sb.append("\n  [release] SCM URL: ").append( getScmUrl() );
+        sb.append("\n  [release] Parent POM Version: ").append( getParentPomVersion() );
+        sb.append("\n  [snapshot] Core version: ").append( getSnapshotCoreVersion() );
+        sb.append("\n  [snapshot] SCM URL: ").append( getSnapshotScmUrl() );
+        sb.append("\n  [snapshot] Parent POM Version: ").append( getSnapshotParentPomVersion() );
+        List<String> listBranches = getBranchesList();
+        if( listBranches != null )
+        {
+            sb.append( "\n  Branches : ");
+            for( String strBranch : listBranches )
+            {
+                sb.append( strBranch ).append( " ");
+            }
+        }
+        return sb.toString();
+    }
+
+    
 }

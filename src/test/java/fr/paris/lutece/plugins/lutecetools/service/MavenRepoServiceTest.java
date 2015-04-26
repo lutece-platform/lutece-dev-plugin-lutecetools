@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
+import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import org.junit.Test;
@@ -47,6 +48,7 @@ public class MavenRepoServiceTest extends LuteceTestCase
     /**
      * Test of getComponentsList method, of class MavenRepoService.
      */
+/*    
     @Test
     public void testGetComponentsList(  )
     {
@@ -54,4 +56,21 @@ public class MavenRepoServiceTest extends LuteceTestCase
 
         ComponentsInfos result = MavenRepoService.instance(  ).getComponents(  );
     }
+*/    
+    /**
+     * Test of getComponent method, of class MavenRepoService.
+     */
+    @Test
+    public void testGetComponent(  )
+    {
+        System.out.println( "getComponent" );
+
+        Component component = MavenRepoService.getComponent( "module-mylutece-persona" , true  );
+        System.out.println( component );
+        
+        component = MavenRepoService.getComponent( "module-document-cmis" , true  );
+        System.out.println( component );
+        
+    }
+
 }
