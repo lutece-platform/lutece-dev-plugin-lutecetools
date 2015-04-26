@@ -97,7 +97,7 @@ public class GitHubService
         {
             for ( String strRepo : _mapRepositories.keySet(  ) )
             {
-                if ( strRepo.contains( component.getArtifactId(  ) ) )
+                if ( strRepo.endsWith(component.getArtifactId(  ) ) )
                 {
                     component.setGitHubRepo( true );
 
