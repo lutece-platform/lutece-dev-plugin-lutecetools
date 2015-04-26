@@ -52,7 +52,7 @@ public class SaxPomHandler extends DefaultHandler
     private String _strParentPomVersion;
     private String _strCoreVersion;
     private String _strJiraKey;
-    private String _strScmUrl;
+    private StringBuffer _sbScmUrl = new StringBuffer();
     private boolean _bPomParent;
     private boolean _bVersion;
     private boolean _bArtifactId;
@@ -94,7 +94,7 @@ public class SaxPomHandler extends DefaultHandler
      */
     public String getScmUrl(  )
     {
-        return _strScmUrl;
+        return _sbScmUrl.toString();
     }
 
     /**
@@ -189,7 +189,7 @@ public class SaxPomHandler extends DefaultHandler
         }
         else if ( _bSCM && _bURL )
         {
-            _strScmUrl = new String( ch, start, length );
+            _sbScmUrl.append( new String( ch, start, length ));
         }
     }
 }
