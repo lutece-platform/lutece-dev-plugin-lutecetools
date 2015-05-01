@@ -14,6 +14,22 @@
             ${components_list.percentAvailable}%
             </div>
         </div>
+<script>
+            // Refresh the page every 30s
+            var time = new Date().getTime();
+            $(document.body).bind("mousemove keypress", function(e) {
+                 time = new Date().getTime();
+            });
+
+            function refresh() {
+                if(new Date().getTime() - time >= 30000) 
+                    window.location.reload(true);
+                else 
+                    setTimeout(refresh, 10000);
+            }
+
+             setTimeout(refresh, 10000);
+</script>
         </#if>
         <form method="GET" action="jsp/site/Portal.jsp">
             <input type="hidden" name="page" value="components" /> 
