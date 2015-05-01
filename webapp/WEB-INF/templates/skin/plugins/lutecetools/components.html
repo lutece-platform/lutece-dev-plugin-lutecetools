@@ -4,7 +4,11 @@
         <h1>#i18n{lutecetools.components.title}</h1>
         <br>
         <#if !components_list.complete>
-        <h3>Recherche des informations en cours ...</h3>
+        <h3>
+            <img src="images/skin/plugins/lutecetools/fetching.gif" width="64" height="64" alt="animated fetching icon" /> &nbsp; 
+            Recherche des informations en cours ...
+        </h3>
+        
         <div class="progress">
             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="${components_list.percentAvailable}" aria-valuemin="0" aria-valuemax="100" style="width: ${components_list.percentAvailable}%;">
             ${components_list.percentAvailable}%
