@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.lutecetools.service;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.business.Dependency;
+import fr.paris.lutece.plugins.lutecetools.service.version.VersionUtils;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -145,16 +146,16 @@ public final class MavenRepoService
             HttpAccess httpAccess = new HttpAccess(  );
             String strHtml = httpAccess.doGet( strUrl );
             List<String> listElement = getAnchorsList( strHtml );
-
+            List<String> listVersions = new ArrayList<String>();
             for ( String strAnchor : listElement )
             {
                 if ( strAnchor.matches( "^[\\d].*" ) )
                 {
-                    strVersion = strAnchor;
+                    listVersions.add( strAnchor );
                 }
             }
 
-            return strVersion;
+            return VersionUtils.getLatestVersion( listVersions );
         }
         catch ( HttpAccessException e )
         {
@@ -383,21 +384,17 @@ public final class MavenRepoService
             HttpAccess httpAccess = new HttpAccess(  );
             String strHtml = httpAccess.doGet( strSnapshotsDirUrl );
             List<String> listElement = getAnchorsList( strHtml );
-            String strSnapshotVersion = null;
+            List<String> listVersions = new ArrayList<String>();
 
             for ( String strAnchor : listElement )
             {
                 if ( strAnchor.matches( "^[\\d].*" ) )
                 {
-                    strSnapshotVersion = strAnchor;
+                    listVersions.add( strAnchor );
                 }
             }
 
-            if ( ( strSnapshotVersion != null ) && ( strSnapshotVersion.endsWith( "/" ) ) )
-            {
-                strSnapshotVersion = strSnapshotVersion.substring( 0, strSnapshotVersion.length(  ) - 1 );
-            }
-
+            String strSnapshotVersion = VersionUtils.getLatestVersion( listVersions );
             component.setSnapshotVersion( strSnapshotVersion );
 
             String strLastSnapshotDirUrl = strSnapshotsDirUrl + "/" + strSnapshotVersion;
