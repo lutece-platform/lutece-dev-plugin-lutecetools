@@ -1,35 +1,40 @@
-<div class="row">
-
-    <div class="well hero">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="well hero">
         <h1>#i18n{lutecetools.dependenciesupgrade.title}</h1>
-    </div>
-    <div class="col-md-6">
-        <form action="jsp/site/Portal.jsp" >
-            <input type="hidden" name="page" value="dependenciesupgrade" />    
-            <input type="hidden" name="action" value="process" />    
-
-
+      </div>
+      <div class="col-lg-6">
+        <form action="jsp/site/Portal.jsp" role="form">
+            <input type="hidden" name="page" value="dependenciesupgrade">
+            <input type="hidden" name="action" value="process">
             <h3>#i18n{lutecetools.dependenciesupgrade.inputTitle}</h3>
             <p>#i18n{lutecetools.dependenciesupgrade.inputDescription}</p>
             <div class="form-group">
-                <textarea class="form-control" name="source" rows="6" >${input}</textarea>
+                <textarea class="form-control" name="source" rows="12"  >${input}</textarea>
             </div>
             <div class="form-group">
-                <label for="format" class="col-sm-4 control-label">#i18n{lutecetools.dependenciesupgrade.labelOutputFormat} : </label>
-                <div class="col-sm-8">
+              <div class="well well-sm text-center">
+                <label for="format">#i18n{lutecetools.dependenciesupgrade.labelOutputFormat} : </label>
+                  <label class="radio-inline">
                     <input type="radio" name="format" value="text"> #i18n{lutecetools.dependenciesupgrade.formatText}
+                  </label>
+                  <label class="radio-inline">
                     <input type="radio" name="format" value="xml" checked > #i18n{lutecetools.dependenciesupgrade.formatXML} <br>
-                </div>
-            </div>
-            <br>
-            <br>
-            <button class="btn btn-primary" type="submit"> #i18n{lutecetools.dependenciesupgrade.buttonProcess} </button>
+                  </label>
+                  <button class="btn btn-primary btn-xs" type="submit">
+                      <i class="fa fa-play"></i> #i18n{lutecetools.dependenciesupgrade.buttonProcess}
+                  </button>
+              </div>
+              </div>
         </form>
-    </div>
-
-    <div class="col-md-6">
+      </div>
+      <div class="col-lg-6">
         <h3>#i18n{lutecetools.dependenciesupgrade.outputTitle}</h3>
-        <textarea class="form-control" name="output" rows="16" >${output}</textarea>
+        <form action="jsp/site/Portal.jsp" role="form">
+          <textarea class="form-control" name="output" rows="16" >${output}</textarea>
+        </form>
+      </div>
     </div>
-
+  </div>
 </div>
