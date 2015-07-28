@@ -34,11 +34,17 @@
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import fr.paris.lutece.plugins.lutecetools.business.Dependency;
+import fr.paris.lutece.plugins.lutecetools.business.Site;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.web.l10n.LocaleService;
+import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.xml.XmlUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -46,12 +52,17 @@ import java.util.List;
  */
 public final class DependenciesService
 {
+    private static final String TEMPLATE_POM = "skin/plugins/lutecetools/pom_template.html";
+    private static final String MARK_SITE = "site";
+    private static final String MARK_DEPENDENCIES = "dependencies";
     private static final String TAG_DEPENDENCY = "dependency";
     private static final String TAG_GROUP_ID = "groupId";
     private static final String TAG_ARTIFACT_ID = "artifactId";
     private static final String TAG_VERSION = "version";
     private static final String TAG_TYPE = "type";
     private static final String FORMAT_TEXT = "text";
+    private static final String FORMAT_XML = "xml";
+    private static final String FORMAT_POM = "pom";
     private static final String INDENT = "    ";
 
     /**
@@ -77,8 +88,16 @@ public final class DependenciesService
         {
             return getDependenciesText( list );
         }
+        else if ( ( strFormat != null ) && strFormat.equals( FORMAT_XML ) )
+        {
+            return getDependenciesXML( list );
+        }
+        else if ( ( strFormat != null ) && strFormat.equals( FORMAT_POM ) )
+        {
+            return getDependenciesPOM( list );
+        }
 
-        return getDependenciesXML( list );
+        return "Invalid format";
     }
 
     /**
@@ -143,4 +162,17 @@ public final class DependenciesService
 
         return sb.toString(  );
     }
+    
+    private static String getDependenciesPOM( List<Dependency> list ) 
+    {
+        Site site = new Site();
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put( MARK_SITE , site );
+        model.put( MARK_DEPENDENCIES , list );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_POM , LocaleService.getDefault(), model );
+        
+        return template.getHtml();
+    }
+
+    
 }

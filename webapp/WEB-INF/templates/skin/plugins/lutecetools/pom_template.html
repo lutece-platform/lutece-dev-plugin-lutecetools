@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <artifactId>lutece-site-pom</artifactId>
+        <groupId>fr.paris.lutece.tools</groupId>
+        <version>2.0.4</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>${site.groupId}</groupId>
+    <artifactId>${site.artifactId}</artifactId>
+    <packaging>${site.componentType}</packaging>
+    <version>${site.version}</version>
+    <name>${site.name}</name>
+
+    <repositories>
+        <repository>
+            <id>luteceSnapshot</id>
+            <name>luteceSnapshot</name>
+            <url>http://dev.lutece.paris.fr/snapshot_repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>lutece</id>
+            <name>luteceRepository</name>
+            <url>http://dev.lutece.paris.fr/maven_repository</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <#list dependencies as dependency>
+        <dependency>
+            <groupId>${dependency.groupId}</groupId>
+            <artifactId>${dependency.artifactId}</artifactId>
+            <version>${dependency.version}</version>
+        </dependency>
+        </#list>
+    </dependencies>
+
+    <!--
+    <scm>
+        <connection>scm:svn:http://dev.lutece.paris.fr/svn/sites/${site.artifactId}/trunk/</connection>
+    </scm>
+    -->
+
+</project>
