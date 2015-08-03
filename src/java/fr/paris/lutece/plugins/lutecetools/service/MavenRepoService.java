@@ -73,6 +73,9 @@ public final class MavenRepoService
     private static final String PROPERTY_MAVEN_PATH_SITE_POM = "lutecetools.maven.repository.path.site-pom";
     private static final String URL_SITE_POM = URL_MAVEN_REPO +
         AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_SITE_POM );
+    private static final String PROPERTY_MAVEN_PATH_CORE = "lutecetools.maven.repository.path.core";
+    private static final String URL_CORE = URL_MAVEN_REPO +
+        AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
     private static final String KEY_SITE_POM_VERSION = "lutecetools.pom.site.version";
     private static final String RELEASE_NOT_FOUND = "Release not found";
 
@@ -511,5 +514,10 @@ public final class MavenRepoService
         long lNow = new Date(  ).getTime(  );
 
         return ( lNow - component.getLastUpdate(  ) ) > UPDATE_DELAY;
+    }
+    
+    public static String getLatestCoreVersion()
+    {
+        return getVersion( URL_CORE );
     }
 }

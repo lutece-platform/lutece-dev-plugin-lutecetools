@@ -55,6 +55,7 @@ public final class DependenciesService
     private static final String TEMPLATE_POM = "skin/plugins/lutecetools/pom_template.html";
     private static final String MARK_SITE = "site";
     private static final String MARK_DEPENDENCIES = "dependencies";
+    private static final String MARK_CORE_VERSION = "core_version";
     private static final String TAG_DEPENDENCY = "dependency";
     private static final String TAG_GROUP_ID = "groupId";
     private static final String TAG_ARTIFACT_ID = "artifactId";
@@ -169,6 +170,7 @@ public final class DependenciesService
         Map<String, Object> model = new HashMap<String, Object>();
         model.put( MARK_SITE , site );
         model.put( MARK_DEPENDENCIES , list );
+        model.put( MARK_CORE_VERSION , MavenRepoService.getLatestCoreVersion() );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_POM , LocaleService.getDefault(), model );
         
         return template.getHtml();
