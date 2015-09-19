@@ -359,7 +359,7 @@ public final class MavenRepoService
         }
         catch ( HttpAccessException e )
         {
-            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage(  ), e );
+            AppLogService.info( EXCEPTION_MESSAGE + e.getMessage(  ));
         }
         catch ( ParserConfigurationException e )
         {

@@ -45,7 +45,7 @@
                 <thead>
                     <tr>
                         <th>#i18n{lutecetools.components.labelComponent}</th>
-                        <th colspan="2">GitHub</th>
+                        <th colspan="4">GitHub</th>
                         <th colspan="2">#i18n{lutecetools.components.labelVersion}</th>
                         <th colspan="2">#i18n{lutecetools.components.labelParentPomVersion}</th>
                         <#if core_versions>
@@ -56,8 +56,10 @@
                     </tr>
                     <tr>
                         <th>&nbsp;</th>
-                        <th>status</th>
-                        <th>branches</th>
+                        <th class="small">status</th>
+                        <th class="small">organization</th>
+                        <th class="small">branches</th>
+                        <th class="small">readme</th>
                         <th class="small">Snapshot</th>
                         <th class="small">Release</th>
                         <th class="small">Snapshot</th>
@@ -89,11 +91,20 @@
                                 <#assign githubOk = githubOk + 1>
                             </#if>
                         </td>
+                        <td class="small">${component.gitHubOwner!""}</td>
                         <td class="small">
                             <#if component.branchesList??>
                                <#list component.branchesList as branch>
                                ${branch}<br>
                                </#list>
+                            </#if>
+                        </td>
+                        <td>
+                            <#if !component.gitHubReadme && component.gitHubStatus gt 0>
+                                <img src="images/skin/plugins/lutecetools/readme-red.png" title="Readme file missing" width="24" height="24" />
+                            </#if>
+                            <#if component.gitHubReadme && component.gitHubStatus gt 0>
+                                <img src="images/skin/plugins/lutecetools/readme-green.png" title="Readme file available" width="24" height="24" />
                             </#if>
                         </td>
                         <td class="small">

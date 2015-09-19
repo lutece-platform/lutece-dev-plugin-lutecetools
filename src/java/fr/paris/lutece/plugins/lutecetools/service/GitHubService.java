@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.lutecetools.service;
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import java.io.FileNotFoundException;
 
 import org.kohsuke.github.GHBranch;
 import org.kohsuke.github.GHOrganization;
@@ -45,6 +46,7 @@ import org.kohsuke.github.GitHub;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +58,7 @@ public class GitHubService
 {
     private static final String PROPERTY_GITHUB_ACCOUNT_NAME = "lutecetools.github.account.name";
     private static final String PROPERTY_GITHUB_ACCOUNT_TOKEN = "lutecetools.github.account.token";
-    private static final String PROPERTY_GITHUB_ORGANIZATION = "lutecetools.github.organization";
+    private static final String PROPERTY_GITHUB_ORGANIZATIONS = "lutecetools.github.organization";
     private static GitHubService _singleton;
     private static Map<String, GHRepository> _mapRepositories;
 
@@ -84,7 +86,7 @@ public class GitHubService
      */
     public static void updateGitHubRepositoriesList(  )
     {
-        _mapRepositories = getRepositories( AppPropertiesService.getProperty( PROPERTY_GITHUB_ORGANIZATION ) );
+        _mapRepositories = getRepositories();
     }
 
     /**
@@ -105,6 +107,7 @@ public class GitHubService
 
                     try
                     {
+                        component.setGitHubOwner( repo.getOwner().getLogin() );
                         Map<String, GHBranch> mapBraches = repo.getBranches(  );
                         List<String> listBranches = new ArrayList<String>(  );
 
@@ -115,9 +118,22 @@ public class GitHubService
 
                         component.setBranchesList( listBranches );
                     }
-                    catch ( IOException ex )
+                    catch ( Exception ex )
                     {
-                        AppLogService.error( "Error retrieving GH branches " + ex.getMessage(  ), ex );
+                        AppLogService.error( "Error retrieving GitHub infos (branches , readme, ...) " + ex.getMessage(  ), ex );
+                    }
+                    
+                    try 
+                    {
+                        repo.getReadme();
+                        component.setGitHubReadme( true );
+                    }
+                    catch( Exception e )
+                    {
+                        if( e instanceof FileNotFoundException )
+                        {
+                            component.setGitHubReadme( false );
+                        }
                     }
                 }
             }
@@ -126,27 +142,108 @@ public class GitHubService
 
     /**
      * Gets all repositories of a given organization
-     * @param strOrganization The organization
      * @return A map that contains repositories
      */
-    static Map<String, GHRepository> getRepositories( String strOrganization )
+    static Map<String, GHRepository> getRepositories()
     {
-        Map<String, GHRepository> mapRepositories = null;
-
-        try
+        String strOrganizations = AppPropertiesService.getProperty( PROPERTY_GITHUB_ORGANIZATIONS );
+        
+        String[] organizations = strOrganizations.split( "," );
+        
+        Map<String, GHRepository> mapRepositories = new HashMap<String, GHRepository>();
+        
+        for( String strOrganization : organizations )
         {
-            String strAccount = AppPropertiesService.getProperty( PROPERTY_GITHUB_ACCOUNT_NAME );
-            String strToken = AppPropertiesService.getProperty( PROPERTY_GITHUB_ACCOUNT_TOKEN );
-            GitHub github = GitHub.connect( strAccount, strToken );
-            GHOrganization organization = github.getOrganization( strOrganization );
-            mapRepositories = organization.getRepositories(  );
-            AppLogService.info( "GitHub Service initialized - " + mapRepositories.size(  ) + " repositories found." );
+            strOrganization = strOrganization.trim();
+            try
+            {
+                String strAccount = AppPropertiesService.getProperty( PROPERTY_GITHUB_ACCOUNT_NAME );
+                String strToken = AppPropertiesService.getProperty( PROPERTY_GITHUB_ACCOUNT_TOKEN );
+                GitHub github = GitHub.connect( strAccount, strToken );
+                GHOrganization organization = github.getOrganization( strOrganization );
+                mapRepositories.putAll( organization.getRepositories(  ) );
+                int nSize = organization.getRepositories(  ).size();
+                AppLogService.info( "GitHub Service initialized - " + nSize + " repositories found for organization " + strOrganization );
+            }
+            catch ( IOException ex )
+            {
+                AppLogService.error( "Unable to access GitHub repositories", ex );
+            }
         }
-        catch ( IOException ex )
-        {
-            AppLogService.error( "Unable to access GitHub repositories", ex );
-        }
-
         return mapRepositories;
     }
+    
+    /**
+     * Returns GitHub errors
+     * @param component The components
+     * @return The errors
+     */
+    public static String getGitHubErrors( Component component )
+    {
+        StringBuilder sbErrors = new StringBuilder(  );
+
+        if ( component.getGitHubRepo(  ) )
+        {
+            if ( !component.getScmUrl(  ).contains( ".git" ) )
+            {
+                sbErrors.append( "Bad SCM info in the released POM. \n" );
+            }
+
+            if ( !component.getSnapshotScmUrl(  ).contains( ".git" ) )
+            {
+                sbErrors.append( "Bad SCM info in the snapshot POM. \n" );
+            }
+
+            if ( !"3.0.3".equals( component.getParentPomVersion() ) )
+            {
+                sbErrors.append( "Bad parent POM in release POM. should be global-pom 3.0. \n" );
+            }
+
+            if ( !"3.0.3".equals( component.getSnapshotParentPomVersion() ) )
+            {
+                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom 3.0. \n" );
+            }
+
+            if ( ( component.getBranchesList() != null ) && ( !component.getBranchesList().contains( "develop" ) ) )
+            {
+                sbErrors.append( "Branch 'develop' is missing. \n" );
+            }
+        }
+
+        return sbErrors.toString(  );
+    }
+    
+    /**
+     * Calculate GitHub status
+     * @param component The component
+     * @return  The status
+     */
+    public static int getGitHubStatus( Component component )
+    {
+        int nStatus = 0;
+
+        if ( component.getGitHubRepo(  ) )
+        {
+            nStatus++;
+        }
+
+        if ( component.getScmUrl(  ).contains( "github" ) )
+        {
+            nStatus++;
+        }
+
+        if ( component.getSnapshotScmUrl(  ).contains( "github" ) )
+        {
+            nStatus++;
+        }
+
+        if ( ( component.getBranchesList() != null ) && ( component.getBranchesList().contains( "develop" ) ) )
+        {
+            nStatus++;
+        }
+
+        return nStatus;
+    }
+
+
 }

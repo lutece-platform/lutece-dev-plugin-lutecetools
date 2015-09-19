@@ -177,7 +177,7 @@ public class Version implements Comparable
         }
         catch( Exception e )
         {
-            throw new VersionParsingException( "Error parsing version : " + e.getMessage(), e );
+            throw new VersionParsingException( "Error parsing version : '" + strSource + "' : " + e.getMessage(), e );
         }
         return version;
     }

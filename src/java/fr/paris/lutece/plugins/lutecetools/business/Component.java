@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.lutecetools.business;
 
+import fr.paris.lutece.plugins.lutecetools.service.GitHubService;
+import fr.paris.lutece.plugins.lutecetools.service.JiraService;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.List;
@@ -43,6 +45,9 @@ import java.util.List;
  */
 public class Component extends AbstractComponent implements Comparable
 {
+    public static final int JIRAKEY_ERROR_MISSING = 1;
+    public static final int JIRAKEY_ERROR_INVALID = 2;
+    
     private String _strCoreVersion;
     private String _strParentPomVersion;
     private String _strSnapshotVersion;
@@ -52,12 +57,15 @@ public class Component extends AbstractComponent implements Comparable
     private String _strScmUrl;
     private String _strSnapshotScmUrl;
     private boolean _bGitHubRepo;
+    private String _strGitHubOwner;
+    private boolean _bGitHubReadme;
     private long _lLastUpdate;
     private List<String> _listBranches;
     private String _strJiraLastReleasedVersion;
     private String _strJiraLastUnreleasedVersion;
     private int _nJiraIssuesCount;
     private int _nJiraUnresolvedIssuesCount;
+    private int _nJiraKeyError;
 
     /**
      * Returns the CoreVersion
@@ -186,6 +194,24 @@ public class Component extends AbstractComponent implements Comparable
     }
 
     /**
+     * Returns the JiraKeyError
+     * @return The JiraKeyError
+     */
+    public int getJiraKeyError(  )
+    {
+        return _nJiraKeyError;
+    }
+
+    /**
+     * Sets the JiraKeyError
+     * @param nJiraKeyError The JiraKeyError
+     */
+    public void setJiraKeyError( int nJiraKeyError )
+    {
+        _nJiraKeyError = nJiraKeyError;
+    }
+
+    /**
      * Returns the SnapshotVersion
      * @return The SnapshotVersion
      */
@@ -258,6 +284,42 @@ public class Component extends AbstractComponent implements Comparable
     }
 
     /**
+     *
+     * @param strGitHubOwner The GitHub owner
+     */
+    public void setGitHubOwner( String strGitHubOwner )
+    {
+        _strGitHubOwner = strGitHubOwner;
+    }
+
+    /**
+     *
+     * @return The GitHub owner
+     */
+    public String getGitHubOwner(  )
+    {
+        return _strGitHubOwner;
+    }
+
+    /**
+     *
+     * @param bGitHubReadme The GitHub readme status
+     */
+    public void setGitHubReadme( boolean bReadme )
+    {
+        _bGitHubReadme = bReadme;
+    }
+
+    /**
+     *
+     * @return The GitHub readme status
+     */
+    public boolean getGitHubReadme(  )
+    {
+        return _bGitHubReadme;
+    }
+
+    /**
      * @return the Scm Url
      */
     public String getScmUrl(  )
@@ -306,6 +368,8 @@ public class Component extends AbstractComponent implements Comparable
     {
         return _listBranches;
     }
+    
+    
 
     /**
      * @return the GitHub Status
@@ -313,29 +377,7 @@ public class Component extends AbstractComponent implements Comparable
     @JsonIgnore
     public int getGitHubStatus(  )
     {
-        int nStatus = 0;
-
-        if ( getGitHubRepo(  ) )
-        {
-            nStatus++;
-        }
-
-        if ( getScmUrl(  ).contains( "github" ) )
-        {
-            nStatus++;
-        }
-
-        if ( getSnapshotScmUrl(  ).contains( "github" ) )
-        {
-            nStatus++;
-        }
-
-        if ( ( _listBranches != null ) && ( _listBranches.contains( "develop" ) ) )
-        {
-            nStatus++;
-        }
-
-        return nStatus;
+        return GitHubService.getGitHubStatus( this );
     }
 
     /**
@@ -344,37 +386,7 @@ public class Component extends AbstractComponent implements Comparable
     @JsonIgnore
     public String getGitHubErrors(  )
     {
-        StringBuilder sbErrors = new StringBuilder(  );
-
-        if ( getGitHubRepo(  ) )
-        {
-            if ( !getScmUrl(  ).contains( ".git" ) )
-            {
-                sbErrors.append( "Bad SCM info in the released POM. \n" );
-            }
-
-            if ( !getSnapshotScmUrl(  ).contains( ".git" ) )
-            {
-                sbErrors.append( "Bad SCM info in the snapshot POM. \n" );
-            }
-
-            if ( !"3.0".equals( _strParentPomVersion ) )
-            {
-                sbErrors.append( "Bad parent POM in release POM. should be global-pom 3.0. \n" );
-            }
-
-            if ( !"3.0".equals( _strSnapshotParentPomVersion ) )
-            {
-                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom 3.0. \n" );
-            }
-
-            if ( ( _listBranches != null ) && ( !_listBranches.contains( "develop" ) ) )
-            {
-                sbErrors.append( "Branch 'develop' is missing. \n" );
-            }
-        }
-
-        return sbErrors.toString(  );
+        return GitHubService.getGitHubErrors( this );
     }
 
     
@@ -384,18 +396,7 @@ public class Component extends AbstractComponent implements Comparable
     @JsonIgnore
     public int getJiraStatus(  )
     {
-        int nStatus = 0;
-
-        if ( ( getVersion() != null ) && getVersion().equals( _strJiraLastReleasedVersion ) )
-        {
-            nStatus++;
-        }
-        if ( ( getSnapshotVersion() != null ) &&  (_strJiraLastUnreleasedVersion != null) && getSnapshotVersion().startsWith(_strJiraLastUnreleasedVersion ) )
-        {
-            nStatus++;
-        }
-
-        return nStatus;
+        return JiraService.instance().getJiraStatus( this );
     }
 
     /**
@@ -404,18 +405,8 @@ public class Component extends AbstractComponent implements Comparable
     @JsonIgnore
     public String getJiraErrors(  )
     {
-        StringBuilder sbErrors = new StringBuilder(  );
-
-        if ( ( getVersion() != null ) && ! getVersion().equals( _strJiraLastReleasedVersion ) )
-        {
-             sbErrors.append( "Last Jira released version is not matching the last version in maven repository. \n" );
-        }
-        if ( ( getSnapshotVersion() != null ) &&  (_strJiraLastUnreleasedVersion != null) && ! getSnapshotVersion() .startsWith(_strJiraLastUnreleasedVersion ) )
-        {
-             sbErrors.append( "Current Jira roadmap version is not matching current snapshot version. \n" );
-        }
-
-        return sbErrors.toString(  );
+        return JiraService.instance().getJiraErrors( this );
+        
     }
    
     
