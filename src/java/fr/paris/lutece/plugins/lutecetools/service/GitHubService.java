@@ -94,7 +94,7 @@ public class GitHubService
      * Set GitHub infos to a component
      * @param component The component
      */
-    public void setGitHubInfos( Component component )
+    public void setGitHubInfos( Component component , StringBuilder sbLogs )
     {
         if ( _mapRepositories != null )
         {
@@ -121,9 +121,8 @@ public class GitHubService
                     }
                     catch ( Exception ex )
                     {
-                        AppLogService.error( "Error retrieving GitHub infos (branches , readme, ...) " + ex.getMessage(  ), ex );
+                        sbLogs.append("\n*** ERROR *** Retrieving GitHub infos (branches , readme, ...) for component ").append( component.getArtifactId() ).append(" : ").append(ex.getMessage(  ));
                     }
-                    
                     try 
                     {
                         repo.getReadme();

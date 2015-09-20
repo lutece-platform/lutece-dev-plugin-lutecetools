@@ -91,8 +91,10 @@ public final class MavenRepoService
     private static final long DEFAULT_UPDATE_DELAY = 7200000L; // 2 hours
     private static final long UPDATE_DELAY = AppPropertiesService.getPropertyLong( PROPERTY_UPDATE_DELAY,
             DEFAULT_UPDATE_DELAY );
+    
     private static MavenRepoService _singleton;
-
+    private static StringBuilder _sbLogs = new StringBuilder();
+    
     /**
      * Private constructor
      */
@@ -171,17 +173,14 @@ public final class MavenRepoService
 
     /**
      * Gets the component list
-     *
      * @return the component list
      */
-    public ComponentsInfos getComponents(  )
+    public ComponentsInfos getComponents()
     {
         ComponentsInfos ci = new ComponentsInfos(  );
         List<Component> list = new ArrayList<Component>(  );
         List<String> listComponents = getComponentsListFromRepository(  );
         int nTotal = listComponents.size(  );
-        AppLogService.info( "LuteceTools : " + nTotal + " components found. Start fetching components ..." );
-
         int nCount = 0;
         int nAvailable = 0;
 
@@ -196,8 +195,6 @@ public final class MavenRepoService
                 nAvailable++;
             }
         }
-
-        AppLogService.info( "LuteceTools : " + nAvailable + "/" + nTotal + " components available" );
         Collections.sort( list );
 
         ci.setComponentCount( nCount );
@@ -251,7 +248,8 @@ public final class MavenRepoService
         {
             if ( bFetch )
             {
-                component = fetchComponent( strArtifactId );
+                StringBuilder sbLogs = new StringBuilder();
+                component = fetchComponent( strArtifactId , sbLogs );
                 ComponentService.save( component );
             }
             else
@@ -276,22 +274,22 @@ public final class MavenRepoService
     /**
      * Fetch the component from the Maven repository
      * @param strArtifactId The Artifact ID
+     * @param sbLogs Logs
      * @return The component
      */
-    private static Component fetchComponent( String strArtifactId )
+    private static Component fetchComponent( String strArtifactId , StringBuilder sbLogs )
     {
         Component component = new Component(  );
         component.setArtifactId( strArtifactId );
         component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
 
         long t1 = new Date(  ).getTime(  );
-        getPomInfos( component );
+        getPomInfos( component , sbLogs );
 
         long t2 = new Date(  ).getTime(  );
-        AppLogService.debug( "Lutece Tools - Fetching Maven Info for '" + component.getArtifactId(  ) +
-            "' - duration : " + ( t2 - t1 + "ms" ) );
-        GitHubService.instance(  ).setGitHubInfos( component );
-        JiraService.instance().setJiraInfos( component );
+        sbLogs.append("\nLutece Tools - Fetching Maven Info for '").append(component.getArtifactId(  )).append("' - duration : ").append(t2 - t1).append("ms.");
+        GitHubService.instance(  ).setGitHubInfos( component , sbLogs  );
+        JiraService.instance().setJiraInfos( component , sbLogs );
         
         return component;
     }
@@ -300,23 +298,24 @@ public final class MavenRepoService
      * Fill component infos coming from the pom
      *
      * @param component The component name
+     * @param sbLogs Logs
      */
-    private static void getPomInfos( Component component )
+    private static void getPomInfos( Component component, StringBuilder sbLogs )
     {
         StringBuilder sbPomUrl = new StringBuilder( URL_PLUGINS );
         sbPomUrl.append( component.getArtifactId(  ) ).append( "/" ).append( component.getVersion(  ) ).append( "/" );
         sbPomUrl.append( component.getArtifactId(  ) ).append( "-" ).append( component.getVersion(  ) ).append( ".pom" );
-        getPomInfos( component, sbPomUrl.toString(  ), false );
+        getPomInfos( component, sbPomUrl.toString(  ), false , sbLogs );
 
-        String strSnapshotPomUrl = getSnapshotPomUrl( component );
+        String strSnapshotPomUrl = getSnapshotPomUrl( component , sbLogs );
 
         if ( strSnapshotPomUrl != null )
         {
-            getPomInfos( component, strSnapshotPomUrl, true );
+            getPomInfos( component, strSnapshotPomUrl, true , sbLogs );
         }
         else
         {
-            AppLogService.info( "No snapshot pom found for plugin : " + component.getArtifactId(  ) );
+            sbLogs.append( "\n*** ERROR *** No snapshot pom found for plugin : " + component.getArtifactId(  ) );
         }
     }
 
@@ -326,8 +325,9 @@ public final class MavenRepoService
      * @param component The component
      * @param strPomUrl The POM URL
      * @param bSnapshot false for release, true for snapshot
+     * @param sbLogs  Logs
      */
-    private static void getPomInfos( Component component, String strPomUrl, boolean bSnapshot )
+    private static void getPomInfos( Component component, String strPomUrl, boolean bSnapshot, StringBuilder sbLogs )
     {
         try
         {
@@ -359,7 +359,7 @@ public final class MavenRepoService
         }
         catch ( HttpAccessException e )
         {
-            AppLogService.info( EXCEPTION_MESSAGE + e.getMessage(  ));
+            sbLogs.append("\n*** ERROR *** Error reading pom for component ").append(component.getArtifactId()).append(EXCEPTION_MESSAGE).append(e.getMessage(  ));
         }
         catch ( ParserConfigurationException e )
         {
@@ -374,10 +374,11 @@ public final class MavenRepoService
     /**
      * Retrieve the POM URL for the latest snapshot
      *
-     * @param component THe component
+     * @param component The component
+     * @param sbLogs  The logs 
      * @return The URL
      */
-    private static String getSnapshotPomUrl( Component component )
+    private static String getSnapshotPomUrl( Component component , StringBuilder sbLogs )
     {
         String strPomUrl = null;
         String strSnapshotsDirUrl = URL_SNAPSHOT_PLUGINS + component.getArtifactId(  );
@@ -414,8 +415,7 @@ public final class MavenRepoService
         }
         catch ( HttpAccessException e )
         {
-            AppLogService.info( "LuteceTools - MavenRepoService : Error retrieving release version : " +
-                e.getMessage(  ) );
+            sbLogs.append("\n*** ERROR ***  Error retrieving release version : ").append(e.getMessage(  ));
         }
 
         return strPomUrl;
@@ -477,6 +477,7 @@ public final class MavenRepoService
         GitHubService.updateGitHubRepositoriesList(  );
 
         List<String> listComponents = getComponentsListFromRepository(  );
+        
 
         for ( String strArtifactId : listComponents )
         {
@@ -484,17 +485,27 @@ public final class MavenRepoService
 
             if ( shouldBeUpdated( component ) )
             {
-                AppLogService.info( "Thread is fetching artifact : " + strArtifactId );
+//                _sbLogs.append("\nThread is fetching artifact : ").append(strArtifactId);
 
-                component = fetchComponent( strArtifactId );
+                component = fetchComponent( strArtifactId , _sbLogs );
                 ComponentService.save( component );
-                AppLogService.info( "Thread has fetched artifact : " + strArtifactId );
+//                _sbLogs.append("\nThread has fetched artifact : ").append(strArtifactId);
             }
             else
             {
-                AppLogService.info( "Component" + strArtifactId + " is up to date" );
+                _sbLogs.append("\nComponent").append(strArtifactId).append(" is up to date");
             }
         }
+    }
+    
+    public static String getLogs()
+    {
+        return _sbLogs.toString();
+    }
+    
+    public static void clearLogs()
+    {
+        _sbLogs = new StringBuilder();
     }
 
     /**

@@ -76,7 +76,12 @@ public class JiraService
         _auth = new AnonymousAuthenticationHandler();
     }
     
-    public void setJiraInfos( Component component )
+    /**
+     * Set JIRA infos for a given component
+     * @param component The component
+     * @param sbLogs The logs
+     */
+    public void setJiraInfos( Component component , StringBuilder sbLogs )
     {        
         JiraRestClient client = null;
         String strJiraKey = component.getJiraKey();
@@ -123,12 +128,12 @@ public class JiraService
             catch( RestClientException ex )
             {
                 component.setJiraKeyError( Component.JIRAKEY_ERROR_INVALID );
-                AppLogService.info( "Invalid Jira Key '" + strJiraKey + " for component " + component.getArtifactId() );
+                sbLogs.append("\n*** ERROR *** Invalid Jira Key '").append(strJiraKey).append(" for component ").append(component.getArtifactId());
             }
             
             catch( Exception ex )
             {
-                AppLogService.error( "Error getting Jira Infos for Key : '" + strJiraKey + "' : "+ ex.getMessage() + " for component " + component.getArtifactId(), ex);
+                sbLogs.append("\n*** ERROR *** Error getting Jira Infos for Key : '").append(strJiraKey).append("' : ").append(ex.getMessage()).append(" for component ").append(component.getArtifactId());
             }
             finally
             {
@@ -147,7 +152,7 @@ public class JiraService
         else
         {
             component.setJiraKeyError( Component.JIRAKEY_ERROR_MISSING );
-            AppLogService.info( "Error no Jira key defined for component " + component.getArtifactId() );
+            sbLogs.append("\n*** ERROR *** Error no Jira key defined for component ").append(component.getArtifactId());
         }
    
     }

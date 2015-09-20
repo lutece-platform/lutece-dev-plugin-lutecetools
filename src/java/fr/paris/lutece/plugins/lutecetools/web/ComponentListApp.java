@@ -61,13 +61,15 @@ public class ComponentListApp extends MVCApplication
     private static final String MARK_COMPONENTS_LIST = "components_list";
     private static final String MARK_GITHUB_FILTER = "github_filter";
     private static final String MARK_DISPLAY_CORE_VERSIONS = "core_versions";
+    private static final String MARK_LOGS = "logs";
     private static final String VIEW_HOME = "home";
     private static final String ACTION_REFRESH = "refresh";
     private static final String ACTION_CLEAR_CACHE = "clearCache";
     private static final String PARAMETER_GITHUB = "github";
     private static final String PARAMETER_CORE_VERSIONS = "core";
     private static final String VALUE_ON = "on";
-
+    private static final long serialVersionUID = 1L;
+    
     /**
      * Returns the content of the page lutecetools.
      * @param request The HTTP request
@@ -83,7 +85,8 @@ public class ComponentListApp extends MVCApplication
 
         Map<String, Object> model = getModel(  );
 
-        ComponentsInfos ci = MavenRepoService.instance(  ).getComponents(  );
+       
+        ComponentsInfos ci = MavenRepoService.instance(  ).getComponents( );
 
         if ( bGitHubFilter )
         {
@@ -93,6 +96,7 @@ public class ComponentListApp extends MVCApplication
         model.put( MARK_COMPONENTS_LIST, ci );
         model.put( MARK_GITHUB_FILTER, bGitHubFilter );
         model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );
+        model.put( MARK_LOGS, MavenRepoService.getLogs() );
 
         return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
     }
@@ -117,6 +121,7 @@ public class ComponentListApp extends MVCApplication
     public XPage clearCache( HttpServletRequest request )
     {
         ComponentService.clearCache(  );
+        MavenRepoService.clearLogs();
 
         return redirect( request, VIEW_HOME, getViewParameters( request ) );
     }

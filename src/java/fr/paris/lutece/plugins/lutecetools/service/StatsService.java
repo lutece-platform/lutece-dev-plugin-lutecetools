@@ -44,6 +44,7 @@ public class StatsService
     public static Stats getStats()
     {
         Stats stats = new Stats();
+        StringBuilder sbLogs = new StringBuilder();
         ComponentsInfos ci = MavenRepoService.instance().getComponents();
         int nGithubCount = 0;
         int nGithubOK = 0;
