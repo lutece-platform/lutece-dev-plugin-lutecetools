@@ -57,7 +57,7 @@ public class VersionUtils
             }
             catch( VersionParsingException ex) 
             {
-                AppLogService.error( ex.getMessage() , ex );
+                AppLogService.info( ex.getMessage() );
             }
         }
         Collections.sort(list);

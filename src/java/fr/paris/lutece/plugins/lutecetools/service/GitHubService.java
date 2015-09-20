@@ -59,6 +59,7 @@ public class GitHubService
     private static final String PROPERTY_GITHUB_ACCOUNT_NAME = "lutecetools.github.account.name";
     private static final String PROPERTY_GITHUB_ACCOUNT_TOKEN = "lutecetools.github.account.token";
     private static final String PROPERTY_GITHUB_ORGANIZATIONS = "lutecetools.github.organization";
+
     private static GitHubService _singleton;
     private static Map<String, GHRepository> _mapRepositories;
 

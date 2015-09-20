@@ -74,8 +74,9 @@
                     </tr>
                 </thead>
                 <tboby>
-                    <#assign githubOk = 0>
-                    <#assign jiraOk = 0>
+                    <#assign githubOk = 0 />
+                    <#assign jiraOk = 0 />
+                    <#assign readmeOk = 0 />
                     <#list components_list.listComponents as component>
                     <tr>
                         <td class="small">${component.artifactId}</td>
@@ -105,6 +106,7 @@
                             </#if>
                             <#if component.gitHubReadme && component.gitHubStatus gt 0>
                                 <img src="images/skin/plugins/lutecetools/readme-green.png" title="Readme file available" width="24" height="24" />
+                                <#assign readmeOk = readmeOk +1 />
                             </#if>
                         </td>
                         <td class="small">
@@ -186,7 +188,9 @@
                     <img src="images/skin/plugins/lutecetools/github-green.png" title="Projets GitHub OK" alt="GitHub status GREEN" width="20" height="20">
                     &nbsp;<span class="badge"> ${githubOk} </span> &nbsp; &nbsp;
                     <img src="images/skin/plugins/lutecetools/jira-green.png" title="Jira OK" alt="Jira status GREEN" width="20" height="20">
-                    &nbsp;<span class="badge"> ${jiraOk} </span>
+                    &nbsp;<span class="badge"> ${jiraOk} </span> &nbsp; &nbsp;
+                    <img src="images/skin/plugins/lutecetools/readme-green.png" title="Readme OK" alt="Readme status GREEN" width="20" height="20">
+                    &nbsp;<span class="badge"> ${readmeOk} </span>
                 </tboby>
             </table>
         </div>
