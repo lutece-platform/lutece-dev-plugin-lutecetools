@@ -41,14 +41,18 @@ import fr.paris.lutece.plugins.lutecetools.business.Stats;
  */
 public class StatsService
 {
+    /**
+     * Build stats
+     * @return The stats
+     */
     public static Stats getStats()
     {
         Stats stats = new Stats();
-        StringBuilder sbLogs = new StringBuilder();
         ComponentsInfos ci = MavenRepoService.instance().getComponents();
         int nGithubCount = 0;
         int nGithubOK = 0;
         int nJiraOK = 0;
+        int nReadmeOk = 0;
         for( Component component : ci.getListComponents() )
         {
             if( component.getGitHubStatus() > 0 )
@@ -63,11 +67,16 @@ public class StatsService
             {
                 nJiraOK++;
             }
+            if( component.getGitHubReadme() )
+            {
+                nReadmeOk++;
+            }
         }
         stats.setMavenCount( ci.getComponentCount() );
         stats.setGithubCount( nGithubCount );
         stats.setGithubOK( nGithubOK );
         stats.setJiraOK( nJiraOK );
+        stats.setReadmeOK( nReadmeOk );
         return stats;  
     }
     

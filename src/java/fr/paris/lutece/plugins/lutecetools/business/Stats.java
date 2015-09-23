@@ -42,6 +42,7 @@ public class Stats
     private int _nGithubCount;
     private int _nGithubOK;
     private int _nJiraOK;
+    private int _nReadmeOK;
 
     /**
      * @return the mavenCount
@@ -105,5 +106,20 @@ public class Stats
     public void setJiraOK(int nJiraOK)
     {
         _nJiraOK = nJiraOK;
+    }
+    /**
+     * @return the nReadmeOK
+     */
+    public int getReadmeOK()
+    {
+        return _nReadmeOK;
+    }
+
+    /**
+     * @param nReadmeOK the nReadmeOK to set
+     */
+    public void setReadmeOK(int nReadmeOK)
+    {
+        _nReadmeOK = nReadmeOK;
     }
 }
