@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import java.io.FileNotFoundException;
@@ -59,8 +60,10 @@ public class GitHubService
     private static final String PROPERTY_GITHUB_ACCOUNT_NAME = "lutecetools.github.account.name";
     private static final String PROPERTY_GITHUB_ACCOUNT_TOKEN = "lutecetools.github.account.token";
     private static final String PROPERTY_GITHUB_ORGANIZATIONS = "lutecetools.github.organization";
+    private static final String DSKEY_PARENT_POM_VERSION = "lutecetools.site_property.globalPom.version"; 
 
     private static GitHubService _singleton;
+    private static String _strParentPomVersion;
     private static Map<String, GHRepository> _mapRepositories;
 
     public static synchronized GitHubService instance(  )
@@ -80,6 +83,7 @@ public class GitHubService
     private static void init(  )
     {
         updateGitHubRepositoriesList(  );
+        _strParentPomVersion = DatastoreService.getDataValue( DSKEY_PARENT_POM_VERSION , "3.0.3" );
     }
 
     /**
@@ -194,14 +198,14 @@ public class GitHubService
                 sbErrors.append( "Bad SCM info in the snapshot POM. \n" );
             }
 
-            if ( !"3.0.3".equals( component.getParentPomVersion() ) )
+            if ( !_strParentPomVersion.equals( component.getParentPomVersion() ) )
             {
-                sbErrors.append( "Bad parent POM in release POM. should be global-pom 3.0. \n" );
+                sbErrors.append( "Bad parent POM in release POM. should be global-pom version "  + _strParentPomVersion + "\n" );
             }
 
-            if ( !"3.0.3".equals( component.getSnapshotParentPomVersion() ) )
+            if ( !_strParentPomVersion.equals( component.getSnapshotParentPomVersion() ) )
             {
-                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom 3.0. \n" );
+                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom version "  + _strParentPomVersion + "\n" );
             }
 
             if ( ( component.getBranchesList() != null ) && ( !component.getBranchesList().contains( "develop" ) ) )

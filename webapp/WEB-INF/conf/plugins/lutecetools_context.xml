@@ -7,4 +7,15 @@
     <bean id="lutecetools.componentRest"  class="fr.paris.lutece.plugins.lutecetools.web.rs.ComponentRest" />
     <bean id="lutecetools.statsRest"  class="fr.paris.lutece.plugins.lutecetools.web.rs.StatsRest" />
     
+    <bean id="lutecetools.sitePropertiesGroup" class="fr.paris.lutece.portal.service.site.properties.SitePropertiesGroup" >
+        <property name="nameKey">
+            <value>lutecetools.site_properties.name</value>
+        </property>
+        <property name="descriptionKey">
+            <value>lutecetools.site_properties.description</value>
+        </property>
+        <property name="keysPrefix">
+            <value>lutecetools.site_property.</value>
+        </property>
+    </bean>
 </beans>
