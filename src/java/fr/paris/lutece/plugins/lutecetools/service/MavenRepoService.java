@@ -51,7 +51,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,6 +93,10 @@ public final class MavenRepoService
     private static final long DEFAULT_UPDATE_DELAY = 7200000L; // 2 hours
     private static final long UPDATE_DELAY = AppPropertiesService.getPropertyLong( PROPERTY_UPDATE_DELAY,
             DEFAULT_UPDATE_DELAY );
+    
+    // Keys
+ 	private static final String KEY_NCLOC = "ncloc";
+ 	private static final String KEY_VIOLATIONS_DENSITY = "violations_density";
     
     private static MavenRepoService _singleton;
     private static StringBuilder _sbLogs = new StringBuilder();
@@ -282,14 +288,27 @@ public final class MavenRepoService
         Component component = new Component(  );
         component.setArtifactId( strArtifactId );
         component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
+        
+        HashMap<String, String> metrics = SonarService.instance(  ).getSonarMetrics( strArtifactId );
+        for ( HashMap.Entry<String, String> entry : metrics.entrySet( ) )
+        {
+        	if ( entry.getKey().equals( KEY_NCLOC ) )
+        	{
+        		component.setSonarNbLines( entry.getValue( ) );
+        	}
+        	else if ( entry.getKey().equals( KEY_VIOLATIONS_DENSITY ) )
+        	{
+        		component.setSonarRCI( entry.getValue( ) );
+        	}
+        }
 
         long t1 = new Date(  ).getTime(  );
         getPomInfos( component , sbLogs );
 
         long t2 = new Date(  ).getTime(  );
-        sbLogs.append("\nLutece Tools - Fetching Maven Info for '").append(component.getArtifactId(  )).append("' - duration : ").append(t2 - t1).append("ms.");
+        sbLogs.append("\nLutece Tools - Fetching Maven Info for '").append( component.getArtifactId(  ) ).append("' - duration : ").append(t2 - t1).append("ms.");
         GitHubService.instance(  ).setGitHubInfos( component , sbLogs  );
-        JiraService.instance().setJiraInfos( component , sbLogs );
+        JiraService.instance(  ).setJiraInfos( component , sbLogs );
         
         return component;
     }

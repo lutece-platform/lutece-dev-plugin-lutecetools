@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentService;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentsInfos;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -62,6 +63,8 @@ public class ComponentListApp extends MVCApplication
     private static final String MARK_GITHUB_FILTER = "github_filter";
     private static final String MARK_DISPLAY_CORE_VERSIONS = "core_versions";
     private static final String MARK_LOGS = "logs";
+    private static final String MARK_INTEGER_SUCCESS = "rci_color_success";
+    private static final String MARK_INTEGER_WARNING = "rci_color_warning";
     private static final String VIEW_HOME = "home";
     private static final String ACTION_REFRESH = "refresh";
     private static final String ACTION_CLEAR_CACHE = "clearCache";
@@ -69,6 +72,13 @@ public class ComponentListApp extends MVCApplication
     private static final String PARAMETER_CORE_VERSIONS = "core";
     private static final String VALUE_ON = "on";
     private static final long serialVersionUID = 1L;
+    
+    // RCI color mark
+    
+    private static final String PROPERTY_SONAR_RCI_SUCCESS = "lutecetools.sonar.mark.rci.success";
+	private static final String SONAR_RCI_SUCCESS = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_SUCCESS );
+	private static final String PROPERTY_SONAR_RCI_WARNING = "lutecetools.sonar.mark.rci.warning";
+	private static final String SONAR_RCI_WARNING = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_WARNING );
     
     /**
      * Returns the content of the page lutecetools.
@@ -92,7 +102,9 @@ public class ComponentListApp extends MVCApplication
         {
             ci.setListComponents( filterGitHub( ci.getListComponents(  ) ) );
         }
-
+        
+        model.put( MARK_INTEGER_SUCCESS, SONAR_RCI_SUCCESS);
+        model.put( MARK_INTEGER_WARNING, SONAR_RCI_WARNING);
         model.put( MARK_COMPONENTS_LIST, ci );
         model.put( MARK_GITHUB_FILTER, bGitHubFilter );
         model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );

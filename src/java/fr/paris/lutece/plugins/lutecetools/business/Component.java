@@ -53,6 +53,8 @@ public class Component extends AbstractComponent implements Comparable
     private String _strSnapshotVersion;
     private String _strSnapshotCoreVersion;
     private String _strSnapshotParentPomVersion;
+    private String _strSonarNbLines;
+    private String _strSonarRCI;
     private String _strJiraKey;
     private String _strScmUrl;
     private String _strSnapshotScmUrl;
@@ -103,6 +105,43 @@ public class Component extends AbstractComponent implements Comparable
         _strParentPomVersion = strParentPomVersion;
     }
 
+    /**
+     * Returns the SonarNbLines
+     * @return The SonarNbLines
+     */
+    public String getSonarNbLines(  )
+    {
+        return _strSonarNbLines;
+    }
+
+    /**
+     * Sets the SonarNbLines
+     * @param strSonarNbLines The SonarNbLines
+     */
+    public void setSonarNbLines( String strSonarNbLines )
+    {
+        _strSonarNbLines = strSonarNbLines;
+    }
+
+
+    /**
+     * Returns the SonarRCI
+     * @return The SonarRCI
+     */
+    public String getSonarRCI(  )
+    {
+        return _strSonarRCI;
+    }
+
+    /**
+     * Sets the SonarRCI
+     * @param strSonarRCI The SonarRCI
+     */
+    public void setSonarRCI( String strSonarRCI )
+    {
+        _strSonarRCI = strSonarRCI;
+    }
+    
     /**
      * Returns the JiraKey
      * @return The JiraKey

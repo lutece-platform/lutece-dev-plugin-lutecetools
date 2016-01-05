@@ -70,6 +70,8 @@ public class ComponentRest
     private static final String KEY_SNAPSHOT_VERSION = "snapshot_version";
     private static final String KEY_SNAPSHOT_CORE_VERSION = "snapshot_core_version";
     private static final String KEY_SNAPSHOT_PARENT_POM_VERSION = "snapshot_parent_pom_version";
+    private static final String KEY_SONAR_NB_LINES = "sonar_nb_lines";
+    private static final String KEY_SONAR_RCI = "sonar_rci";
 
     @GET
     @Path( Constants.PATH_ALL )
@@ -247,6 +249,8 @@ public class ComponentRest
         XmlUtil.addElement( sbXML, KEY_SNAPSHOT_VERSION, component.getSnapshotVersion(  ) );
         XmlUtil.addElement( sbXML, KEY_SNAPSHOT_CORE_VERSION, component.getSnapshotCoreVersion(  ) );
         XmlUtil.addElement( sbXML, KEY_SNAPSHOT_PARENT_POM_VERSION, component.getSnapshotParentPomVersion(  ) );
+        XmlUtil.addElement( sbXML, KEY_SONAR_NB_LINES, component.getSonarNbLines(  ) );
+        XmlUtil.addElement( sbXML, KEY_SONAR_RCI, component.getSonarRCI(  ) );
         XmlUtil.endElement( sbXML, KEY_COMPONENT );
     }
 
@@ -265,6 +269,8 @@ public class ComponentRest
         jsonComponent.accumulate( KEY_SNAPSHOT_VERSION, component.getSnapshotVersion(  ) );
         jsonComponent.accumulate( KEY_SNAPSHOT_CORE_VERSION, component.getSnapshotCoreVersion(  ) );
         jsonComponent.accumulate( KEY_SNAPSHOT_PARENT_POM_VERSION, component.getSnapshotParentPomVersion(  ) );
+        jsonComponent.accumulate( KEY_SONAR_NB_LINES, component.getSonarNbLines(  ) );
+        jsonComponent.accumulate( KEY_SONAR_RCI, component.getSonarRCI(  ) );
         json.accumulate( KEY_COMPONENT, jsonComponent );
     }
 }

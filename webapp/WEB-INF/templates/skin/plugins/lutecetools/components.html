@@ -51,6 +51,8 @@
                         <#if core_versions>
                             <th colspan="2">#i18n{lutecetools.components.labelCoreVersion}</th>
                         </#if>
+                        <th>Sonar</th>
+                        <th>&nbsp;</th>
                         <th colspan="3">Jira</th>
                         <th>#i18n{lutecetools.components.labelLinks}</th>
                     </tr>
@@ -68,6 +70,8 @@
                         <th class="small">Snapshot</th>
                         <th class="small">Release</th>
                         </#if>
+                        <th class="small">Nombre de lignes</th>
+                        <th class="small">RCI</th>
                         <th class="small">Status</th>
                         <th class="small" colspan="2">Unreleased version</th>
                         <th>&nbsp;</th>
@@ -141,6 +145,22 @@
                         <td class="small">${component.snapshotCoreVersion!"Not found"}</td>
                         <td class="small">${component.coreVersion!"Not found"}</td>
                         </#if>
+                        <td class="small">${component.sonarNbLines!"Not found"}</td>
+                        <td class="small">
+                        	<#attempt>
+	                        	<#assign nb = "${component.sonarRCI}"?replace("%", "")?number>
+	                        	<#if nb gte "${rci_color_success}"?number>
+	                        		<span class="glyphicon glyphicon-ok-sign" style="color:green;font-size:1.6em;"></span>
+	                        	<#elseif nb gte "${rci_color_warning}"?number && nb lt "${rci_color_success}"?number>
+	                        		<span class="glyphicon glyphicon-info-sign" style="color:orange;font-size:1.6em;"></span>
+	                        	<#else>
+	                        		<span class="glyphicon glyphicon-remove-sign" style="color:red;font-size:1.6em;"></span>
+	                        	</#if>
+	                        	${component.sonarRCI}
+							<#recover>
+                        		Not found
+                        	</#attempt>
+                        </td>
                         <td>
                             <#if component.jiraStatus == 0 >
                                 <img src="images/skin/plugins/lutecetools/jira-red.png" title="${component.jiraErrors}" alt="Jira status RED" width="24" height="24">
