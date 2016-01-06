@@ -290,7 +290,7 @@ public final class MavenRepoService
         component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
         
         HashMap<String, String> metrics = SonarService.instance(  ).getSonarMetrics( strArtifactId );
-        for ( HashMap.Entry<String, String> entry : metrics.entrySet( ) )
+        for ( Map.Entry<String, String> entry : metrics.entrySet( ) )
         {
         	if ( entry.getKey().equals( KEY_NCLOC ) )
         	{
