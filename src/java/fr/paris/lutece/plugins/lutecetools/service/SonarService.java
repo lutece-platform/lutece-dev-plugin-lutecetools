@@ -39,27 +39,33 @@ public class SonarService
     
 	
 	/**
-     * Private constructor
-     */
-    private SonarService(  )
-    {
-    }
+	 * Private constructor
+	 */
+	private SonarService(  )
+	{
+	}
 	
 	/**
-     * Returns the unique instance
-     *
-     * @return the unique instance
-     */
-    public static synchronized SonarService instance(  )
-    {
-        if ( _singleton == null )
-        {
-            _singleton = new SonarService(  );
-        }
+	 * Returns the unique instance
+	 *
+	 * @return the unique instance
+	 */
+	public static synchronized SonarService instance(  )
+	{
+		if ( _singleton == null )
+		{
+			_singleton = new SonarService(  );
+		}
 
-        return _singleton;
-    }
+		return _singleton;
+	}
 	
+	/**
+	 * get metrics from Sonar Webservice
+	 *
+	 * @param strArtifactId The ArtifactId
+	 * @return The metrics HashMap
+	 */
 	public HashMap<String, String> getSonarMetrics( String strArtifactId )
 	{
 		HashMap<String, String> metrics = new HashMap<>( );
