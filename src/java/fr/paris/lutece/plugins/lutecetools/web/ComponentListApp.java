@@ -76,9 +76,9 @@ public class ComponentListApp extends MVCApplication
     // RCI color mark
     
     private static final String PROPERTY_SONAR_RCI_SUCCESS = "lutecetools.sonar.mark.rci.success";
-	private static final String SONAR_RCI_SUCCESS = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_SUCCESS );
-	private static final String PROPERTY_SONAR_RCI_WARNING = "lutecetools.sonar.mark.rci.warning";
-	private static final String SONAR_RCI_WARNING = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_WARNING );
+    private static final String SONAR_RCI_SUCCESS = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_SUCCESS );
+    private static final String PROPERTY_SONAR_RCI_WARNING = "lutecetools.sonar.mark.rci.warning";
+    private static final String SONAR_RCI_WARNING = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_WARNING );
     
     /**
      * Returns the content of the page lutecetools.

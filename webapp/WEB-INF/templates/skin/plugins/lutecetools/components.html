@@ -70,7 +70,7 @@
                         <th class="small">Snapshot</th>
                         <th class="small">Release</th>
                         </#if>
-                        <th class="small">Nombre de lignes</th>
+                        <th class="small">Lignes de code</th>
                         <th class="small">RCI</th>
                         <th class="small">Status</th>
                         <th class="small" colspan="2">Unreleased version</th>
@@ -150,11 +150,11 @@
                         	<#attempt>
 	                        	<#assign nb = "${component.sonarRCI}"?replace("%", "")?number>
 	                        	<#if nb gte "${rci_color_success}"?number>
-	                        		<span class="glyphicon glyphicon-ok-sign" style="color:green;font-size:1.6em;"></span>
+	                        		<span class="glyphicon glyphicon-ok-sign" style="color:green;font-size:2em;"></span>
 	                        	<#elseif nb gte "${rci_color_warning}"?number && nb lt "${rci_color_success}"?number>
-	                        		<span class="glyphicon glyphicon-info-sign" style="color:orange;font-size:1.6em;"></span>
+	                        		<span class="glyphicon glyphicon-exclamation-sign" style="color:orange;font-size:2em;"></span>
 	                        	<#else>
-	                        		<span class="glyphicon glyphicon-remove-sign" style="color:red;font-size:1.6em;"></span>
+	                        		<span class="glyphicon glyphicon-remove-sign" style="color:red;font-size:2em;"></span>
 	                        	</#if>
 	                        	${component.sonarRCI}
 							<#recover>
