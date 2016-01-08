@@ -86,6 +86,8 @@ public final class MavenRepoService
     private static final String URL_SNAPSHOT_REPO = AppPropertiesService.getProperty( PROPERTY_SNAPSHOT_REPO_URL );
     private static final String URL_SNAPSHOT_PLUGINS = URL_SNAPSHOT_REPO +
         AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
+    private static final String URL_SNAPSHOT_CORE = URL_SNAPSHOT_REPO +
+        AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
     private static final String EXCEPTION_MESSAGE = "LuteceTools - MavenRepoService : Error retrieving pom infos : ";
     private static final String PROPERTY_NON_AVAILABLE = "lutecetools.nonAvailable";
     private static final String NON_AVAILABLE = AppPropertiesService.getProperty( PROPERTY_NON_AVAILABLE );
@@ -97,6 +99,9 @@ public final class MavenRepoService
     // Keys
  	private static final String KEY_NCLOC = "ncloc";
  	private static final String KEY_VIOLATIONS_DENSITY = "violations_density";
+ 	
+ // Tags
+ 	private static final String TAG_LUTECE_CORE = "lutece-core";
     
     private static MavenRepoService _singleton;
     private static StringBuilder _sbLogs = new StringBuilder();
@@ -216,19 +221,22 @@ public final class MavenRepoService
      */
     public static List<String> getComponentsListFromRepository(  )
     {
-        List<String> list = new ArrayList(  );
+        List<String> list = new ArrayList<>(  );
 
         try
         {
             HttpAccess httpAccess = new HttpAccess(  );
             String strHtml = httpAccess.doGet( URL_PLUGINS );
             list = getAnchorsList( strHtml );
-
+            
             // remove the 4 first links
-            list.remove( 3 );
-            list.remove( 2 );
-            list.remove( 1 );
+            // list.remove( 3 );
+            // list.remove( 2 );
+            // list.remove( 1 );
             list.remove( 0 );
+            
+            // add lutece-core
+            list.add( 0, TAG_LUTECE_CORE );
         }
         catch ( HttpAccessException e )
         {
@@ -287,7 +295,14 @@ public final class MavenRepoService
     {
         Component component = new Component(  );
         component.setArtifactId( strArtifactId );
-        component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
+        if (strArtifactId.equals( TAG_LUTECE_CORE ))
+        {
+        	component.setVersion( getVersion( URL_CORE ) );
+        }
+        else
+        {
+        	component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
+        }
         
         HashMap<String, String> metrics = SonarService.instance(  ).getSonarMetrics( strArtifactId );
         for ( Map.Entry<String, String> entry : metrics.entrySet( ) )
@@ -321,8 +336,18 @@ public final class MavenRepoService
      */
     private static void getPomInfos( Component component, StringBuilder sbLogs )
     {
-        StringBuilder sbPomUrl = new StringBuilder( URL_PLUGINS );
-        sbPomUrl.append( component.getArtifactId(  ) ).append( "/" ).append( component.getVersion(  ) ).append( "/" );
+        StringBuilder sbPomUrl;
+        
+        if ( component.getArtifactId(  ).equals( TAG_LUTECE_CORE ) )
+        {
+        	sbPomUrl = new StringBuilder( URL_CORE );
+        	sbPomUrl.append( component.getVersion(  ) ).append( "/" );
+        }
+        else
+        {
+        	sbPomUrl = new StringBuilder( URL_PLUGINS );
+        	sbPomUrl.append( component.getArtifactId(  ) ).append( "/" ).append( component.getVersion(  ) ).append( "/" );
+        }
         sbPomUrl.append( component.getArtifactId(  ) ).append( "-" ).append( component.getVersion(  ) ).append( ".pom" );
         getPomInfos( component, sbPomUrl.toString(  ), false , sbLogs );
 
@@ -400,8 +425,17 @@ public final class MavenRepoService
     private static String getSnapshotPomUrl( Component component , StringBuilder sbLogs )
     {
         String strPomUrl = null;
-        String strSnapshotsDirUrl = URL_SNAPSHOT_PLUGINS + component.getArtifactId(  );
+        String strSnapshotsDirUrl;
 
+        if ( component.getArtifactId(  ).equals( TAG_LUTECE_CORE ) )
+        {
+        	strSnapshotsDirUrl = URL_SNAPSHOT_CORE;
+        }
+        else
+        {
+        	strSnapshotsDirUrl = URL_SNAPSHOT_PLUGINS + component.getArtifactId(  );
+        }
+        
         try
         {
             HttpAccess httpAccess = new HttpAccess(  );
