@@ -69,20 +69,21 @@ public class SonarService
 	public HashMap<String, String> getSonarMetrics( String strArtifactId )
 	{
 		HashMap<String, String> metrics = new HashMap<>( );
-		String JSONUrl;
+		StringBuilder sbJSONUrl;
 		
+		sbJSONUrl = new StringBuilder ( URL_SONAR_JSON );
 		if ( strArtifactId.equals( TAG_LUTECE_CORE ) )
-		{
-			JSONUrl = URL_SONAR_JSON.concat( RESOURCE_LC_SONAR_JSON ).concat( strArtifactId ).concat( METRICS_SONAR_JSON );
+		{	
+			sbJSONUrl.append( RESOURCE_LC_SONAR_JSON ).append( strArtifactId ).append( METRICS_SONAR_JSON );
 		}
 		else
 		{
-			JSONUrl = URL_SONAR_JSON.concat( RESOURCE_PLUGINS_SONAR_JSON ).concat( strArtifactId ).concat( METRICS_SONAR_JSON );
+			sbJSONUrl.append( RESOURCE_PLUGINS_SONAR_JSON ).append( strArtifactId ).append( METRICS_SONAR_JSON );
 		}
 		
 		try 
 		{
-			String strHtml = httpAccess.doGet( JSONUrl );
+			String strHtml = httpAccess.doGet( sbJSONUrl.toString( ) );
 			JSONObject json = new JSONObject( strHtml.substring( 1, strHtml.lastIndexOf( "]" ) ) );
 			JSONArray msr = json.getJSONArray( KEY_MSR );
 			
