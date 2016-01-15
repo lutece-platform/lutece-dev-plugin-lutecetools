@@ -65,6 +65,7 @@ public class ComponentListApp extends MVCApplication
     private static final String MARK_LOGS = "logs";
     private static final String MARK_INTEGER_SUCCESS = "rci_color_success";
     private static final String MARK_INTEGER_WARNING = "rci_color_warning";
+    private static final String MARK_TOTAL_LINES = "total_lines";
     private static final String VIEW_HOME = "home";
     private static final String ACTION_REFRESH = "refresh";
     private static final String ACTION_CLEAR_CACHE = "clearCache";
@@ -92,20 +93,29 @@ public class ComponentListApp extends MVCApplication
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
         boolean bDisplayCoreVersions = ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON );
         boolean bGitHubFilter = ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) );
+        Integer nTotal = 0;
 
         Map<String, Object> model = getModel(  );
 
-       
         ComponentsInfos ci = MavenRepoService.instance(  ).getComponents( );
-
+        
         if ( bGitHubFilter )
         {
             ci.setListComponents( filterGitHub( ci.getListComponents(  ) ) );
         }
         
+        for ( Component c : ci.getListComponents( ) )
+        {
+        	if ( c.getSonarNbLines( ) != null )
+        	{
+        		nTotal += Integer.parseInt( c.getSonarNbLines( ).replace( ",", "" ) );
+        	}
+        }
+        
         model.put( MARK_INTEGER_SUCCESS, SONAR_RCI_SUCCESS);
         model.put( MARK_INTEGER_WARNING, SONAR_RCI_WARNING);
         model.put( MARK_COMPONENTS_LIST, ci );
+        model.put( MARK_TOTAL_LINES, nTotal );
         model.put( MARK_GITHUB_FILTER, bGitHubFilter );
         model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );
         model.put( MARK_LOGS, MavenRepoService.getLogs() );

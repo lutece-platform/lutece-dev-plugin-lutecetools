@@ -38,8 +38,31 @@
                     </button>
                 </div>
             </div>
+            <div class="row">
+            	<div class="col-md-12">
+            		#i18n{lutecetools.components.countLines} : <strong> ${total_lines} </strong>
+            	</div>
+            </div>
         </form>
-        <br>
+        <br /><br />
+        <div class="row" style="text-align:center;">
+            <div class="col-md-3">
+            	<strong>Github</strong>
+            	<canvas id="pieChart1" width="250"></canvas>
+            </div>
+            <div class="col-md-3">
+            	<strong>Jira</strong>
+            	<canvas id="pieChart2" width="250"></canvas>
+            </div>
+            <div class="col-md-3">
+            	<strong>Readme</strong>
+            	<canvas id="pieChart3" width="250"></canvas>
+            </div>
+            <div class="col-md-3">
+            	<strong>Sonar</strong>
+            	<canvas id="pieChart4" width="250"></canvas>
+            </div>
+        </div>
         <div class="table-responsive">
             <table id="components-table" class="table table-striped table-hover table-condensed tablesorter">
                 <thead>
@@ -81,15 +104,26 @@
                     <#assign githubOk = 0 />
                     <#assign jiraOk = 0 />
                     <#assign readmeOk = 0 />
+                    <#assign githubWarning = 0 />
+                    <#assign jiraWarning = 0 />
+                    <#assign githubDanger = 0 />
+                    <#assign jiraDanger = 0 />
+                    <#assign readmeDanger = 0 />
+                    <#assign RCIOk = 0 />
+                    <#assign RCIWarning = 0 />
+                    <#assign RCIDanger = 0 />
+                    <#assign nbLinesTotal = 0 />
                     <#list components_list.listComponents as component>
                     <tr>
                         <td class="small">${component.artifactId}</td>
                         <td>
                             <#if component.gitHubStatus gt 0 && component.gitHubStatus lt 3>
                                 <img src="images/skin/plugins/lutecetools/github-red.png" title="${component.gitHubErrors}" alt="GitHub status RED" width="24" height="24">
+                            	<#assign githubDanger = githubDanger + 1>
                             </#if>
                             <#if component.gitHubStatus == 3 >
                                 <img src="images/skin/plugins/lutecetools/github-orange.png" title="${component.gitHubErrors}" alt="GitHub status ORANGE" width="24" height="24">
+                            	<#assign githubWarning = githubWarning + 1>
                             </#if>
                             <#if component.gitHubStatus == 4 >
                                 <img src="images/skin/plugins/lutecetools/github-green.png" title="${component.gitHubErrors}" alt="GitHub status GREEN" width="24" height="24">
@@ -107,6 +141,7 @@
                         <td>
                             <#if !component.gitHubReadme && component.gitHubStatus gt 0>
                                 <img src="images/skin/plugins/lutecetools/readme-red.png" title="Readme file missing" width="24" height="24" />
+                            	<#assign readmeDanger = readmeDanger +1 />
                             </#if>
                             <#if component.gitHubReadme && component.gitHubStatus gt 0>
                                 <img src="images/skin/plugins/lutecetools/readme-green.png" title="Readme file available" width="24" height="24" />
@@ -150,11 +185,14 @@
                         	<#attempt>
 	                        	<#assign nb = "${component.sonarRCI}"?replace("%", "")?number>
 	                        	<#if nb gte "${rci_color_success}"?number>
-	                        		<span class="glyphicon glyphicon-ok-sign" style="color:green;font-size:2em;"></span>
+	                        		<span class="glyphicon glyphicon-ok-sign" style="color:#00b300;font-size:2em;"></span>
+	                        		<#assign RCIOk = RCIOk + 1>
 	                        	<#elseif nb gte "${rci_color_warning}"?number && nb lt "${rci_color_success}"?number>
 	                        		<span class="glyphicon glyphicon-exclamation-sign" style="color:orange;font-size:2em;"></span>
+	                        		<#assign RCIWarning = RCIWarning + 1>
 	                        	<#else>
 	                        		<span class="glyphicon glyphicon-remove-sign" style="color:red;font-size:2em;"></span>
+	                        		<#assign RCIDanger = RCIDanger + 1>
 	                        	</#if>
 	                        	${component.sonarRCI}
 							<#recover>
@@ -164,9 +202,11 @@
                         <td>
                             <#if component.jiraStatus == 0 >
                                 <img src="images/skin/plugins/lutecetools/jira-red.png" title="${component.jiraErrors}" alt="Jira status RED" width="24" height="24">
+                            	<#assign jiraDanger = jiraDanger + 1>
                             </#if>
                             <#if component.jiraStatus == 1 >
                                 <img src="images/skin/plugins/lutecetools/jira-orange.png" title="${component.jiraErrors}" alt="Jira status ORANGE" width="24" height="24">
+                            	<#assign jiraWarning = jiraWarning + 1>
                             </#if>
                             <#if component.jiraStatus == 2 >
                                 <img src="images/skin/plugins/lutecetools/jira-green.png" title="${component.jiraErrors}" alt="Jira status GREEN" width="24" height="24">
@@ -205,12 +245,39 @@
                         </td>
                     </tr>
                     </#list>
-                    <img src="images/skin/plugins/lutecetools/github-green.png" title="Projets GitHub OK" alt="GitHub status GREEN" width="20" height="20">
-                    &nbsp;<span class="badge"> ${githubOk} </span> &nbsp; &nbsp;
-                    <img src="images/skin/plugins/lutecetools/jira-green.png" title="Jira OK" alt="Jira status GREEN" width="20" height="20">
-                    &nbsp;<span class="badge"> ${jiraOk} </span> &nbsp; &nbsp;
-                    <img src="images/skin/plugins/lutecetools/readme-green.png" title="Readme OK" alt="Readme status GREEN" width="20" height="20">
-                    &nbsp;<span class="badge"> ${readmeOk} </span>
+                    <div class="row"  style="text-align:center;">
+            			<div class="col-md-3">
+                    		<img src="images/skin/plugins/lutecetools/github-green.png" alt="GitHub status GREEN" width="20" height="20">
+                    		<span class="badge"> ${githubOk} </span> &nbsp;
+                    		<img src="images/skin/plugins/lutecetools/github-orange.png" alt="GitHub status ORANGE" width="20" height="20">
+                    		<span class="badge"> ${githubWarning} </span> &nbsp;
+                    		<img src="images/skin/plugins/lutecetools/github-red.png" alt="GitHub status RED" width="20" height="20">
+                    		<span class="badge"> ${githubDanger} </span> &nbsp;
+                    	</div>
+                    	<div class="col-md-3">
+		                    <img src="images/skin/plugins/lutecetools/jira-green.png" alt="Jira status GREEN" width="20" height="20">
+		                    <span class="badge"> ${jiraOk} </span> &nbsp;
+		                    <img src="images/skin/plugins/lutecetools/jira-orange.png" alt="Jira status ORANGE" width="20" height="20">
+		                    <span class="badge"> ${jiraWarning} </span> &nbsp;
+		                    <img src="images/skin/plugins/lutecetools/jira-red.png" alt="Jira status RED" width="20" height="20">
+		                    <span class="badge"> ${jiraDanger} </span> &nbsp;
+		                </div>
+		                <div class="col-md-3">
+		                    <img src="images/skin/plugins/lutecetools/readme-green.png" alt="Readme status GREEN" width="20" height="20">
+		                    <span class="badge"> ${readmeOk} </span> &nbsp;
+		                    <img src="images/skin/plugins/lutecetools/readme-red.png" alt="Readme status RED" width="20" height="20">
+		                    <span class="badge"> ${readmeDanger} </span> &nbsp;
+		                </div>
+		                <div class="col-md-3">
+		                    <span class="glyphicon glyphicon-stats" style="color:#00b300;"></span>
+		                    <span class="badge"> ${RCIOk} </span> &nbsp;
+		                    <span class="glyphicon glyphicon-stats" style="color:orange;"></span>
+		                    <span class="badge"> ${RCIWarning} </span> &nbsp;
+		                   	<span class="glyphicon glyphicon-stats" style="color:red;"></span>
+		                    <span class="badge"> ${RCIDanger} </span> &nbsp;
+		                </div>
+		            </div>
+		            <br /><br />
                 </tboby>
             </table>
         </div>
@@ -220,6 +287,17 @@
   <div class="form-group" >
       <textarea  class="form-control">${logs}</textarea>
   </div>
+  <input type="hidden" id="valGithubGreen" value="${githubOk}">
+  <input type="hidden" id="valGithubOrange" value="${githubWarning}">
+  <input type="hidden" id="valGithubRed" value="${githubDanger}">
+  <input type="hidden" id="valJiraGreen" value="${jiraOk}">
+  <input type="hidden" id="valJiraOrange" value="${jiraWarning}">
+  <input type="hidden" id="valJiraRed" value="${jiraDanger}">
+  <input type="hidden" id="valReadmeGreen" value="${readmeOk}">
+  <input type="hidden" id="valReadmeRed" value="${readmeDanger}">
+  <input type="hidden" id="valRCIGreen" value="${RCIOk}">
+  <input type="hidden" id="valRCIOrange" value="${RCIWarning}">
+  <input type="hidden" id="valRCIRed" value="${RCIDanger}">
 </div>
 <script>
 $(document).ready(function(){
