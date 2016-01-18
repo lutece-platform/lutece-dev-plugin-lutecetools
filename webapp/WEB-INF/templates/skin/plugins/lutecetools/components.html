@@ -45,21 +45,31 @@
             </div>
         </form>
         <br /><br />
-        <div class="row" style="text-align:center;">
-            <div class="col-md-3">
+        <div class="row" style="text-align:center">
+       		<div class="col-md-3">
             	<strong>Github</strong>
-            	<canvas id="pieChart1" width="250"></canvas>
             </div>
             <div class="col-md-3">
             	<strong>Jira</strong>
-            	<canvas id="pieChart2" width="250"></canvas>
             </div>
             <div class="col-md-3">
             	<strong>Readme</strong>
+            </div>
+            <div class="col-md-3">
+            	<strong>Sonar - RCI</strong>
+            </div>
+       	</div>
+        <div class="row" style="text-align:center">
+            <div class="col-md-3">
+            	<canvas id="pieChart1" width="250"></canvas>
+            </div>
+            <div class="col-md-3">
+            	<canvas id="pieChart2" width="250"></canvas>
+            </div>
+            <div class="col-md-3">
             	<canvas id="pieChart3" width="250"></canvas>
             </div>
             <div class="col-md-3">
-            	<strong>Sonar</strong>
             	<canvas id="pieChart4" width="250"></canvas>
             </div>
         </div>
@@ -269,11 +279,11 @@
 		                    <span class="badge"> ${readmeDanger} </span> &nbsp;
 		                </div>
 		                <div class="col-md-3">
-		                    <span class="glyphicon glyphicon-stats" style="color:#00b300;"></span>
+		                    <span class="glyphicon glyphicon-ok-sign" style="color:#00b300;font-size:1.1em;"></span>
 		                    <span class="badge"> ${RCIOk} </span> &nbsp;
-		                    <span class="glyphicon glyphicon-stats" style="color:orange;"></span>
+		                    <span class="glyphicon glyphicon-exclamation-sign" style="color:orange;"></span>
 		                    <span class="badge"> ${RCIWarning} </span> &nbsp;
-		                   	<span class="glyphicon glyphicon-stats" style="color:red;"></span>
+		                   	<span class="glyphicon glyphicon-remove-sign" style="color:red;"></span>
 		                    <span class="badge"> ${RCIDanger} </span> &nbsp;
 		                </div>
 		            </div>
