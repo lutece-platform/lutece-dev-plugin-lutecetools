@@ -15,7 +15,6 @@
             ${components_list.percentAvailable}%
             </div>
         </div>
-
         </#if>
         <form method="GET" action="jsp/site/Portal.jsp">
             <input type="hidden" name="page" value="components" />
@@ -318,7 +317,7 @@ $(document).ready(function(){
   });
 
   function refresh() {
-    if(new Date().getTime() - time >= 30000)
+    if(new Date().getTime() - time >= 30000 && ${components_list.percentAvailable} < 100)
       window.location.reload(true);
     else
       setTimeout(refresh, 10000);
