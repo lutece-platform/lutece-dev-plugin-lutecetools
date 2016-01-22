@@ -153,7 +153,7 @@ public final class MavenRepoService
      * @param strUrl The maven repository URL
      * @return The version
      */
-    private static String getVersion( String strUrl )
+    public static String getVersion( String strUrl )
     {
         String strVersion = RELEASE_NOT_FOUND;
 
