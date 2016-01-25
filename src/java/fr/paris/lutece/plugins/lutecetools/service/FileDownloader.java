@@ -23,6 +23,9 @@ import org.xml.sax.SAXException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
+/**
+ * Browser to select a directory
+ */
 public class FileDownloader 
 {
 	private static final String PROPERTY_MAVEN_REPO_URL = "lutecetools.maven.repository.url";

@@ -65,6 +65,9 @@ public class LuteceToolsApp extends MVCApplication
     private static final String MARK_PATH = "path";
     private static final String MARK_VALID_PATH = "valid_path";
     
+    // Parameters
+    private static final String PARAMETER_PATH="path";
+    
     // Session variable to store working values
     private String path = "";
     
@@ -75,10 +78,10 @@ public class LuteceToolsApp extends MVCApplication
     private static final String ERROR_DIR_NOT_FOUND = "lutecetools.error.site.DirNotFound";
     private static final String ERROR_FILE_NOT_FOUND = "lutecetools.error.site.fileNotFound";
     private static final String ERROR_FILE_EXISTS = "lutecetools.error.site.fileExists";
-    private static final int VALUE_NO_SUCH_DIRECTORY = -2;
-    private static final int VALUE_INPUT_FILE_NOT_FOUND = -1;
-    private static final int VALUE_OUTPUT_FILE_EXISTS = 0;
-    private static final int VALUE_SUCCESS = 1;
+    private static final Integer VALUE_NO_SUCH_DIRECTORY = -2;
+    private static final Integer VALUE_INPUT_FILE_NOT_FOUND = -1;
+    private static final Integer VALUE_OUTPUT_FILE_EXISTS = 0;
+    private static final Integer VALUE_SUCCESS = 1;
 
     /**
      * Returns the content of the page lutecetools.
@@ -117,7 +120,7 @@ public class LuteceToolsApp extends MVCApplication
     @Action( ACTION_DOWNLOAD_POM )
     public XPage doDownloadPom( HttpServletRequest request )
     {
-    	String strFilePath = request.getParameter( "path" );
+    	String strFilePath = request.getParameter( PARAMETER_PATH );
     	Integer nReturn = FileDownloader.updateAndDownload( strFilePath );
     	
     	if ( nReturn == VALUE_INPUT_FILE_NOT_FOUND )

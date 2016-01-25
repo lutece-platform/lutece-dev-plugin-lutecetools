@@ -3,8 +3,11 @@ package fr.paris.lutece.plugins.lutecetools.service;
 import java.io.File;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
+//import javax.swing.filechooser.FileNameExtensionFilter;
 
+/**
+ * Browser to select a file 
+ */
 public class FileChooser 
 {
 	public static String selectFile( )
@@ -22,7 +25,7 @@ public class FileChooser
 		}
 		
 		f.setFileSelectionMode( JFileChooser.FILES_ONLY );
-		f.setFileFilter(new FileNameExtensionFilter("Xml files","xml"));
+		//f.setFileFilter(new FileNameExtensionFilter("Xml files","xml"));
 		
 		int result = f.showSaveDialog( null );
 		

@@ -78,7 +78,9 @@ var dataRCI = [
 	label: "RCI WARNING"
 }
 ];
-	
+
+// Charts in components page
+
 var ctx1 = $("#pieChart1").get(0).getContext("2d");
 var myDoughnutChart = new Chart(ctx1).Doughnut(dataGithub);
 

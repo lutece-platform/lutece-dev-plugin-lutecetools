@@ -12,6 +12,9 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
 
+/**
+ * Get sonar metrics from json data
+ */
 public class SonarService
 {
 	// URL
