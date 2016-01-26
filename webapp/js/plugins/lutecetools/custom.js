@@ -92,3 +92,40 @@ var myDoughnutChart = new Chart(ctx3).Doughnut(dataReadme);
 	
 var ctx4 = $("#pieChart4").get(0).getContext("2d");
 var myDoughnutChart = new Chart(ctx4).Doughnut(dataRCI);
+
+
+// Autocompletion graphics
+
+function handleHeaderClick( hdr ) {
+	return function( ) {
+	    var concat = hdr.concat(' i');
+	    
+	    if ($( hdr ).hasClass( 'sortUp' ) == true) {
+	        $( hdr ).removeClass( 'sortUp' );
+	        $( hdr ).addClass( 'sortDown' );
+	        $( concat ).removeClass( 'fa-sort fa-sort-asc' ).addClass( 'fa-sort-desc' );
+	    } else if ($( hdr ).hasClass( 'sortDown' ) == true) {
+	        $( hdr ).removeClass( 'sortDown' );
+	        $( hdr ).addClass( 'sortUp' );
+	        $( concat ).removeClass( 'fa-sort fa-sort-desc' ).addClass( 'fa-sort-asc' );
+	    } else {
+	    	$( hdr ).removeClass( 'sortUp sortDown' );
+	        $( hdr ).addClass( 'sortUp' );
+	        $( concat ).removeClass( 'fa-sort' ).addClass( 'fa-sort-asc' );
+	    }
+	}
+}
+
+var id;
+for ( id = 1; id <= 22; id++ ) {
+	$( ".myTableGraphic #" + id ).append( " <i class=\"fa fa-fw fa-sort\">" );
+}
+
+//$( ".myTableGraphic" ).tablesorter( {debug: true} );
+$( "" ).toggle( );
+
+$( ".myTableGraphic th" ).css( "cursor", "pointer" );
+
+for ( id = 1; id <= 22; id++ ) {
+	$( "#" + id ).click( handleHeaderClick( "#" + id ) );
+}

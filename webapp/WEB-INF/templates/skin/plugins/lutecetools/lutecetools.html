@@ -29,15 +29,14 @@
             <h3>#i18n{lutecetools.lutecetools.updateTitle}</h3>
             <p>#i18n{lutecetools.lutecetools.updateDescription}</p>
             <form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=lutecetools">
-            	<#if valid_path?has_content>
+            	<#if valid_path?has_content && path?ends_with("pom.xml")>
 		  		<div class="form-group has-success has-feedback">
 		  		<#else>
 		  		<div class="form-group has-error has-feedback">
 		  		</#if>
 		    		<label for="path"></label>
-		    		<input type="text" class="form-control" name="path" value="${path!}" placeholder="Pom path"
-		    			<#if path?has_content == false>disabled</#if> >
-		    		<#if path?has_content && valid_path?has_content>
+		    		<input type="text" class="form-control" name="path" value="${path!}" placeholder="Pom path" disabled>
+		    		<#if path?has_content && valid_path?has_content && path?ends_with("pom.xml")>
 		    			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
 		    		<#else>
 		    			<span class="glyphicon glyphicon-remove form-control-feedback"></span>
@@ -47,13 +46,17 @@
 					<span class="glyphicon glyphicon-plus"></span> 
 					#i18n{lutecetools.lutecetools.updateBrowse}
 				</button>
-		  		<#if path?has_content && valid_path?has_content>
+		  		<#if path?has_content && valid_path?has_content && path?ends_with("pom.xml")>
 		  			<button name="action_downloadPom" class="btn btn-success" type="submit" autofocus>
 					<span class="glyphicon glyphicon-download-alt"></span> 
 						#i18n{lutecetools.lutecetools.updateDownload}
 					</button>
 				</#if>
 			</form>
+			<br />
+			<#if path?has_content && valid_path?has_content && path?ends_with("pom.xml") == false>
+				<font color="red">Le format de fichier est incorrect. Sélectionnez un fichier pom.xml.</font>
+			</#if>
         </div>
       </div>
     </div>
