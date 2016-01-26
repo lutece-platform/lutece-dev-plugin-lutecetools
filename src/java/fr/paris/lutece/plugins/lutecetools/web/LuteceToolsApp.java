@@ -106,7 +106,7 @@ public class LuteceToolsApp extends MVCApplication
     @Action( ACTION_CHOOSE )
     public XPage doChoose( HttpServletRequest request )
     {		
-    	path = FileChooser.selectFile( );
+    	//path = FileChooser.selectFile( );
     	
     	return redirectView( request, VIEW_HOME );
     }
