@@ -26,9 +26,9 @@ public class FileChooser
 		
 		f.setFileSelectionMode( JFileChooser.FILES_ONLY );
 		
-		/*int result = f.showSaveDialog( null );
+		int result = f.showSaveDialog( null );
 		
-		/*if ( f.getSelectedFile() != null && result == JFileChooser.APPROVE_OPTION )
+		if ( f.getSelectedFile() != null && result == JFileChooser.APPROVE_OPTION )
 		{
 			path = f.getSelectedFile( ).toString( );
 			File file = new File( path );
@@ -44,7 +44,7 @@ public class FileChooser
 		else if ( result == JFileChooser.CANCEL_OPTION )
 		{
 			Global._strFileChooserPath = "";
-		}*/
+		}
 			
 		return path ;
 	}

@@ -58,7 +58,7 @@ public class FileDownloader
     
     private static final String LUTECE_CORE = "lutece-core";
     
-    
+
 	public static Integer updateAndDownload( String fileInputPath )
 	{
     	try 

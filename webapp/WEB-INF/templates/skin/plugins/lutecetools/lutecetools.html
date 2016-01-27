@@ -35,7 +35,8 @@
 		  		<div class="form-group has-error has-feedback">
 		  		</#if>
 		    		<label for="path"></label>
-		    		<input type="text" class="form-control" name="path" value="${path!}" placeholder="Pom path" disabled>
+		    		<input type="text" class="form-control" name="path" value="${path!}" placeholder="Pom path"
+		    			<#if path?has_content == false>disabled</#if> >
 		    		<#if path?has_content && valid_path?has_content && path?ends_with("pom.xml")>
 		    			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
 		    		<#else>
