@@ -72,12 +72,12 @@ public class LuteceToolsApp extends MVCApplication
     private String path = "";
     
     // Infos
-    private static final String INFO_FILE_DOWNLOADED = "lutecetools.info.site.fileDownloaded";
+    private static final String INFO_FILE_DOWNLOADED = "lutecetools.info.downloader.fileDownloaded";
     
     // Errors
-    private static final String ERROR_DIR_NOT_FOUND = "lutecetools.error.site.DirNotFound";
-    private static final String ERROR_FILE_NOT_FOUND = "lutecetools.error.site.fileNotFound";
-    private static final String ERROR_FILE_EXISTS = "lutecetools.error.site.fileExists";
+    private static final String ERROR_DIR_NOT_FOUND = "lutecetools.error.downloader.DirNotFound";
+    private static final String ERROR_FILE_NOT_FOUND = "lutecetools.error.downloader.fileNotFound";
+    private static final String ERROR_FILE_EXISTS = "lutecetools.error.downloader.fileExists";
     private static final Integer VALUE_NO_SUCH_DIRECTORY = -2;
     private static final Integer VALUE_INPUT_FILE_NOT_FOUND = -1;
     private static final Integer VALUE_OUTPUT_FILE_EXISTS = 0;
@@ -106,7 +106,7 @@ public class LuteceToolsApp extends MVCApplication
     @Action( ACTION_CHOOSE )
     public XPage doChoose( HttpServletRequest request )
     {		
-    	//path = FileChooser.selectFile( );
+    	path = FileChooser.selectFile( );
     	
     	return redirectView( request, VIEW_HOME );
     }

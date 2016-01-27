@@ -2,6 +2,8 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="well hero">
+      	<@messages errors=errors />
+		<@messages infos=infos />
         <h1>#i18n{lutecetools.components.title}</h1>
         <br>
         <#if !components_list.complete>
@@ -38,11 +40,24 @@
                 </div>
             </div>
             <div class="row">
-            	<div class="col-md-12">
+            	<div class="col-md-9">
             		#i18n{lutecetools.components.countLines} : <strong> ${total_lines} </strong>
             	</div>
             </div>
         </form>
+        <br />
+        <div class="row">
+            <div class="col-md-12">
+				<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=components">
+					<div class="input-group">
+						<input type="search" class="form-control input-sm" id="component" name="component" placeholder="Composant">
+						<span class="input-group-btn">
+							<button name="action_searchComponent" type="submit" class="btn btn-primary btn-sm">Recherche</button>
+						</span>
+					</div>
+				</form>
+			</div>
+		</div>
         <br /><br />
         <div class="row" style="text-align:center">
        		<div class="col-md-3">
@@ -122,7 +137,140 @@
                     <#assign RCIWarning = 0 />
                     <#assign RCIDanger = 0 />
                     <#assign nbLinesTotal = 0 />
-                    <#list components_list.listComponents as component>
+
+	            	<#if component_searched??>
+	            	<tr>
+                        <td class="small">${component_searched.artifactId}</td>
+                        <td>
+                            <#if component_searched.gitHubStatus gt 0 && component_searched.gitHubStatus lt 3>
+                                <img src="images/skin/plugins/lutecetools/github-red.png" title="${component_searched.gitHubErrors}" alt="GitHub status RED" width="24" height="24">
+                            	<#assign githubDanger = githubDanger + 1>
+                            </#if>
+                            <#if component_searched.gitHubStatus == 3 >
+                                <img src="images/skin/plugins/lutecetools/github-orange.png" title="${component_searched.gitHubErrors}" alt="GitHub status ORANGE" width="24" height="24">
+                            	<#assign githubWarning = githubWarning + 1>
+                            </#if>
+                            <#if component_searched.gitHubStatus == 4 >
+                                <img src="images/skin/plugins/lutecetools/github-green.png" title="${component_searched.gitHubErrors}" alt="GitHub status GREEN" width="24" height="24">
+                                <#assign githubOk = githubOk + 1>
+                            </#if>
+                        </td>
+                        <td class="small">${component_searched.gitHubOwner!""}</td>
+                        <td class="small">
+                            <#if component_searched.branchesList??>
+                               <#list component_searched.branchesList as branch>
+                               ${branch}<br>
+                               </#list>
+                            </#if>
+                        </td>
+                        <td>
+                            <#if !component_searched.gitHubReadme && component_searched.gitHubStatus gt 0>
+                                <img src="images/skin/plugins/lutecetools/readme-red.png" title="Readme file missing" width="24" height="24" />
+                            	<#assign readmeDanger = readmeDanger +1 />
+                            </#if>
+                            <#if component_searched.gitHubReadme && component_searched.gitHubStatus gt 0>
+                                <img src="images/skin/plugins/lutecetools/readme-green.png" title="Readme file available" width="24" height="24" />
+                                <#assign readmeOk = readmeOk +1 />
+                            </#if>
+                        </td>
+                        <td class="small">
+                            <#if component_searched.snapshotScmUrl?contains("git")>
+                            <a href="${component_searched.snapshotScmUrl}">
+                                <img src="images/skin/plugins/lutecetools/github.png" alt="GitHub logo" width="24" height="24">
+                            </a>
+                            </#if>
+                            <#if component_searched.snapshotScmUrl?contains("svn")>
+                            <a href="${component_searched.snapshotScmUrl}">
+                                <img src="images/skin/plugins/lutecetools/subversion.png" alt="GitHub logo" width="24" height="24">
+                            </a>
+                            </#if>
+                            ${component_searched.snapshotVersion!"Not found"}
+                        </td>
+                        <td class="small">
+                            <#if component_searched.scmUrl?contains("git")>
+                            <a href="${component_searched.scmUrl}">
+                                <img src="images/skin/plugins/lutecetools/github.png" alt="GitHub logo" width="24" height="24">
+                            </a>
+                            </#if>
+                            <#if component_searched.scmUrl?contains("svn")>
+                            <a href="${component_searched.scmUrl}" >
+                                <img src="images/skin/plugins/lutecetools/subversion.png" alt="GitHub logo" width="24" height="24">
+                            </a>
+                            </#if>
+                            ${component_searched.version}
+                        </td>
+                        <td class="small">${component_searched.snapshotParentPomVersion!"Not found"}</td>
+                        <td class="small">${component_searched.parentPomVersion!"Not found"}</td>
+                        <#if core_versions>
+                        <td class="small">${component_searched.snapshotCoreVersion!"Not found"}</td>
+                        <td class="small">${component_searched.coreVersion!"Not found"}</td>
+                        </#if>
+                        <td class="small">${component_searched.sonarNbLines!"Not found"}</td>
+                        <td class="small">
+                        	<#attempt>
+	                        	<#assign nb = "${component_searched.sonarRCI}"?replace("%", "")?number>
+	                        	<#if nb gte "${rci_color_success}"?number>
+	                        		<span class="glyphicon glyphicon-ok-sign" style="color:#00b300;font-size:2em;"></span>
+	                        		<#assign RCIOk = RCIOk + 1>
+	                        	<#elseif nb gte "${rci_color_warning}"?number && nb lt "${rci_color_success}"?number>
+	                        		<span class="glyphicon glyphicon-exclamation-sign" style="color:orange;font-size:2em;"></span>
+	                        		<#assign RCIWarning = RCIWarning + 1>
+	                        	<#else>
+	                        		<span class="glyphicon glyphicon-remove-sign" style="color:red;font-size:2em;"></span>
+	                        		<#assign RCIDanger = RCIDanger + 1>
+	                        	</#if>
+	                        	${component_searched.sonarRCI}
+							<#recover>
+                        		Not found
+                        	</#attempt>
+                        </td>
+                        <td>
+                            <#if component_searched.jiraStatus == 0 >
+                                <img src="images/skin/plugins/lutecetools/jira-red.png" title="${component_searched.jiraErrors}" alt="Jira status RED" width="24" height="24">
+                            	<#assign jiraDanger = jiraDanger + 1>
+                            </#if>
+                            <#if component_searched.jiraStatus == 1 >
+                                <img src="images/skin/plugins/lutecetools/jira-orange.png" title="${component_searched.jiraErrors}" alt="Jira status ORANGE" width="24" height="24">
+                            	<#assign jiraWarning = jiraWarning + 1>
+                            </#if>
+                            <#if component_searched.jiraStatus == 2 >
+                                <img src="images/skin/plugins/lutecetools/jira-green.png" title="${component_searched.jiraErrors}" alt="Jira status GREEN" width="24" height="24">
+                                <#assign jiraOk = jiraOk + 1>
+                            </#if>
+                        </td>
+                        <td class="small">
+                            ${component_searched.jiraLastUnreleasedVersion!"Not found"}
+                        </td>
+                        <td>
+                            <#assign fixed = component_searched.jiraIssuesCount - component_searched.jiraUnresolvedIssuesCount />
+                            <#assign unresolved = component_searched.jiraUnresolvedIssuesCount />
+                            <a href="https://dev.lutece.paris.fr/jira/browse/${component_searched.jiraKey!''}#selectedTab=com.atlassian.jira.plugin.system.project%3Aroadmap-panel" >
+                                <span class="label label-success"> ${fixed}</span>
+                                <#if unresolved == 0>
+                                    <span class="label label-success"> ${unresolved}</span>
+                                <#else>
+                                    <span class="label label-danger"> ${unresolved}</span>
+                                </#if>
+                            </a>
+                            <#if fixed gt 0 && unresolved == 0>
+                            <a href="https://dev.lutece.paris.fr/site-release/">
+                                <img src="images/skin/plugins/lutecetools/release.png" title="Release" alt="release" width="24" height="24">
+                            </a>
+                            </#if>
+                        </td>
+                        <td>
+                            <a href="https://dev.lutece.paris.fr/jira/browse/${component_searched.jiraKey!''}" title="JIRA">
+                                <img src="images/skin/plugins/lutecetools/jira.png" alt="Jira logo" width="24" height="24"/>
+                            </a>
+                            <a href="http://dev.lutece.paris.fr/plugins/${component_searched.artifactId}/index.html" title="English" class="btn btn-default btn-xs">en</a>
+                            <a href="http://dev.lutece.paris.fr/plugins/${component_searched.artifactId}/fr/index.html" title="French" class="btn btn-default btn-xs">&nbsp;fr&nbsp;</a>
+                            <a href="http://dev.lutece.paris.fr/maven_repository/fr/paris/lutece/plugins/${component_searched.artifactId}" title="Maven repository" class="btn btn-default btn-xs">
+                                <span class="glyphicon glyphicon-folder-open"></span>
+                            </a>
+                        </td>
+                    </tr>
+	            	<#else>
+					<#list components_list.listComponents as component>
                     <tr>
                         <td class="small">${component.artifactId}</td>
                         <td>
@@ -254,6 +402,7 @@
                         </td>
                     </tr>
                     </#list>
+                    </#if>
                     <div class="row"  style="text-align:center;">
             			<div class="col-md-3">
                     		<img src="images/skin/plugins/lutecetools/github-green.png" alt="GitHub status GREEN" width="20" height="20">

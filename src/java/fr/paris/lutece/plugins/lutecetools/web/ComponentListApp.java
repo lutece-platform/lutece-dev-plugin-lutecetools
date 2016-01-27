@@ -66,11 +66,14 @@ public class ComponentListApp extends MVCApplication
     private static final String MARK_INTEGER_SUCCESS = "rci_color_success";
     private static final String MARK_INTEGER_WARNING = "rci_color_warning";
     private static final String MARK_TOTAL_LINES = "total_lines";
+    private static final String MARK_COMPONENT_SEARCHED = "component_searched";
     private static final String VIEW_HOME = "home";
     private static final String ACTION_REFRESH = "refresh";
     private static final String ACTION_CLEAR_CACHE = "clearCache";
+    private static final String ACTION_SEARCH_COMPONENT = "searchComponent";
     private static final String PARAMETER_GITHUB = "github";
     private static final String PARAMETER_CORE_VERSIONS = "core";
+    private static final String PARAMETER_COMPONENT = "component";
     private static final String VALUE_ON = "on";
     private static final long serialVersionUID = 1L;
     
@@ -80,6 +83,13 @@ public class ComponentListApp extends MVCApplication
     private static final String SONAR_RCI_SUCCESS = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_SUCCESS );
     private static final String PROPERTY_SONAR_RCI_WARNING = "lutecetools.sonar.mark.rci.warning";
     private static final String SONAR_RCI_WARNING = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_WARNING );
+    
+    // Errors
+    
+    private static final String ERROR_NOT_FOUND = "lutecetools.error.research.notFound";
+    
+    // Session variable to store working values
+    private Component component = null;
     
     /**
      * Returns the content of the page lutecetools.
@@ -112,6 +122,11 @@ public class ComponentListApp extends MVCApplication
         	}
         }
         
+        if ( component != null )
+        {
+        	model.put( MARK_COMPONENT_SEARCHED, component );
+        	component = null;
+        }
         model.put( MARK_INTEGER_SUCCESS, SONAR_RCI_SUCCESS);
         model.put( MARK_INTEGER_WARNING, SONAR_RCI_WARNING);
         model.put( MARK_COMPONENTS_LIST, ci );
@@ -119,7 +134,7 @@ public class ComponentListApp extends MVCApplication
         model.put( MARK_GITHUB_FILTER, bGitHubFilter );
         model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );
         model.put( MARK_LOGS, MavenRepoService.getLogs() );
-
+        
         return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
     }
 
@@ -191,4 +206,26 @@ public class ComponentListApp extends MVCApplication
 
         return mapParameters;
     }
+    
+    @Action( ACTION_SEARCH_COMPONENT )
+    public XPage searchComponent( HttpServletRequest request )
+    {
+    	String strComponent = request.getParameter( PARAMETER_COMPONENT ).toLowerCase( );
+    	ComponentsInfos ci = MavenRepoService.instance(  ).getComponents( );
+    	
+    	for ( Component c : ci.getListComponents( ) )
+        {
+        	if ( c.getArtifactId( ).equals( strComponent ) )
+        	{
+        		component = c;
+
+        		return redirect( request, VIEW_HOME, getViewParameters( request ) );
+        	}
+        }
+    	component = null;
+    	addError( ERROR_NOT_FOUND, getLocale( request ) );
+
+        return redirect( request, VIEW_HOME, getViewParameters( request ) );
+    }
+    
 }
