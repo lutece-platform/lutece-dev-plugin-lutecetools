@@ -28,7 +28,7 @@
                     <input type="checkbox" name="github" <#if github_filter> checked </#if> /> Filtrer sur les projets GitHub
                 </div>
                 <div class="col-md-3">
-                   <input type="checkbox" name="core"  <#if core_versions> checked </#if> /> Afficher les versions du core
+                   	<input type="checkbox" name="core"  <#if core_versions> checked </#if> /> Afficher les versions du core
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-primary btn-xs" type="submit" title="Refresh" name="action_refresh">
@@ -52,9 +52,10 @@
 					<div class="input-group">
 						<input type="search" class="form-control input-sm" id="component" name="component" placeholder="Composant">
 						<span class="input-group-btn">
-							<button name="action_searchComponent" type="submit" class="btn btn-primary btn-sm">Recherche</button>
+							<button name="action_searchComponent" type="submit" class="btn btn-primary btn-sm" autofocus>Recherche</button>
 						</span>
 					</div>
+					<img src="images/skin/plugins/lutecetools/ajax-loader2.gif" id="imgLoader" style="display:none" />
 				</form>
 			</div>
 		</div>

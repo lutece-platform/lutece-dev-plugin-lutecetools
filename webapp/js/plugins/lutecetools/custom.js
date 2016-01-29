@@ -129,3 +129,60 @@ $( ".myTableGraphic th" ).css( "cursor", "pointer" );
 for ( id = 1; id <= 22; id++ ) {
 	$( "#" + id ).click( handleHeaderClick( "#" + id ) );
 }
+
+// Autocompletion research
+
+var listComponents = [];	
+
+function isArray( object ) {
+    return Object.prototype.toString.call( object ) === '[object Array]';
+}
+
+function removeDuplicates( list )
+{
+	var tmp = [];
+	
+	$.each( list, function( index, value ) {
+        if( $.inArray( value, tmp) === -1 )
+        	tmp.push( value );
+    } );
+	
+	return tmp;
+}
+
+function availableTags ( ) {
+	$.getJSON( "rest/lutecetools/component/s?format=json", function( data ) {			
+		/*if ( isArray( data.sites.site ) )
+			data = data.sites.site;
+		else*/
+			data = data.components;
+		$.map( data, function ( value, index ) {				
+			listComponents.push( value.artifact_id );
+	    } );
+		listComponents = removeDuplicates( listComponents );
+		
+		$( "#component" ).autocomplete( {
+			source: listComponents
+		} );
+	} );
+};
+
+availableTags( );
+
+// Img loader
+
+$( '#component' ).keypress( function( ) {
+	$( '#imgLoader' ).show( );
+})
+
+var timer;
+var timeout = 1000;
+
+$('#component').keyup(function(){
+    clearTimeout( timer );
+    if ($( '#component' ).val ) {
+        timer = setTimeout( function( ){
+        	$( '#imgLoader' ).hide( );
+        }, timeout );
+    }
+});

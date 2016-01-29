@@ -45,6 +45,7 @@
             <groupId>fr.paris.lutece.plugins</groupId>
             <artifactId>plugin-rest</artifactId>
             <version>[2.1.0,)</version>
+            <type>lutece-plugin</type>
         </dependency>
         <dependency>
             <groupId>org.kohsuke</groupId>

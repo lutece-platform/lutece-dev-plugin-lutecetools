@@ -25,6 +25,7 @@
         <javascript-file>lutecetools/jquery.tablesorter.js</javascript-file>
         <javascript-file>lutecetools/Chart.js</javascript-file>
         <javascript-file>lutecetools/custom.js</javascript-file>
+        <javascript-file>lutecetools/jquery-ui.js</javascript-file>
     </javascript-files>
 
      <!-- XPages parameters -->
