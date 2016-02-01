@@ -1,0 +1,15 @@
+/******************************************
+/* SPECIFIC LUTECETOOLS THEME STYLES   *
+******************************************/
+/* autocomplete styles */
+.ui-autocomplete{
+	max-height:100px;
+	overflow-y:auto;
+	overflow-x:hidden;
+	position:absolute;
+	padding-left:0px;
+	list-style:none;
+  	background-color:#ffffff;
+}
+.ui-menu-item{cursor:pointer;}
+.ui-state-focus{background:#D0D0D0;outline:none;}

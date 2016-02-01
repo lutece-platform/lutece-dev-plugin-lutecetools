@@ -49,11 +49,12 @@
         <div class="row">
             <div class="col-md-12">
 				<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=components">
+					<label for="research">Rechercher&nbsp;</label>
 					<div class="input-group">
 						<input type="search" class="form-control input-sm" id="component" name="component" placeholder="Composant">
-						<span class="input-group-btn">
+						<!--<span class="input-group-btn">
 							<button name="action_searchComponent" type="submit" class="btn btn-primary btn-sm" autofocus>Recherche</button>
-						</span>
+						</span>-->
 					</div>
 					<img src="images/skin/plugins/lutecetools/ajax-loader2.gif" id="imgLoader" style="display:none" />
 				</form>
@@ -272,7 +273,7 @@
                     </tr>
 	            	<#else>
 					<#list components_list.listComponents as component>
-                    <tr>
+                    <tr class="component-box" data-component="${component.artifactId}" >
                         <td class="small">${component.artifactId}</td>
                         <td>
                             <#if component.gitHubStatus gt 0 && component.gitHubStatus lt 3>

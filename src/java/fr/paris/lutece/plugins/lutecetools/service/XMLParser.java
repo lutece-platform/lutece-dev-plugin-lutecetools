@@ -2,6 +2,7 @@ package fr.paris.lutece.plugins.lutecetools.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -26,7 +27,7 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 /**
  * Browser to select a directory
  */
-public class FileDownloader 
+public class XMLParser 
 {
 	private static final String PROPERTY_MAVEN_REPO_URL = "lutecetools.maven.repository.url";
 	private static final String URL_MAVEN_REPO = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL );
@@ -49,61 +50,38 @@ public class FileDownloader
 	private static final String DIALOG_MESS_TITLE = "Warning";
 	
 	// Errors
-	private static final int VALUE_CANCELLED = -3;
-	private static final int VALUE_NO_SUCH_DIRECTORY = -2;
-	private static final int VALUE_INPUT_FILE_NOT_FOUND = -1;
-    private static final int VALUE_OUTPUT_FILE_EXISTS = 0;
-    private static final int VALUE_SUCCESS = 1;
+	private static final String CANCELLED = "Cancelled";
+	private static final String NOT_FOUND = "File not found";
     private static final String RELEASE_NOT_FOUND = "Release not found";
     
     private static final String LUTECE_CORE = "lutece-core";
     
 
-	public static Integer updateAndDownload( String fileInputPath )
+	public static String updatePOM( String strInputPath )
 	{
-    	try 
-    	{
-    		File fin = new File( fileInputPath );
-    		if ( !fin.exists( ) )
+		String strUpdated = "";
+		try 
+		{
+			File fin = new File( strInputPath );
+			if ( !fin.exists( ) )
 			{
-				return VALUE_INPUT_FILE_NOT_FOUND;
+				return NOT_FOUND;
 			}
-    		
-    		String filename = fileInputPath.substring( fileInputPath.lastIndexOf( File.separator ) + 1 );
-    		String outputPath = FileChooser.selectDir( );
-    		if ( outputPath.isEmpty( ) )
-    		{
-    			return VALUE_CANCELLED;
-    		}
-    		
-			String fileOutputPath = outputPath.concat( File.separator ).concat( filename );
-			File fout = new File( fileOutputPath );
-			if ( fout.exists( ) )
+			strUpdated = updateString( fin );
+			if ( strUpdated.equals( CANCELLED ) )
 			{
-				return VALUE_OUTPUT_FILE_EXISTS;
+				return CANCELLED;
 			}
-			
-			File isValidDirectory = fout.getParentFile( );
-			if ( !isValidDirectory.exists( ) )
-			{
-				return VALUE_NO_SUCH_DIRECTORY;
-			}
-						
-			Integer update = updateAndDownloadPOM( fin, fout );
-			if ( update.equals( VALUE_CANCELLED ) )
-			{
-				return VALUE_CANCELLED;
-			}
-    	} 
-    	catch ( IOException | ParserConfigurationException | SAXException | TransformerException e )
-    	{
-    		AppLogService.error( e.getMessage( ) );
-    	}
+		} 
+		catch ( IOException | ParserConfigurationException | SAXException | TransformerException e )
+		{
+			AppLogService.error( e.getMessage( ) );
+		}
     	
-    	return VALUE_SUCCESS;
+		return strUpdated;
 	}
 	
-	public static Integer updateAndDownloadPOM( File inputFile, File outputFile ) throws ParserConfigurationException, SAXException, IOException, TransformerException
+	public static String updateString( File inputFile ) throws ParserConfigurationException, SAXException, IOException, TransformerException
 	{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance( );
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder( );
@@ -155,16 +133,18 @@ public class FileDownloader
 		
 			if ( dialogResult != JOptionPane.YES_OPTION )
 			{
-				return VALUE_CANCELLED;
+				return CANCELLED;
 			}
 		}
 		
 		TransformerFactory transformerFactory = TransformerFactory.newInstance( );
 		Transformer transformer = transformerFactory.newTransformer( );
 		DOMSource domSource = new DOMSource( doc );
-		StreamResult streamResult = new StreamResult( outputFile );
+		StringWriter writer = new StringWriter();
+		StreamResult streamResult = new StreamResult( writer );
 		transformer.transform( domSource, streamResult );
-		
-		return VALUE_SUCCESS;
+		String strOutput = writer.toString( );
+
+		return strOutput;
 	}
 }

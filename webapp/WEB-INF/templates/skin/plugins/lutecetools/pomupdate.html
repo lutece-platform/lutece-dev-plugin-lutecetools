@@ -1,0 +1,40 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="well hero">
+				<h1>Mise à niveau du POM</h1>
+			</div>
+		</div>
+		<form action="jsp/site/Portal.jsp" role="form" method="POST">
+			<div class="col-lg-6">
+				<input type="hidden" name="page" value="pomupdate">
+				<input type="hidden" name="action" value="process">
+				<h3>POM en entrée</h3>
+				<p>Coller ci-dessous le chemin local du POM dont vous voulez actualiser les dépendances.</p>
+				<#if valid_path && input?ends_with("pom.xml")>
+				<div class="form-group has-success has-feedback">
+				<#else>
+				<div class="form-group has-error has-feedback">
+				</#if>
+					<input type="text" class="form-control" name="source" value="${input!}" placeholder="C:\\yourfolder\\pom.xml">
+					<#if input?has_content && valid_path && input?ends_with("pom.xml")>
+					<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+					<#else>
+					<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</#if>
+				</div>
+				<#if input?has_content && valid_path && input?ends_with("pom.xml") == false>
+				<font color="red">Le format de fichier est incorrect. Sélectionnez un fichier pom.xml.</font>
+				</#if>
+				<button class="btn btn-primary pull-right" type="submit">
+					<i class="fa fa-play"></i> Générer
+				</button>
+			</div>
+		</form>
+		<div class="col-lg-6">
+			<h3>POM en sortie</h3>
+			<textarea class="form-control" name="output" rows="16">${output}</textarea>
+			<br />
+		</div>
+	</div>
+</div>

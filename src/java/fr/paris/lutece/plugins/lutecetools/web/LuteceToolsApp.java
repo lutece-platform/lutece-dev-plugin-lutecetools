@@ -33,16 +33,10 @@
  */
 package fr.paris.lutece.plugins.lutecetools.web;
 
-import fr.paris.lutece.plugins.lutecetools.service.FileChooser;
-import fr.paris.lutece.plugins.lutecetools.service.FileDownloader;
-import fr.paris.lutece.plugins.lutecetools.service.Global;
-import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
-
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,32 +50,6 @@ public class LuteceToolsApp extends MVCApplication
 {
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/lutecetools.html";
     private static final String VIEW_HOME = "home";
-    
-    // Actions
-    private static final String ACTION_CHOOSE = "choose";
-    private static final String ACTION_DOWNLOAD_POM = "downloadPom";
-    
-    // Markers
-    private static final String MARK_PATH = "path";
-    private static final String MARK_VALID_PATH = "valid_path";
-    
-    // Parameters
-    private static final String PARAMETER_PATH="path";
-    
-    // Session variable to store working values
-    private String path = "";
-    
-    // Infos
-    private static final String INFO_FILE_DOWNLOADED = "lutecetools.info.downloader.fileDownloaded";
-    
-    // Errors
-    private static final String ERROR_DIR_NOT_FOUND = "lutecetools.error.downloader.DirNotFound";
-    private static final String ERROR_FILE_NOT_FOUND = "lutecetools.error.downloader.fileNotFound";
-    private static final String ERROR_FILE_EXISTS = "lutecetools.error.downloader.fileExists";
-    private static final Integer VALUE_NO_SUCH_DIRECTORY = -2;
-    private static final Integer VALUE_INPUT_FILE_NOT_FOUND = -1;
-    private static final Integer VALUE_OUTPUT_FILE_EXISTS = 0;
-    private static final Integer VALUE_SUCCESS = 1;
 
     /**
      * Returns the content of the page lutecetools.
@@ -91,55 +59,6 @@ public class LuteceToolsApp extends MVCApplication
     @View( value = VIEW_HOME, defaultView = true )
     public XPage viewHome( HttpServletRequest request )
     {
-    	Map<String, Object> model = getModel(  );
-    	model.put( MARK_PATH, path );
-    	model.put( MARK_VALID_PATH, Global._strFileChooserPath );
-         
-        return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
-    }
-    
-    /**
-     * 
-     * @param request
-     * @return XPage
-     */
-    @Action( ACTION_CHOOSE )
-    public XPage doChoose( HttpServletRequest request )
-    {		
-    	path = FileChooser.selectFile( );
-    	
-    	return redirectView( request, VIEW_HOME );
-    }
-    
-    /**
-     * Download a pom
-     *
-     * @param request The Http request
-     * @return The HTML page to display infos
-     */
-    @Action( ACTION_DOWNLOAD_POM )
-    public XPage doDownloadPom( HttpServletRequest request )
-    {
-    	String strFilePath = request.getParameter( PARAMETER_PATH );
-    	Integer nReturn = FileDownloader.updateAndDownload( strFilePath );
-    	
-    	if ( nReturn == VALUE_INPUT_FILE_NOT_FOUND )
-    	{
-    		addError( ERROR_FILE_NOT_FOUND, getLocale( request ) );
-    	}
-    	else if ( nReturn == VALUE_OUTPUT_FILE_EXISTS )
-    	{
-    		addError( ERROR_FILE_EXISTS, getLocale( request ) );
-    	}
-    	else if ( nReturn == VALUE_NO_SUCH_DIRECTORY )
-    	{
-    		addError( ERROR_DIR_NOT_FOUND, getLocale( request ) );
-    	}
-    	else if ( nReturn == VALUE_SUCCESS )
-    	{
-    		addInfo( INFO_FILE_DOWNLOADED, getLocale( request ) );
-    	}
-    	
-    	return redirectView( request, VIEW_HOME );
+        return getXPage( TEMPLATE_XPAGE, request.getLocale(  ) );
     }
 }

@@ -132,7 +132,7 @@ for ( id = 1; id <= 22; id++ ) {
 
 // Autocompletion research
 
-var listComponents = [];	
+/*var listComponents = [];	
 
 function isArray( object ) {
     return Object.prototype.toString.call( object ) === '[object Array]';
@@ -152,10 +152,7 @@ function removeDuplicates( list )
 
 function availableTags ( ) {
 	$.getJSON( "rest/lutecetools/component/s?format=json", function( data ) {			
-		/*if ( isArray( data.sites.site ) )
-			data = data.sites.site;
-		else*/
-			data = data.components;
+		data = data.components;
 		$.map( data, function ( value, index ) {				
 			listComponents.push( value.artifact_id );
 	    } );
@@ -167,7 +164,7 @@ function availableTags ( ) {
 	} );
 };
 
-availableTags( );
+availableTags( );*/
 
 // Img loader
 
@@ -178,11 +175,28 @@ $( '#component' ).keypress( function( ) {
 var timer;
 var timeout = 1000;
 
-$('#component').keyup(function(){
+$('#component').keyup(function( ){
     clearTimeout( timer );
-    if ($( '#component' ).val ) {
+    if ( $( '#component' ).val ) {
         timer = setTimeout( function( ){
         	$( '#imgLoader' ).hide( );
         }, timeout );
     }
-});
+} );
+
+// Filter plugins list
+
+$( "#component" ).keyup( function ( ) {
+	if ( $( '#component' ).val( ).length >= 3 ) {
+		var search = $( "#component" ).val( );
+		$( ".component-box" ).each( function ( index ) {
+			var pluginName = $( this ).attr( "data-component" );
+			/*console.log( search + "|" + pluginName + " | " + pluginName.match( search ) );*/
+			if ( pluginName.match( search ) == null ) {
+				$( this ).slideUp( 200 ).fadeOut( 500 );
+			} else {
+				$( this ).slideDown( 200 ).fadeIn( 500 );
+			}
+		} );
+	}
+} );

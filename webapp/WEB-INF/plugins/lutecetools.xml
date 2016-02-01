@@ -18,6 +18,11 @@
         <max-core-version/>	
     </core-version-dependency>
     
+    <!-- Specific plugin CSS stylesheets -->
+    <css-stylesheets>
+        <css-stylesheets-scope>xpage</css-stylesheets-scope>
+        <css-stylesheet>lutecetools/lutecetools.css</css-stylesheet>
+    </css-stylesheets>
     
     <javascript-files>
         <javascript-files-scope>xpage</javascript-files-scope>
@@ -41,6 +46,10 @@
         <application>
             <application-id>dependenciesupgrade</application-id>
             <application-class>fr.paris.lutece.plugins.lutecetools.web.DependenciesUpgradeApp</application-class>
+        </application>
+        <application>
+            <application-id>pomupdate</application-id>
+            <application-class>fr.paris.lutece.plugins.lutecetools.web.PomUpdateApp</application-class>
         </application>
     </applications>
 
