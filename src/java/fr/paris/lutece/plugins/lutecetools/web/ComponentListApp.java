@@ -207,25 +207,4 @@ public class ComponentListApp extends MVCApplication
         return mapParameters;
     }
     
-    @Action( ACTION_SEARCH_COMPONENT )
-    public XPage searchComponent( HttpServletRequest request )
-    {
-    	String strComponent = request.getParameter( PARAMETER_COMPONENT ).toLowerCase( );
-    	ComponentsInfos ci = MavenRepoService.instance(  ).getComponents( );
-    	
-    	for ( Component c : ci.getListComponents( ) )
-        {
-        	if ( c.getArtifactId( ).equals( strComponent ) )
-        	{
-        		component = c;
-
-        		return redirect( request, VIEW_HOME, getViewParameters( request ) );
-        	}
-        }
-    	component = null;
-    	addError( ERROR_NOT_FOUND, getLocale( request ) );
-
-        return redirect( request, VIEW_HOME, getViewParameters( request ) );
-    }
-    
 }

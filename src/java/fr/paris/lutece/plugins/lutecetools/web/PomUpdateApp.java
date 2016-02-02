@@ -58,7 +58,7 @@ public class PomUpdateApp extends MVCApplication
         _strValidPath = false;
         if ( _strOutput.equals( NOT_FOUND ) )
         {
-        	_strOutput = NOT_FOUND;
+        	_strOutput = NOT_FOUND + "\n" + "input path = " + _strInput;
         }
         else if ( _strOutput.isEmpty( ) )
         {

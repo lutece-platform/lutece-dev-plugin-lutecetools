@@ -130,73 +130,32 @@ for ( id = 1; id <= 22; id++ ) {
 	$( "#" + id ).click( handleHeaderClick( "#" + id ) );
 }
 
-// Autocompletion research
-
-/*var listComponents = [];	
-
-function isArray( object ) {
-    return Object.prototype.toString.call( object ) === '[object Array]';
-}
-
-function removeDuplicates( list )
-{
-	var tmp = [];
-	
-	$.each( list, function( index, value ) {
-        if( $.inArray( value, tmp) === -1 )
-        	tmp.push( value );
-    } );
-	
-	return tmp;
-}
-
-function availableTags ( ) {
-	$.getJSON( "rest/lutecetools/component/s?format=json", function( data ) {			
-		data = data.components;
-		$.map( data, function ( value, index ) {				
-			listComponents.push( value.artifact_id );
-	    } );
-		listComponents = removeDuplicates( listComponents );
-		
-		$( "#component" ).autocomplete( {
-			source: listComponents
-		} );
-	} );
-};
-
-availableTags( );*/
-
-// Img loader
-
-$( '#component' ).keypress( function( ) {
-	$( '#imgLoader' ).show( );
-})
+// Filter components list
 
 var timer;
-var timeout = 1000;
-
-$('#component').keyup(function( ){
-    clearTimeout( timer );
-    if ( $( '#component' ).val ) {
-        timer = setTimeout( function( ){
-        	$( '#imgLoader' ).hide( );
-        }, timeout );
-    }
-} );
-
-// Filter plugins list
-
-$( "#component" ).keyup( function ( ) {
-	if ( $( '#component' ).val( ).length >= 3 ) {
-		var search = $( "#component" ).val( );
-		$( ".component-box" ).each( function ( index ) {
-			var pluginName = $( this ).attr( "data-component" );
-			/*console.log( search + "|" + pluginName + " | " + pluginName.match( search ) );*/
-			if ( pluginName.match( search ) == null ) {
-				$( this ).slideUp( 200 ).fadeOut( 500 );
-			} else {
-				$( this ).slideDown( 200 ).fadeIn( 500 );
+var timeout = 500;
+var list = $( ".component-box" );
+var img = $( '#imgLoader' );
+var input = $( "#component" );
+input.keyup( function ( ) {
+	clearTimeout( timer );
+	if ( input.val( ).length >= 3 ) {
+		img.show( );
+		timer = setTimeout( function( ){
+			var search = input.val( );
+			for ( var i = 0; i < list.length; i++ ) {
+			    var el = list[i];
+			    var pluginName = $( el ).attr( "data-component" );
+			    if ( pluginName.match( search ) == null ) {
+					$( el ).slideUp( 200 ).fadeOut( 500 );
+				} else {
+					$( el ).slideDown( 200 ).fadeIn( 500 );
+				}
 			}
-		} );
+			img.hide( );
+        }, timeout );
+	}
+	else {
+		img.hide( );
 	}
 } );
