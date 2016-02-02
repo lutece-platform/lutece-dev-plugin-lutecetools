@@ -139,23 +139,19 @@ var img = $( '#imgLoader' );
 var input = $( "#component" );
 input.keyup( function ( ) {
 	clearTimeout( timer );
-	if ( input.val( ).length >= 3 ) {
-		img.show( );
-		timer = setTimeout( function( ){
-			var search = input.val( );
-			for ( var i = 0; i < list.length; i++ ) {
-			    var el = list[i];
-			    var pluginName = $( el ).attr( "data-component" );
-			    if ( pluginName.match( search ) == null ) {
-					$( el ).slideUp( 200 ).fadeOut( 500 );
-				} else {
-					$( el ).slideDown( 200 ).fadeIn( 500 );
-				}
+	img.show( );
+	timer = setTimeout( function( ) {
+		var search = input.val( );
+		for ( var i = 0; i < list.length; i++ ) {
+			var el = list[i];
+			var pluginName = $( el ).attr( "data-component" );
+			if ( pluginName.match( search ) == null ) {
+				$( el ).hide( );
 			}
-			img.hide( );
-        }, timeout );
-	}
-	else {
+			else {
+				$( el ).show( );
+			}
+		}
 		img.hide( );
-	}
+	}, timeout );
 } );
