@@ -15,6 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.fileupload.FileItem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -57,16 +58,11 @@ public class XMLParser
     private static final String LUTECE_CORE = "lutece-core";
     
 
-	public static String updatePOM( String strInputPath )
+	public static String updatePOM( FileItem fin )
 	{
 		String strUpdated = "";
 		try 
 		{
-			File fin = new File( strInputPath );
-			if ( !fin.exists( ) )
-			{
-				return NOT_FOUND;
-			}
 			strUpdated = updateString( fin );
 			if ( strUpdated.equals( CANCELLED ) )
 			{
@@ -81,11 +77,11 @@ public class XMLParser
 		return strUpdated;
 	}
 	
-	public static String updateString( File inputFile ) throws ParserConfigurationException, SAXException, IOException, TransformerException
+	public static String updateString( FileItem inputFile ) throws ParserConfigurationException, SAXException, IOException, TransformerException
 	{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance( );
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder( );
-		Document doc = dBuilder.parse( inputFile );
+		Document doc = dBuilder.parse( inputFile.getInputStream( ) );
 		doc.getDocumentElement().normalize( );
 		NodeList nList = doc.getElementsByTagName( TAG_DEPENDENCY );
 

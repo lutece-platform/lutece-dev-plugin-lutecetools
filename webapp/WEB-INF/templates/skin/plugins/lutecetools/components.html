@@ -45,18 +45,6 @@
             	</div>
             </div>
         </form>
-        <br />
-        <div class="row">
-            <div class="col-md-12">
-				<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=components">
-					<label for="research">Rechercher&nbsp;</label>
-					<div class="input-group">
-						<input type="search" class="form-control input-sm" id="component" name="component" placeholder="Composant">
-					</div>
-					<img src="images/skin/plugins/lutecetools/ajax-loader2.gif" id="imgLoader" style="display:none" />
-				</form>
-			</div>
-		</div>
         <br /><br />
         <div class="row" style="text-align:center">
        		<div class="col-md-3">
@@ -301,7 +289,20 @@
 		                    <span class="badge"> ${RCIDanger} </span> &nbsp;
 		                </div>
 		            </div>
-		            <br /><br />
+		            <br /><br /><br />
+		            <div class="row">
+			            <div class="col-md-2">
+							<form class="form-inline">
+								<div class="input-group">
+									<input type="text" class="form-control" id="component" name="component" placeholder="Rechercher">
+									<span class = "input-group-addon info" style="width:45px;background-color:#ffffe5">
+										<img src="images/skin/plugins/lutecetools/ajax-loader2.gif" width="20" height="20" id="imgLoader" style="display:none;" />
+									</span>
+								</div>
+							</form>
+						</div>
+					</div>		            
+		            <br />
                 </tboby>
             </table>
         </div>
