@@ -40,8 +40,18 @@
                 </div>
             </div>
             <div class="row">
-            	<div class="col-md-9">
+            	<div class="col-md-4">
             		#i18n{lutecetools.components.countLines} : <strong> ${total_lines} </strong>
+            	</div>
+            	<div class="col-md-3">
+            		<#if total_prs?has_content>
+            			#i18n{lutecetools.components.totalprs} : <strong> ${total_prs} </strong>
+            		</#if>
+            	</div>
+            	<div class="col-md-4">
+            		<#if oldest_pr?has_content>
+            			#i18n{lutecetools.components.oldestpr} : <strong> ${oldest_pr?date} </strong>
+            		</#if>
             	</div>
             </div>
         </form>
@@ -79,7 +89,7 @@
                 <thead>
                     <tr>
                         <th id="1">#i18n{lutecetools.components.labelComponent}</th>
-                        <th colspan="4" id="2">GitHub</th>
+                        <th colspan="5" id="2">GitHub</th>
                         <th colspan="2" id="3">#i18n{lutecetools.components.labelVersion}</th>
                         <th colspan="2" id="4">#i18n{lutecetools.components.labelParentPomVersion}</th>
                         <#if core_versions>
@@ -96,6 +106,7 @@
                         <th class="small" id="10">organization</th>
                         <th class="small" id="11">branches</th>
                         <th class="small" id="12">readme</th>
+                        <th class="small" id="23">PRs</th>
                         <th class="small" id="13">Snapshot</th>
                         <th class="small" id="14">Release</th>
                         <th class="small" id="15">Snapshot</th>
@@ -159,6 +170,13 @@
                                 <img src="images/skin/plugins/lutecetools/readme-green.png" title="Readme file available" width="24" height="24" />
                                 <#assign readmeOk = readmeOk +1 />
                             </#if>
+                        </td>
+                        <td>
+                        	<#if component.gitHubPullRequests gt 0>
+                        		<a href="${component.snapshotScmUrl?remove_ending(".git")}/pulls" title="${i18n("lutecetools.components.oldestpr")?html} ${(component.oldestPullRequest?number_to_date)?html}">
+                        		${component.gitHubPullRequests}
+                        		</a>
+                        	</#if>
                         </td>
                         <td class="small">
                             <#if component.snapshotScmUrl?contains("git")>
