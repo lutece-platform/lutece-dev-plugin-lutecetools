@@ -40,7 +40,9 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import java.io.FileNotFoundException;
 
 import org.kohsuke.github.GHBranch;
+import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHOrganization;
+import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
@@ -138,6 +140,23 @@ public class GitHubService
                         {
                             component.setGitHubReadme( false );
                         }
+                    }
+                    try
+                    {
+                        List<GHPullRequest> prs = repo.getPullRequests( GHIssueState.OPEN );
+                        component.setGitHubPullRequests( prs.size( ) );
+                        long oldest = Long.MAX_VALUE;
+                        for ( GHPullRequest pr : prs)
+                        {
+                            if (pr.getUpdatedAt( ).getTime( ) < oldest)
+                            {
+                                oldest = pr.getUpdatedAt( ).getTime( );
+                            }
+                        }
+                        component.setOldestPullRequest( oldest );
+                    } catch ( IOException e )
+                    {
+                        sbLogs.append( "\n*** ERROR *** Retreiving Github pull requests for component " ).append( component.getArtifactId() ).append(" : ").append(e.getMessage(  ));
                     }
                 }
             }

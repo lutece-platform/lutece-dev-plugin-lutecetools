@@ -61,6 +61,8 @@ public class Component extends AbstractComponent implements Comparable
     private boolean _bGitHubRepo;
     private String _strGitHubOwner;
     private boolean _bGitHubReadme;
+    private int _nGithubPullRequests;
+    private long _nOldestPullRequest;
     private long _lLastUpdate;
     private List<String> _listBranches;
     private String _strJiraLastReleasedVersion;
@@ -356,6 +358,42 @@ public class Component extends AbstractComponent implements Comparable
     public boolean getGitHubReadme(  )
     {
         return _bGitHubReadme;
+    }
+
+    /**
+     * Sets the number of open pull requests for the component
+     * @param nPullRequests number of open pull requests
+     */
+    public void setGitHubPullRequests( int nPullRequests )
+    {
+        _nGithubPullRequests = nPullRequests;
+    }
+
+    /**
+     * Gets the number of open pull requests for the component
+     * @return number of open pull requests
+     */
+    public int getGitHubPullRequests(  )
+    {
+        return _nGithubPullRequests;
+    }
+
+    /**
+     * Sets the oldest pull request update date
+     * @param nOldestPullRequest oldest pull request update date
+     */
+    public void setOldestPullRequest( long nOldestPullRequest )
+    {
+        _nOldestPullRequest = nOldestPullRequest;
+    }
+
+    /**
+     * Gets the oldest pull request update date
+     * @return oldest pull request update date
+     */
+    public long getOldestPullRequest(  )
+    {
+        return _nOldestPullRequest;
     }
 
     /**

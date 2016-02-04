@@ -45,6 +45,7 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,8 @@ public class ComponentListApp extends MVCApplication
     private static final String MARK_INTEGER_WARNING = "rci_color_warning";
     private static final String MARK_TOTAL_LINES = "total_lines";
     private static final String MARK_COMPONENT_SEARCHED = "component_searched";
+    private static final String MARK_TOTAL_PRS = "total_prs";
+    private static final String MARK_OLDEST_PR = "oldest_pr";
     private static final String VIEW_HOME = "home";
     private static final String ACTION_REFRESH = "refresh";
     private static final String ACTION_CLEAR_CACHE = "clearCache";
@@ -104,6 +107,8 @@ public class ComponentListApp extends MVCApplication
         boolean bDisplayCoreVersions = ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON );
         boolean bGitHubFilter = ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) );
         Integer nTotal = 0;
+        int nTotalPRs = 0;
+        long oldestPR = Long.MAX_VALUE;
 
         Map<String, Object> model = getModel(  );
 
@@ -120,6 +125,14 @@ public class ComponentListApp extends MVCApplication
         	{
         		nTotal += Integer.parseInt( c.getSonarNbLines( ).replace( ",", "" ) );
         	}
+            if ( c.getGitHubPullRequests( ) > 0 )
+            {
+                nTotalPRs = nTotalPRs + c.getGitHubPullRequests( );
+                if ( c.getOldestPullRequest( ) < oldestPR )
+                {
+                    oldestPR = c.getOldestPullRequest( );
+                }
+            }
         }
         
         if ( component != null )
@@ -131,6 +144,11 @@ public class ComponentListApp extends MVCApplication
         model.put( MARK_INTEGER_WARNING, SONAR_RCI_WARNING);
         model.put( MARK_COMPONENTS_LIST, ci );
         model.put( MARK_TOTAL_LINES, nTotal );
+        if ( nTotalPRs > 0 )
+        {
+            model.put( MARK_TOTAL_PRS, nTotalPRs );
+            model.put( MARK_OLDEST_PR, new Date( oldestPR ) );
+        }
         model.put( MARK_GITHUB_FILTER, bGitHubFilter );
         model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );
         model.put( MARK_LOGS, MavenRepoService.getLogs() );

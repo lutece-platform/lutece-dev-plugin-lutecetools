@@ -117,7 +117,7 @@ function handleHeaderClick( hdr ) {
 }
 
 var id;
-for ( id = 1; id <= 22; id++ ) {
+for ( id = 1; id <= 23; id++ ) {
 	$( ".myTableGraphic #" + id ).append( " <i class=\"fa fa-fw fa-sort\">" );
 }
 
