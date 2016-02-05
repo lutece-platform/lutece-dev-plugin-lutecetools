@@ -67,16 +67,13 @@ public class ComponentListApp extends MVCApplication
     private static final String MARK_INTEGER_SUCCESS = "rci_color_success";
     private static final String MARK_INTEGER_WARNING = "rci_color_warning";
     private static final String MARK_TOTAL_LINES = "total_lines";
-    private static final String MARK_COMPONENT_SEARCHED = "component_searched";
     private static final String MARK_TOTAL_PRS = "total_prs";
     private static final String MARK_OLDEST_PR = "oldest_pr";
     private static final String VIEW_HOME = "home";
     private static final String ACTION_REFRESH = "refresh";
     private static final String ACTION_CLEAR_CACHE = "clearCache";
-    private static final String ACTION_SEARCH_COMPONENT = "searchComponent";
     private static final String PARAMETER_GITHUB = "github";
     private static final String PARAMETER_CORE_VERSIONS = "core";
-    private static final String PARAMETER_COMPONENT = "component";
     private static final String VALUE_ON = "on";
     private static final long serialVersionUID = 1L;
     
@@ -91,8 +88,6 @@ public class ComponentListApp extends MVCApplication
     
     private static final String ERROR_NOT_FOUND = "lutecetools.error.research.notFound";
     
-    // Session variable to store working values
-    private Component component = null;
     
     /**
      * Returns the content of the page lutecetools.
@@ -135,11 +130,6 @@ public class ComponentListApp extends MVCApplication
             }
         }
         
-        if ( component != null )
-        {
-        	model.put( MARK_COMPONENT_SEARCHED, component );
-        	component = null;
-        }
         model.put( MARK_INTEGER_SUCCESS, SONAR_RCI_SUCCESS);
         model.put( MARK_INTEGER_WARNING, SONAR_RCI_WARNING);
         model.put( MARK_COMPONENTS_LIST, ci );

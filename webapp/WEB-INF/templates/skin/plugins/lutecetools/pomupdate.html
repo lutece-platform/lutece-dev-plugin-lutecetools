@@ -3,25 +3,24 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="well hero">
-				<h1>Mise à niveau du POM</h1>
+				<h1>#i18n{lutecetools.pomupdate.title}</h1>
 			</div>
 		</div>
 		<form action="jsp/site/Portal.jsp" method="post">
 			<div class="col-lg-6">
 				<input type="hidden" name="page" value="pomupdate">
 				<input type="hidden" name="action" value="process">
-				<h3>POM en entrée</h3>
-				<p>Coller ci-dessous le chemin local du POM dont vous voulez actualiser les dépendances.</p>
-					<!--  <input type="file" class="form-control" name="source" value="">-->
-					<#assign listFiles = ''>
-            		<@addFileInputAndfilesBox fieldName="source"  handler=handler  listUploadedFiles= listFiles inputCssClass="" multiple=false />
+				<h3>#i18n{lutecetools.pomupdate.inputTitle}</h3>
+				<p>#i18n{lutecetools.pomupdate.inputDescription}</p>
 				<button class="btn btn-primary pull-right" type="submit">
-					<i class="fa fa-play"></i> Générer
+					<i class="fa fa-play"></i> #i18n{lutecetools.pomupdate.buttonProcess}
 				</button>
+				<#assign listFiles = ''>
+            	<@addFileInputAndfilesBox fieldName="source"  handler=handler  listUploadedFiles= listFiles inputCssClass="" multiple=false />
 			</div>
 		</form>
 		<div class="col-lg-6">
-			<h3>POM en sortie</h3>
+			<h3>#i18n{lutecetools.pomupdate.outputTitle}</h3>
 			<textarea class="form-control" name="output" rows="16">${output}</textarea>
 			<br />
 		</div>

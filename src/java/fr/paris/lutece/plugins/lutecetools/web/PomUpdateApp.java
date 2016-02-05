@@ -1,7 +1,5 @@
 package fr.paris.lutece.plugins.lutecetools.web;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,13 +8,11 @@ import org.apache.commons.fileupload.FileItem;
 
 import fr.paris.lutece.plugins.lutecetools.service.LutecetoolsAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.lutecetools.service.XMLParser;
-import fr.paris.lutece.portal.service.fileupload.FileUploadService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
-import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
 /**
@@ -27,63 +23,62 @@ public class PomUpdateApp extends MVCApplication
 {
 	private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/pomupdate.html";
 	private static final String VIEW_HOME = "home";
-	private static final String MARK_INPUT = "input";
 	private static final String MARK_OUTPUT = "output";
-	private static final String MARK_VALID_PATH = "valid_path";
 	private static final String INPUT_FIELD_NAME = "source";
 	private static final String ACTION_PROCESS = "process";
 	private static final String ERROR_XML_PARSING = "Parsing error";
 	private static final String CANCELLED = "Cancelled";
-	private static final String NOT_FOUND = "File not found";
+	private static final String ERROR_FILE_EXTENSION = "Wrong file extension";
+	private static final String ERROR_EMPTY_FIELD = "Empty field";
 	private static final String MARK_HANDLER = "handler";
 	
 	private LutecetoolsAsynchronousUploadHandler _lutecetoolsAsynchronousUploadHandler = SpringContextService.getBean( LutecetoolsAsynchronousUploadHandler.BEAN_NAME );
 	private String _strOutput = "";
-	private Boolean _strValidPath = false;
 	
 	/**
-     * Returns the content of the page pomupdate.
-     * @param request The HTTP request
-     * @return The view
-     */
-    @View( value = VIEW_HOME, defaultView = true )
-    public XPage viewHome( HttpServletRequest request )
-    {
-    	Map<String, Object> model = getModel(  );
-        //model.put( MARK_INPUT, _strInput );
-    	model.put( MARK_HANDLER, _lutecetoolsAsynchronousUploadHandler );
-        model.put( MARK_OUTPUT, _strOutput );
-        model.put( MARK_VALID_PATH, _strValidPath );
-        
-        return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
-    }
-    
-    @Action( ACTION_PROCESS )
-    public XPage process( HttpServletRequest request )
-    {
-    	FileItem _fileInput = _lutecetoolsAsynchronousUploadHandler.getFile( request, INPUT_FIELD_NAME );
+	 * Returns the content of the page pomupdate.
+	 * @param request The HTTP request
+	 * @return The view
+	 */
+	@View( value = VIEW_HOME, defaultView = true )
+	public XPage viewHome( HttpServletRequest request )
+	{
+		Map<String, Object> model = getModel(  );
+		model.put( MARK_HANDLER, _lutecetoolsAsynchronousUploadHandler );
+		model.put( MARK_OUTPUT, _strOutput );
 
-        _strOutput = XMLParser.updatePOM( _fileInput );
-        _strValidPath = false;
-        if ( _strOutput.equals( NOT_FOUND ) )
-        {
-        	_strOutput = NOT_FOUND;
-        }
-        else if ( _strOutput.isEmpty( ) )
-        {
-        	_strOutput = ERROR_XML_PARSING;
-        	_strValidPath = true;
-        }
-        else if ( _strOutput.equals( CANCELLED ) )
-        {
-        	_strOutput = CANCELLED;
-        	_strValidPath = true;
-        }
-        else
-        {
-        	_strValidPath = true;
-        }
-				
-        return redirectView( request, VIEW_HOME );
-    }
+		return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
+	}
+    
+	@Action( ACTION_PROCESS )
+	public XPage process( HttpServletRequest request )
+	{
+		FileItem _fileInput = _lutecetoolsAsynchronousUploadHandler.getFile( request, INPUT_FIELD_NAME );
+
+		if ( _fileInput != null )
+		{
+			if ( _fileInput.getContentType( ).endsWith( "xml" ) )
+			{
+				_strOutput = XMLParser.updatePOM( _fileInput );
+				if ( _strOutput.isEmpty( ) )
+				{
+					_strOutput = ERROR_XML_PARSING;
+				}
+				else if ( _strOutput.equals( CANCELLED ) )
+				{
+					_strOutput = CANCELLED;
+				}
+			}
+			else
+			{
+	    		_strOutput = ERROR_FILE_EXTENSION;
+	    	}
+		}
+		else
+		{
+			_strOutput = ERROR_EMPTY_FIELD;
+		}
+
+		return redirectView( request, VIEW_HOME );
+	}
 }

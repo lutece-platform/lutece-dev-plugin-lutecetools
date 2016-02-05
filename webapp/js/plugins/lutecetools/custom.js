@@ -119,6 +119,7 @@ function handleHeaderClick( hdr ) {
 var id;
 for ( id = 1; id <= 23; id++ ) {
 	$( ".myTableGraphic #" + id ).append( " <i class=\"fa fa-fw fa-sort\">" );
+	$( "#" + id ).click( handleHeaderClick( "#" + id ) );
 }
 
 //$( ".myTableGraphic" ).tablesorter( {debug: true} );
@@ -126,9 +127,6 @@ $( "" ).toggle( );
 
 $( ".myTableGraphic th" ).css( "cursor", "pointer" );
 
-for ( id = 1; id <= 22; id++ ) {
-	$( "#" + id ).click( handleHeaderClick( "#" + id ) );
-}
 
 // Filter components list
 

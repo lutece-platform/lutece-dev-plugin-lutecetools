@@ -1,6 +1,5 @@
 package fr.paris.lutece.plugins.lutecetools.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -52,18 +51,17 @@ public class XMLParser
 	
 	// Errors
 	private static final String CANCELLED = "Cancelled";
-	private static final String NOT_FOUND = "File not found";
     private static final String RELEASE_NOT_FOUND = "Release not found";
     
     private static final String LUTECE_CORE = "lutece-core";
     
 
-	public static String updatePOM( FileItem fin )
+	public static String updatePOM( FileItem _inputFile )
 	{
 		String strUpdated = "";
 		try 
 		{
-			strUpdated = updateString( fin );
+			strUpdated = process( _inputFile );
 			if ( strUpdated.equals( CANCELLED ) )
 			{
 				return CANCELLED;
@@ -77,11 +75,11 @@ public class XMLParser
 		return strUpdated;
 	}
 	
-	public static String updateString( FileItem inputFile ) throws ParserConfigurationException, SAXException, IOException, TransformerException
+	private static String process( FileItem _inputFile ) throws ParserConfigurationException, SAXException, IOException, TransformerException
 	{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance( );
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder( );
-		Document doc = dBuilder.parse( inputFile.getInputStream( ) );
+		Document doc = dBuilder.parse( _inputFile.getInputStream( ) );
 		doc.getDocumentElement().normalize( );
 		NodeList nList = doc.getElementsByTagName( TAG_DEPENDENCY );
 
