@@ -17,6 +17,10 @@
 				</button>
 				<#assign listFiles = ''>
             	<@addFileInputAndfilesBox fieldName="source"  handler=handler  listUploadedFiles= listFiles inputCssClass="" multiple=false />
+            	<br />
+            	<#if warning??>
+					<font color="red">${warning}</font>
+				</#if>
 			</div>
 		</form>
 		<div class="col-lg-6">

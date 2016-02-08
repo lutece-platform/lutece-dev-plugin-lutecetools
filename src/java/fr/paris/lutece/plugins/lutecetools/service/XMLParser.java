@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -46,11 +45,9 @@ public class XMLParser
 	
 	// Messages
 	private static final String DIALOG_MESS_PART_1 = "Les dépendances :";
-	private static final String DIALOG_MESS_PART_2 = "conserveront leur version car la nouvelle n'a pas pu être récupérée. Voulez-vous continuer ?";
-	private static final String DIALOG_MESS_TITLE = "Warning";
+	private static final String DIALOG_MESS_PART_2 = "ont conservé leur version car la nouvelle n'a pas pu être récupérée.";
 	
 	// Errors
-	private static final String CANCELLED = "Cancelled";
     private static final String RELEASE_NOT_FOUND = "Release not found";
     
     private static final String LUTECE_CORE = "lutece-core";
@@ -62,10 +59,6 @@ public class XMLParser
 		try 
 		{
 			strUpdated = process( _inputFile );
-			if ( strUpdated.equals( CANCELLED ) )
-			{
-				return CANCELLED;
-			}
 		} 
 		catch ( IOException | ParserConfigurationException | SAXException | TransformerException e )
 		{
@@ -117,18 +110,10 @@ public class XMLParser
 		{
 			for ( String list : arr)
 			{
-				artifactIdList = artifactIdList.concat( "- " ).concat( list ).concat("\n");
+				artifactIdList = artifactIdList.concat( "- " ).concat( list ).concat( "<br />" );
 			}
-			
-			Integer dialogButton = JOptionPane.YES_NO_OPTION;
-			Integer dialogResult = JOptionPane.showConfirmDialog( 
-					null, DIALOG_MESS_PART_1.concat( "\n" ).concat( artifactIdList ).concat( 
-							DIALOG_MESS_PART_2 ), DIALOG_MESS_TITLE, dialogButton );
-		
-			if ( dialogResult != JOptionPane.YES_OPTION )
-			{
-				return CANCELLED;
-			}
+			Globals._strWarningPomMessage = DIALOG_MESS_PART_1.concat( "<br />" ).concat( 
+					artifactIdList ).concat( DIALOG_MESS_PART_2 );
 		}
 		
 		TransformerFactory transformerFactory = TransformerFactory.newInstance( );

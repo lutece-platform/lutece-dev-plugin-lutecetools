@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
 
+import fr.paris.lutece.plugins.lutecetools.service.Globals;
 import fr.paris.lutece.plugins.lutecetools.service.LutecetoolsAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.lutecetools.service.XMLParser;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -23,14 +24,18 @@ public class PomUpdateApp extends MVCApplication
 {
 	private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/pomupdate.html";
 	private static final String VIEW_HOME = "home";
+	
 	private static final String MARK_OUTPUT = "output";
+	private static final String MARK_HANDLER = "handler";
+	private static final String MARK_WARNING = "warning";
+	
 	private static final String INPUT_FIELD_NAME = "source";
 	private static final String ACTION_PROCESS = "process";
+	
 	private static final String ERROR_XML_PARSING = "Parsing error";
 	private static final String CANCELLED = "Cancelled";
 	private static final String ERROR_FILE_EXTENSION = "Wrong file extension";
 	private static final String ERROR_EMPTY_FIELD = "Empty field";
-	private static final String MARK_HANDLER = "handler";
 	
 	private LutecetoolsAsynchronousUploadHandler _lutecetoolsAsynchronousUploadHandler = SpringContextService.getBean( LutecetoolsAsynchronousUploadHandler.BEAN_NAME );
 	private String _strOutput = "";
@@ -44,6 +49,12 @@ public class PomUpdateApp extends MVCApplication
 	public XPage viewHome( HttpServletRequest request )
 	{
 		Map<String, Object> model = getModel(  );
+		
+		if ( !Globals._strWarningPomMessage.isEmpty( ) )
+		{
+			model.put( MARK_WARNING, Globals._strWarningPomMessage );
+			Globals._strWarningPomMessage = "";
+		}
 		model.put( MARK_HANDLER, _lutecetoolsAsynchronousUploadHandler );
 		model.put( MARK_OUTPUT, _strOutput );
 
