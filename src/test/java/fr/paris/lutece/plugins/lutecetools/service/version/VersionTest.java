@@ -34,13 +34,14 @@
 package fr.paris.lutece.plugins.lutecetools.service.version;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import fr.paris.lutece.test.LuteceTestCase;
 
 /**
  *
  * @author pierre
  */
-public class VersionTest
+public class VersionTest extends LuteceTestCase
 {
 
     /**

@@ -34,8 +34,9 @@ public class SonarService
 	private static final String KEY_MSR = "msr";
 	private static final String KEY_KEY = "key";
 	private static final String KEY_FRMT_VAL = "frmt_val";
+	private static final String KEY_VAL = "val";
 	private static final String KEY_NCLOC = "ncloc";
-	private static final String KEY_VIOLATIONS_DENSITY = "violations_density";
+	private static final String KEY_SQALE_DEBT_RATIO = "sqale_debt_ratio";
 	
 	private static SonarService _singleton;
 	private static HttpAccess httpAccess = new HttpAccess( );
@@ -98,9 +99,9 @@ public class SonarService
 			    {
 			    	metrics.put( KEY_NCLOC, key.getString( KEY_FRMT_VAL ) );
 			    }
-			    else if ( key.getString( KEY_KEY ).equals( KEY_VIOLATIONS_DENSITY ) )
+			    else if ( key.getString( KEY_KEY ).equals( KEY_SQALE_DEBT_RATIO ) )
 			    {
-			    	metrics.put( KEY_VIOLATIONS_DENSITY, key.getString( KEY_FRMT_VAL ) );
+			    	metrics.put( KEY_SQALE_DEBT_RATIO, String.valueOf( 100 - key.getInt( KEY_VAL ) ) + "%" );
 			    }
 			}
 		}

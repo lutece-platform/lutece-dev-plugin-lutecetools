@@ -33,14 +33,16 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
+import fr.paris.lutece.test.LuteceTestCase;
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+
 import org.junit.Test;
 
 /**
  *
  * @author pierre
  */
-public class JiraServiceTest
+public class JiraServiceTest extends LuteceTestCase
 {
     
 
@@ -53,11 +55,10 @@ public class JiraServiceTest
         System.out.println("setJiraInfos");
         Component component = new Component();
         component.setJiraKey( "LUTECETOOL");
-        JiraService.instance().setJiraInfos(component);
-        System.out.println( component.getJiraLastReleasedVersion() );
-        System.out.println( component.getJiraLastUnreleasedVersion() );
-        System.out.println( component.getJiraIssuesCount());
-        System.out.println( component.getJiraUnresolvedIssuesCount());
+        JiraService.instance().setJiraInfos(component , new StringBuilder(  ));
+        assertEquals( "1.0.0" , component.getJiraLastReleasedVersion(  ) );
+assertEquals("1.0.1", component.getJiraLastUnreleasedVersion(  ) );
+        assertEquals( 22, component.getJiraIssuesCount(  ) );
+        assertEquals( 0, component.getJiraUnresolvedIssuesCount(  ) );
     }
-    
 }

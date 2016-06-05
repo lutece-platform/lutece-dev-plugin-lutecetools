@@ -98,7 +98,7 @@ public final class MavenRepoService
     
     // Keys
  	private static final String KEY_NCLOC = "ncloc";
- 	private static final String KEY_VIOLATIONS_DENSITY = "violations_density";
+ 	private static final String KEY_SQALE_DEBT_RATIO = "sqale_debt_ratio";
  	
  // Tags
  	private static final String TAG_LUTECE_CORE = "lutece-core";
@@ -311,7 +311,7 @@ public final class MavenRepoService
         	{
         		component.setSonarNbLines( entry.getValue( ) );
         	}
-        	else if ( entry.getKey().equals( KEY_VIOLATIONS_DENSITY ) )
+        	else if ( entry.getKey().equals( KEY_SQALE_DEBT_RATIO ) )
         	{
         		component.setSonarRCI( entry.getValue( ) );
         	}

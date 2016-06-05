@@ -36,13 +36,15 @@ package fr.paris.lutece.plugins.lutecetools.service.version;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import fr.paris.lutece.test.LuteceTestCase;
 
 /**
  * VersionUtilsTest
  */
-public class VersionUtilsTest
+public class VersionUtilsTest extends LuteceTestCase
 {
 
     /**
