@@ -48,7 +48,7 @@ public class JenkinsService {
 	private static final String PWD_JENKINS = AppPropertiesService.getProperty( PROPERTY_JENKINS_CREDENTIALS_PWD );
 	
 	private static JenkinsService _singleton;
-	private Map<String, String> _mapScmInfoJobName;
+	private Map<String, BuildInfo> _mapScmInfoToBuildInfo;
 	
 	/**
 	 * Private constructor
@@ -72,12 +72,12 @@ public class JenkinsService {
 		return _singleton;
 	}
 
-	private synchronized Map<String, String> getMapScmInfoJobName() {
-		return _mapScmInfoJobName;
+	private synchronized Map<String, BuildInfo> getMapScmInfoToBuildInfo() {
+		return _mapScmInfoToBuildInfo;
 	}
 
-	private synchronized void setMapScmInfoJobName(Map<String, String> mapScmInfoJobName) {
-		this._mapScmInfoJobName = mapScmInfoJobName;
+	private synchronized void setMapScmInfoJobName(Map<String, BuildInfo> mapScmInfoToBuildInfo) {
+		this._mapScmInfoToBuildInfo = mapScmInfoToBuildInfo;
 	}
 
 
@@ -120,7 +120,7 @@ public class JenkinsService {
 	 */
 	private BuildInfo getBuildInfo(Component component) {
 		BuildInfo res = null;
-		if (getMapScmInfoJobName() != null) {
+		if (getMapScmInfoToBuildInfo() != null) {
 			String compScmUrl = component.getSnapshotScmUrl();
 			if ((compScmUrl == null) || (compScmUrl.equals(""))) {
 				compScmUrl = component.getScmUrl();
@@ -129,14 +129,14 @@ public class JenkinsService {
 				int index = compScmUrl.indexOf(":");
 				if (index > -1) {
 					String baseUrl = compScmUrl.substring(index + 1);
-					if (getMapScmInfoJobName().get(baseUrl) != null) {
-						BuildInfo buildInfo = getJobInfo(getMapScmInfoJobName().get(baseUrl));
+					if (getMapScmInfoToBuildInfo().get(baseUrl) != null) {
+						BuildInfo buildInfo = getMapScmInfoToBuildInfo().get(baseUrl);
 						res = buildInfo;
 					}
 					else {
 						baseUrl = baseUrl.replace("cgi-bin/viewvc.cgi", "svn");
-						if (getMapScmInfoJobName().get(baseUrl) != null) {
-							BuildInfo buildInfo = getJobInfo(getMapScmInfoJobName().get(baseUrl));
+						if (getMapScmInfoToBuildInfo().get(baseUrl) != null) {
+							BuildInfo buildInfo = getMapScmInfoToBuildInfo().get(baseUrl);
 							res = buildInfo;
 						}
 					}
@@ -214,6 +214,7 @@ public class JenkinsService {
 		{
 			String strHtml = performsGetJenkinsUrlAndGetsResult(URL_JENKINS_BASE + "job/" + jobName + "/lastBuild/api/json", false);
 			JSONObject json = new JSONObject( strHtml );
+			res._jobName = jobName;
 			res._strStatus = json.getString( "result" );
 			res._strNumber = json.getString( "number" );
 			res._strUrl = URL_JENKINS_BASE + "job/" + jobName + "/lastBuild";
@@ -230,7 +231,7 @@ public class JenkinsService {
 	 * @return
 	 */
 	private void buildMapScmInfoJobName() {
-        setMapScmInfoJobName(new TreeMap<String, String>());
+		setMapScmInfoJobName(new TreeMap<String, BuildInfo>());
 		try 
 		{
 			String strHtml = performsGetJenkinsUrlAndGetsResult(URL_JENKINS_BASE + "view/Tous/api/json", false);
@@ -247,7 +248,8 @@ public class JenkinsService {
 					    ScmInfo scmInfo = getScmInfo(jobName);
 					    int index = scmInfo._strScmUrl.indexOf(":");
 					    String baseUrl = scmInfo._strScmUrl.substring(index + 1);
-					    getMapScmInfoJobName().put(baseUrl, jobName);
+					    BuildInfo buildInfo = getJobInfo(jobName);
+					    getMapScmInfoToBuildInfo().put(baseUrl, buildInfo);
 			    	}
 			    }
 			}
@@ -310,6 +312,7 @@ public class JenkinsService {
 	}
 
 	private class BuildInfo {
+		public String _jobName = "";
 		public String _strStatus = "";
 		public String _strNumber = "";
 		public String _strUrl = "";
