@@ -60,6 +60,12 @@
             <daemon-description>lutecetools.daemon.cacheUpdater.description</daemon-description>
             <daemon-class>fr.paris.lutece.plugins.lutecetools.service.CacheUpdaterDaemon</daemon-class>
         </daemon>
+        <daemon>
+            <daemon-id>lutecetoolsJenkinsCacheUpdater</daemon-id>
+            <daemon-name>lutecetools.daemon.jenkinsCacheUpdater.name</daemon-name>
+            <daemon-description>lutecetools.daemon.jenkinsCacheUpdater.description</daemon-description>
+            <daemon-class>fr.paris.lutece.plugins.lutecetools.service.JenkinsDaemon</daemon-class>
+        </daemon>
     </daemons>
     
 </plug-in>

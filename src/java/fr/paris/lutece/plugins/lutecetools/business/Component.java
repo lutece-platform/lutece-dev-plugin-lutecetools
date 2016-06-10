@@ -34,7 +34,9 @@
 package fr.paris.lutece.plugins.lutecetools.business;
 
 import fr.paris.lutece.plugins.lutecetools.service.GitHubService;
+import fr.paris.lutece.plugins.lutecetools.service.JenkinsService;
 import fr.paris.lutece.plugins.lutecetools.service.JiraService;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.List;
@@ -47,7 +49,6 @@ public class Component extends AbstractComponent implements Comparable
 {
     public static final int JIRAKEY_ERROR_MISSING = 1;
     public static final int JIRAKEY_ERROR_INVALID = 2;
-    
     private String _strCoreVersion;
     private String _strParentPomVersion;
     private String _strSnapshotVersion;
@@ -125,7 +126,6 @@ public class Component extends AbstractComponent implements Comparable
         _strSonarNbLines = strSonarNbLines;
     }
 
-
     /**
      * Returns the SonarRCI
      * @return The SonarRCI
@@ -143,7 +143,7 @@ public class Component extends AbstractComponent implements Comparable
     {
         _strSonarRCI = strSonarRCI;
     }
-    
+
     /**
      * Returns the JiraKey
      * @return The JiraKey
@@ -445,8 +445,6 @@ public class Component extends AbstractComponent implements Comparable
     {
         return _listBranches;
     }
-    
-    
 
     /**
      * @return the GitHub Status
@@ -466,14 +464,13 @@ public class Component extends AbstractComponent implements Comparable
         return GitHubService.getGitHubErrors( this );
     }
 
-    
     /**
      * @return the Jira Status
      */
     @JsonIgnore
     public int getJiraStatus(  )
     {
-        return JiraService.instance().getJiraStatus( this );
+        return JiraService.instance(  ).getJiraStatus( this );
     }
 
     /**
@@ -482,11 +479,25 @@ public class Component extends AbstractComponent implements Comparable
     @JsonIgnore
     public String getJiraErrors(  )
     {
-        return JiraService.instance().getJiraErrors( this );
-        
+        return JiraService.instance(  ).getJiraErrors( this );
     }
-   
-    
+
+    /**
+     * @return the Jenkins Status
+     */
+    public String getJenkinsStatus(  )
+    {
+        return JenkinsService.instance(  ).getJenkinsStatus( this );
+    }
+
+    /**
+     * @return the Jenkins job url
+     */
+    public String getJenkinsJobUrl(  )
+    {
+        return JenkinsService.instance(  ).getJenkinsJobUrl( this );
+    }
+
     /**
      * @return the LastUpdate
      */
@@ -502,36 +513,38 @@ public class Component extends AbstractComponent implements Comparable
     {
         _lLastUpdate = lLastUpdate;
     }
-    
+
     /**
      * Readable implementation
      * @return The component as a string
      */
     @JsonIgnore
     @Override
-    public String toString()
+    public String toString(  )
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Component : ").append( getArtifactId() );
-        sb.append("\n  GitHub status: ").append( getGitHubStatus() );
-        sb.append("\n  [release] Version: ").append( getVersion() );
-        sb.append("\n  [release] Core version: ").append( getCoreVersion() );
-        sb.append("\n  [release] SCM URL: ").append( getScmUrl() );
-        sb.append("\n  [release] Parent POM Version: ").append( getParentPomVersion() );
-        sb.append("\n  [snapshot] Core version: ").append( getSnapshotCoreVersion() );
-        sb.append("\n  [snapshot] SCM URL: ").append( getSnapshotScmUrl() );
-        sb.append("\n  [snapshot] Parent POM Version: ").append( getSnapshotParentPomVersion() );
-        List<String> listBranches = getBranchesList();
-        if( listBranches != null )
+        StringBuilder sb = new StringBuilder(  );
+        sb.append( "Component : " ).append( getArtifactId(  ) );
+        sb.append( "\n  GitHub status: " ).append( getGitHubStatus(  ) );
+        sb.append( "\n  [release] Version: " ).append( getVersion(  ) );
+        sb.append( "\n  [release] Core version: " ).append( getCoreVersion(  ) );
+        sb.append( "\n  [release] SCM URL: " ).append( getScmUrl(  ) );
+        sb.append( "\n  [release] Parent POM Version: " ).append( getParentPomVersion(  ) );
+        sb.append( "\n  [snapshot] Core version: " ).append( getSnapshotCoreVersion(  ) );
+        sb.append( "\n  [snapshot] SCM URL: " ).append( getSnapshotScmUrl(  ) );
+        sb.append( "\n  [snapshot] Parent POM Version: " ).append( getSnapshotParentPomVersion(  ) );
+
+        List<String> listBranches = getBranchesList(  );
+
+        if ( listBranches != null )
         {
-            sb.append( "\n  Branches : ");
-            for( String strBranch : listBranches )
+            sb.append( "\n  Branches : " );
+
+            for ( String strBranch : listBranches )
             {
-                sb.append( strBranch ).append( " ");
+                sb.append( strBranch ).append( " " );
             }
         }
-        return sb.toString();
-    }
 
-    
+        return sb.toString(  );
+    }
 }

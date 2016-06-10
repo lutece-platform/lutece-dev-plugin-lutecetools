@@ -98,6 +98,7 @@
                         <th id="6">Sonar</th>
                         <th>&nbsp;</th>
                         <th colspan="3" id="7">Jira</th>
+                        <th id="9">Jenkins</th>
                         <th id="8">#i18n{lutecetools.components.labelLinks}</th>
                     </tr>
                     <tr>
@@ -119,6 +120,7 @@
                         <th class="small" id="20">RCI</th>
                         <th class="small" id="21">Status</th>
                         <th class="small" colspan="2" id="22">Unreleased version</th>
+                        <th class="small" id="23">Etat du build</th>
                         <th>&nbsp;</th>
                     </tr>
                 </thead>
@@ -141,15 +143,15 @@
                         <td class="small">${component.artifactId}</td>
                         <td>
                             <#if component.gitHubStatus gt 0 && component.gitHubStatus lt 3>
-                                <img src="images/skin/plugins/lutecetools/github-red.png" title="${component.gitHubErrors}" alt="GitHub status RED" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-red.png" title="" alt="GitHub status RED" width="24" height="24">
                             	<#assign githubDanger = githubDanger + 1>
                             </#if>
                             <#if component.gitHubStatus == 3 >
-                                <img src="images/skin/plugins/lutecetools/github-orange.png" title="${component.gitHubErrors}" alt="GitHub status ORANGE" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-orange.png" title="" alt="GitHub status ORANGE" width="24" height="24">
                             	<#assign githubWarning = githubWarning + 1>
                             </#if>
                             <#if component.gitHubStatus == 4 >
-                                <img src="images/skin/plugins/lutecetools/github-green.png" title="${component.gitHubErrors}" alt="GitHub status GREEN" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-green.png" title="" alt="GitHub status GREEN" width="24" height="24">
                                 <#assign githubOk = githubOk + 1>
                             </#if>
                         </td>
@@ -261,6 +263,13 @@
                             <a href="https://dev.lutece.paris.fr/site-release/">
                                 <img src="images/skin/plugins/lutecetools/release.png" title="Release" alt="release" width="24" height="24">
                             </a>
+                            </#if>
+                        </td>
+                        <td class="small">
+                            <#if component.jenkinsStatus?contains("?")>
+                                ${component.jenkinsStatus}
+                            <#else>
+                                <a href="http://www.google.fr">${component.jenkinsStatus}</a>
                             </#if>
                         </td>
                         <td>
