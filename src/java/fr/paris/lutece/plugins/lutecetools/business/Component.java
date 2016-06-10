@@ -485,6 +485,7 @@ public class Component extends AbstractComponent implements Comparable
     /**
      * @return the Jenkins Status
      */
+    @JsonIgnore
     public String getJenkinsStatus(  )
     {
         return JenkinsService.instance(  ).getJenkinsStatus( this );
@@ -493,6 +494,7 @@ public class Component extends AbstractComponent implements Comparable
     /**
      * @return the Jenkins job url
      */
+    @JsonIgnore
     public String getJenkinsJobUrl(  )
     {
         return JenkinsService.instance(  ).getJenkinsJobUrl( this );
