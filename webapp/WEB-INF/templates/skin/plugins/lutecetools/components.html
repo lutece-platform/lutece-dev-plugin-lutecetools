@@ -269,7 +269,7 @@
                             <#if component.jenkinsStatus?contains("?")>
                                 ${component.jenkinsStatus}
                             <#else>
-                                <a href="http://www.google.fr">${component.jenkinsStatus}</a>
+                                <a href="${component.jenkinsJobUrl}">${component.jenkinsStatus}</a>
                             </#if>
                         </td>
                         <td>
