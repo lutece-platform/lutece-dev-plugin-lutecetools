@@ -143,15 +143,15 @@
                         <td class="small">${component.artifactId}</td>
                         <td>
                             <#if component.gitHubStatus gt 0 && component.gitHubStatus lt 3>
-                                <img src="images/skin/plugins/lutecetools/github-red.png" title="" alt="GitHub status RED" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-red.png" title="${component.gitHubErrors}" alt="GitHub status RED" width="24" height="24">
                             	<#assign githubDanger = githubDanger + 1>
                             </#if>
                             <#if component.gitHubStatus == 3 >
-                                <img src="images/skin/plugins/lutecetools/github-orange.png" title="" alt="GitHub status ORANGE" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-orange.png" title="${component.gitHubErrors}" alt="GitHub status ORANGE" width="24" height="24">
                             	<#assign githubWarning = githubWarning + 1>
                             </#if>
                             <#if component.gitHubStatus == 4 >
-                                <img src="images/skin/plugins/lutecetools/github-green.png" title="" alt="GitHub status GREEN" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/github-green.png" title="${component.gitHubErrors}" alt="GitHub status GREEN" width="24" height="24">
                                 <#assign githubOk = githubOk + 1>
                             </#if>
                         </td>
