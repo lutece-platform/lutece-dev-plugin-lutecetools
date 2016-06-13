@@ -107,7 +107,7 @@ public class JenkinsService {
 		}
         return res;
 	}
-
+	
 	/**
 	 * 
 	 * @param component
@@ -129,7 +129,17 @@ public class JenkinsService {
 						res = buildInfo;
 					}
 					else {
-						baseUrl = baseUrl.replace("viewvc", "svn");
+						if (baseUrl.endsWith("/")) {
+							baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+						}
+						if (baseUrl.indexOf("/viewvc/") >= 0) {
+							baseUrl = baseUrl.replace("/viewvc/", "/svn/");
+						}
+						else {
+							if (baseUrl.indexOf("/wsvn/") >= 0) {
+								baseUrl = baseUrl.replace("/wsvn/", "/svn/");
+							}
+						}
 						if (getMapScmInfoToBuildInfo().get(baseUrl) != null) {
 							BuildInfo buildInfo = getMapScmInfoToBuildInfo().get(baseUrl);
 							res = buildInfo;
