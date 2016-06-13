@@ -1,9 +1,6 @@
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -34,8 +31,6 @@ import org.codehaus.jettison.json.JSONObject;
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.util.httpaccess.HttpAccess;
-import fr.paris.lutece.util.httpaccess.HttpAccessException;
 
 public class JenkinsService {
 	// URL
@@ -134,7 +129,7 @@ public class JenkinsService {
 						res = buildInfo;
 					}
 					else {
-						baseUrl = baseUrl.replace("cgi-bin/viewvc.cgi", "svn");
+						baseUrl = baseUrl.replace("viewvc", "svn");
 						if (getMapScmInfoToBuildInfo().get(baseUrl) != null) {
 							BuildInfo buildInfo = getMapScmInfoToBuildInfo().get(baseUrl);
 							res = buildInfo;
@@ -182,7 +177,14 @@ public class JenkinsService {
 						res._strScmTool = "svn";
 						int index2 = toAnalyse.indexOf(" at revision");
 						res._strScmUrl = toAnalyse.substring(0, index2);
-						res._strScmUrl = res._strScmUrl.replace("Updating ", "").trim();
+						if (res._strScmUrl.indexOf("Updating ") >= 0) {
+							res._strScmUrl = res._strScmUrl.replace("Updating ", "").trim();
+						}
+						else  {
+							if (res._strScmUrl.indexOf("Checking out ") >= 0) {
+								res._strScmUrl = res._strScmUrl.replace("Checking out ", "").trim();
+							}
+						}
 					}
 				}
 			}
