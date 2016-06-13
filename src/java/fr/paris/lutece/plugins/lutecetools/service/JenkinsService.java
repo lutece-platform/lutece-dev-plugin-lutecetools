@@ -252,24 +252,29 @@ public class JenkinsService {
 			
 			for ( int i = 0; i < listOfJobsJson.length( ); i++ )
 			{
-			    JSONObject key = listOfJobsJson.getJSONObject( i );
-			    String jobName = key.getString( "name" );
-			    
-			    if (jobName.endsWith("-deploy")) {
-			    	if (!jobName.contains("$")) {
-					    ScmInfo scmInfo = getScmInfo(jobName);
-					    int index = scmInfo._strScmUrl.indexOf(":");
-					    String baseUrl = scmInfo._strScmUrl.substring(index + 1);
-					    BuildInfo buildInfo = getJobInfo(jobName);
-					    getMapScmInfoToBuildInfo().put(baseUrl, buildInfo);
-			    	}
-			    }
+			    try {
+					JSONObject key = listOfJobsJson.getJSONObject( i );
+					String jobName = key.getString( "name" );
+					
+					if (jobName.endsWith("-deploy")) {
+						if (!jobName.contains("$")) {
+						    ScmInfo scmInfo = getScmInfo(jobName);
+						    int index = scmInfo._strScmUrl.indexOf(":");
+						    String baseUrl = scmInfo._strScmUrl.substring(index + 1);
+						    BuildInfo buildInfo = getJobInfo(jobName);
+						    getMapScmInfoToBuildInfo().put(baseUrl, buildInfo);
+						}
+					}
+				} catch (Exception e) {
+					AppLogService.error( e.getMessage( ) );
+				}
 			}
 		}
 		catch ( JSONException e )
 		{
 			AppLogService.error( e.getMessage( ) );
 		}
+		AppLogService.info("Cache size : " + getMapScmInfoToBuildInfo().size());
 	}
 	
 	/**
