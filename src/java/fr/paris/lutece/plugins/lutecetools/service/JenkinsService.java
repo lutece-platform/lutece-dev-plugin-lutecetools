@@ -134,7 +134,17 @@ public class JenkinsService {
 							BuildInfo buildInfo = getMapScmInfoToBuildInfo().get(baseUrl);
 							res = buildInfo;
 						}
+						else {
+							AppLogService.error( "Cannot match ScmUrl for the " + component.getArtifactId() +
+									" component.getSnapshotScmUrl() = [" + component.getSnapshotScmUrl() + "]," +
+									" component.getScmUrl() = [" + component.getScmUrl() + "]");
+						}
 					}
+				}
+				else {
+					AppLogService.error( "Cannot match ScmUrl for the " + component.getArtifactId() +
+							" component.getSnapshotScmUrl() = [" + component.getSnapshotScmUrl() + "]," +
+							" component.getScmUrl() = [" + component.getScmUrl() + "]");
 				}
 			}
 		}
