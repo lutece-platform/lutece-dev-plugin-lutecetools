@@ -1,6 +1,10 @@
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -107,6 +111,24 @@ public class JenkinsService {
 		}
         return res;
 	}
+
+	/**
+	 * 
+	 * @param strUrl
+	 * @return
+	 */
+	private String transformUrlToMatchIfNeeded(String strUrl) {
+		String res = strUrl;
+		if (res.indexOf("/viewvc/") >= 0) {
+			res = res.replace("/viewvc/", "/svn/");
+		}
+		else {
+			if (res.indexOf("/wsvn/") >= 0) {
+				res = res.replace("/wsvn/", "/svn/");
+			}
+		}
+		return res;
+	}
 	
 	/**
 	 * 
@@ -132,14 +154,7 @@ public class JenkinsService {
 						if (baseUrl.endsWith("/")) {
 							baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 						}
-						if (baseUrl.indexOf("/viewvc/") >= 0) {
-							baseUrl = baseUrl.replace("/viewvc/", "/svn/");
-						}
-						else {
-							if (baseUrl.indexOf("/wsvn/") >= 0) {
-								baseUrl = baseUrl.replace("/wsvn/", "/svn/");
-							}
-						}
+						baseUrl = transformUrlToMatchIfNeeded(baseUrl);
 						if (getMapScmInfoToBuildInfo().get(baseUrl) != null) {
 							BuildInfo buildInfo = getMapScmInfoToBuildInfo().get(baseUrl);
 							res = buildInfo;
@@ -266,14 +281,12 @@ public class JenkinsService {
 					JSONObject key = listOfJobsJson.getJSONObject( i );
 					String jobName = key.getString( "name" );
 					
-					if (jobName.endsWith("-deploy")) {
-						if (!jobName.contains("$")) {
-						    ScmInfo scmInfo = getScmInfo(jobName);
-						    int index = scmInfo._strScmUrl.indexOf(":");
-						    String baseUrl = scmInfo._strScmUrl.substring(index + 1);
-						    BuildInfo buildInfo = getJobInfo(jobName);
-						    getMapScmInfoToBuildInfo().put(baseUrl, buildInfo);
-						}
+					if (jobName.endsWith("-deploy") || (jobName.endsWith("- Deploy"))) {
+					    ScmInfo scmInfo = getScmInfo(jobName);
+					    int index = scmInfo._strScmUrl.indexOf(":");
+					    String baseUrl = scmInfo._strScmUrl.substring(index + 1);
+					    BuildInfo buildInfo = getJobInfo(jobName);
+					    getMapScmInfoToBuildInfo().put(baseUrl, buildInfo);
 					}
 				} catch (Exception e) {
 					AppLogService.error( e.getMessage( ) );
@@ -286,7 +299,28 @@ public class JenkinsService {
 		}
 		AppLogService.info("Cache size : " + getMapScmInfoToBuildInfo().size());
 	}
-	
+
+	/**
+	 * 
+	 * @param strUrl
+	 * @return
+	 */
+	private String getEncodedUrlString(String strUrl) {
+		String res = strUrl;
+		try {
+			URL url = new URL(res);
+			URI uri = new URI(url.getProtocol(), url.getAuthority(), url.getPath(), url.getQuery(), null);
+			res = uri.toURL().toString();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res;
+	}
+
 	/**
 	 * 
 	 * @param url
@@ -323,7 +357,7 @@ public class JenkinsService {
 			getUrl = getUrl + "?";
 		}
 		getUrl = getUrl + "token=" + buildToken;
-		HttpGet get = new HttpGet(getUrl);
+		HttpGet get = new HttpGet(getEncodedUrlString(getUrl));
 
 		try {
 			// Execute your request with the given context
