@@ -48,6 +48,7 @@ public class JenkinsService {
 	
 	private static JenkinsService _singleton;
 	private Map<String, BuildInfo> _mapScmInfoToBuildInfo;
+	private Map<String, BuildInfo> _mapArtefactIdToBuildInfo;
 	
 	/**
 	 * Private constructor
@@ -79,6 +80,13 @@ public class JenkinsService {
 		this._mapScmInfoToBuildInfo = mapScmInfoToBuildInfo;
 	}
 
+	private synchronized Map<String, BuildInfo> getMapArtefactIdToBuildInfo() {
+		return _mapArtefactIdToBuildInfo;
+	}
+
+	private synchronized void setMapArtefactIdToBuildInfo(Map<String, BuildInfo> mapArtefactIdToBuildInfo) {
+		this._mapArtefactIdToBuildInfo = mapArtefactIdToBuildInfo;
+	}
 
 	/**
 	 * 
@@ -145,34 +153,75 @@ public class JenkinsService {
 			if ((compScmUrl != null) && (!compScmUrl.equals(""))) {
 				int index = compScmUrl.indexOf(":");
 				if (index > -1) {
-					String baseUrl = compScmUrl.substring(index + 1);
-					if (getMapScmInfoToBuildInfo().get(baseUrl) != null) {
-						BuildInfo buildInfo = getMapScmInfoToBuildInfo().get(baseUrl);
+					String scmUrl = compScmUrl.substring(index + 1);
+					if (getMapScmInfoToBuildInfo().get(scmUrl) != null) {
+						BuildInfo buildInfo = getMapScmInfoToBuildInfo().get(scmUrl);
 						res = buildInfo;
 					}
 					else {
-						if (baseUrl.endsWith("/")) {
-							baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+						if (scmUrl.endsWith("/")) {
+							scmUrl = scmUrl.substring(0, scmUrl.length() - 1);
 						}
-						baseUrl = transformUrlToMatchIfNeeded(baseUrl);
-						if (getMapScmInfoToBuildInfo().get(baseUrl) != null) {
-							BuildInfo buildInfo = getMapScmInfoToBuildInfo().get(baseUrl);
+						scmUrl = transformUrlToMatchIfNeeded(scmUrl);
+						if (getMapScmInfoToBuildInfo().get(scmUrl) != null) {
+							BuildInfo buildInfo = getMapScmInfoToBuildInfo().get(scmUrl);
 							res = buildInfo;
-						}
-						else {
-							AppLogService.error( "Cannot match ScmUrl for the " + component.getArtifactId() +
-									" component.getSnapshotScmUrl() = [" + component.getSnapshotScmUrl() + "]," +
-									" component.getScmUrl() = [" + component.getScmUrl() + "]");
 						}
 					}
 				}
+			}
+			
+			if (res == null) {
+				if (getMapArtefactIdToBuildInfo().get(component.getArtifactId()) != null) {
+					BuildInfo buildInfo = getMapArtefactIdToBuildInfo().get(component.getArtifactId());
+					res = buildInfo;
+				}
 				else {
-					AppLogService.error( "Cannot match ScmUrl for the " + component.getArtifactId() +
+					AppLogService.error( "Cannot match ScmUrl for the " + component.getArtifactId() + " component." +
 							" component.getSnapshotScmUrl() = [" + component.getSnapshotScmUrl() + "]," +
 							" component.getScmUrl() = [" + component.getScmUrl() + "]");
 				}
 			}
 		}
+		
+		return res;
+	}
+	
+	/**
+	 * 
+	 * @param strToAnalyse
+	 * @param checkArtefactId
+	 * @return
+	 */
+	private ScmAndComponentInfo getComponentInfo(String strToAnalyse, ScmAndComponentInfo scmAndComponentInfoToUpdate) {
+		ScmAndComponentInfo res = scmAndComponentInfoToUpdate;
+		
+		if (strToAnalyse.matches(".*Installing.* to .*-SNAPSHOT.pom.*")) {
+			int index1 = strToAnalyse.indexOf(" to ");
+			int index2 = strToAnalyse.indexOf("-SNAPSHOT.pom");
+			String tmpStr = strToAnalyse.substring(index1, index2 + "-SNAPSHOT.pom".length());
+			int index3 = tmpStr.indexOf("/fr/paris/lutece");
+			String pertinentString = tmpStr.substring(index3 + 1);
+			String[] path = pertinentString.split("/");
+			for (int i=0; i<path.length; i++) {
+				String z = path[path.length - i -1];
+				if (z.endsWith("-SNAPSHOT")) {
+					String artefactId = path[path.length - i -2];
+					String groupId = null;
+					for (int y=0; y<path.length - i -2; y++) {
+						if (y == 0) {
+							groupId = path[y];
+						}
+						else {
+							groupId = groupId + "." + path[y];						
+						}
+					}
+					res._strGroupId = groupId;
+					res._strArtefactId = artefactId;
+				}
+			}
+		}
+		
 		return res;
 	}
 	
@@ -181,8 +230,8 @@ public class JenkinsService {
 	 * @param strHtml
 	 * @return
 	 */
-	private ScmInfo parseJenkinsJobConsoleOutputToGetScmUrl(String strHtml) {
-		ScmInfo res = new ScmInfo();
+	private ScmAndComponentInfo parseJenkinsJobConsoleOutputToGetScmUrl(String strHtml) {
+		ScmAndComponentInfo res = new ScmAndComponentInfo();
 		String toRead = strHtml;
 		String toAnalyse = "";
 		boolean emptyString = (toRead == null) || (toRead.trim().equals(""));
@@ -203,7 +252,6 @@ public class JenkinsService {
 				if (toAnalyse.contains("Fetching upstream changes from ")) {
 					res._strScmTool = "git";
 					res._strScmUrl = toAnalyse.replace("Fetching upstream changes from ", "").trim();
-					loop = false;
 				}
 			}
 			else {
@@ -222,6 +270,13 @@ public class JenkinsService {
 						}
 					}
 				}
+				else {
+					if (toAnalyse.matches(".*Installing.* to .*-SNAPSHOT.pom.*")) {
+						res = getComponentInfo(toAnalyse, res);
+						loop = false;
+					}
+				}
+
 			}
 		}
 		return res;
@@ -232,8 +287,8 @@ public class JenkinsService {
 	 * @param jobName
 	 * @return
 	 */
-	private ScmInfo getScmInfo(String jobName) {
-		ScmInfo res = null;
+	private ScmAndComponentInfo getScmInfo(String jobName) {
+		ScmAndComponentInfo res = null;
 		BuildInfo jobInfo = getJobInfo(jobName);
 		String strHtml = performsGetJenkinsUrlAndGetsResult(URL_JENKINS_BASE + "job/" + jobName + "/" + jobInfo._strNumber + "/logText/progressiveText?start=0", true);
 		res = parseJenkinsJobConsoleOutputToGetScmUrl(strHtml);
@@ -269,6 +324,7 @@ public class JenkinsService {
 	 */
 	private void buildMapScmInfoJobName() {
 		setMapScmInfoJobName(new TreeMap<String, BuildInfo>());
+		setMapArtefactIdToBuildInfo(new TreeMap<String, BuildInfo>());
 		try 
 		{
 			String strHtml = performsGetJenkinsUrlAndGetsResult(URL_JENKINS_BASE + "view/Tous/api/json", false);
@@ -282,11 +338,12 @@ public class JenkinsService {
 					String jobName = key.getString( "name" );
 					
 					if (jobName.endsWith("-deploy") || (jobName.endsWith("- Deploy"))) {
-					    ScmInfo scmInfo = getScmInfo(jobName);
+					    ScmAndComponentInfo scmInfo = getScmInfo(jobName);
 					    int index = scmInfo._strScmUrl.indexOf(":");
-					    String baseUrl = scmInfo._strScmUrl.substring(index + 1);
+					    String scmUrl = scmInfo._strScmUrl.substring(index + 1);
 					    BuildInfo buildInfo = getJobInfo(jobName);
-					    getMapScmInfoToBuildInfo().put(baseUrl, buildInfo);
+					    getMapScmInfoToBuildInfo().put(scmUrl, buildInfo);
+					    getMapArtefactIdToBuildInfo().put(scmInfo._strArtefactId, buildInfo);
 					}
 				} catch (Exception e) {
 					AppLogService.error( e.getMessage( ) );
@@ -297,7 +354,8 @@ public class JenkinsService {
 		{
 			AppLogService.error( e.getMessage( ) );
 		}
-		AppLogService.info("Cache size : " + getMapScmInfoToBuildInfo().size());
+		AppLogService.info("MapScmInfoJobName Cache size : " + getMapScmInfoToBuildInfo().size());
+		AppLogService.info("MapArtefactIdToBuildInfo Cache size : " + getMapArtefactIdToBuildInfo().size());
 	}
 
 	/**
@@ -312,11 +370,9 @@ public class JenkinsService {
 			URI uri = new URI(url.getProtocol(), url.getAuthority(), url.getPath(), url.getQuery(), null);
 			res = uri.toURL().toString();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			AppLogService.error(e.getMessage());
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			AppLogService.error(e.getMessage());
 		}
 		return res;
 	}
@@ -326,7 +382,7 @@ public class JenkinsService {
 	 * @param url
 	 * @return
 	 */
-	private String performsGetJenkinsUrlAndGetsResult(String url, boolean haveParameeter) {
+	private String performsGetJenkinsUrlAndGetsResult(String url, boolean haveParameter) {
 		String res = "";
 		    
 		// Build token
@@ -350,7 +406,7 @@ public class JenkinsService {
 
 		// You get request that will start the build
 		String getUrl = url;
-		if (haveParameeter) {
+		if (haveParameter) {
 			getUrl = getUrl + "&";
 		}
 		else {
@@ -379,9 +435,11 @@ public class JenkinsService {
 		public String _strUrl = "";
 	}
 
-	private class ScmInfo {
+	private class ScmAndComponentInfo {
 		public String _strScmTool = "";
 		public String _strScmUrl = "";
+		public String _strGroupId = "";
+		public String _strArtefactId = "";
 	}
 	
 	/**
