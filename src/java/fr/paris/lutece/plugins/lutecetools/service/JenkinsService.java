@@ -33,7 +33,10 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.plugins.lutecetools.web.rs.Constants;
+import fr.paris.lutece.plugins.rest.service.RestConstants;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 public class JenkinsService {
@@ -68,7 +71,6 @@ public class JenkinsService {
 		{
 			_singleton = new JenkinsService(  );
 		}
-
 		return _singleton;
 	}
 
@@ -111,7 +113,7 @@ public class JenkinsService {
 	/**
 	 *
 	 */
-	public String getJenkinsJobUrl(Component component) {
+	public String getJenkinsJobBuildUrl(Component component) {
         String res = "?";
 		BuildInfo buildInfo = getBuildInfo(component);
 		if (buildInfo != null) {
@@ -120,6 +122,27 @@ public class JenkinsService {
         return res;
 	}
 
+	/**
+	 * 
+	 * @param component
+	 * @return
+	 */
+	public String getJenkinsJobBadgeIconUrl(Component component) {
+        String res = "?";
+		final String URL_BADGE_SERVICE_REST = RestConstants.BASE_PATH + Constants.PATH_PLUGIN + Constants.PATH_JENKINS + Constants.PATH_JENKINS_BADGE;
+		BuildInfo buildInfo = getBuildInfo(component);
+		if (buildInfo != null) {
+			res = buildInfo._strUrl;
+			String baseUrl = AppPathService.getBaseUrl();
+			if (baseUrl.endsWith("/")) {
+				baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+			}
+			String urlJenkinsBadgeIcon = URL_JENKINS_BASE + "job/" + buildInfo._jobName + "/badge/icon";
+			res = baseUrl + URL_BADGE_SERVICE_REST + "?url=" + urlJenkinsBadgeIcon;
+		}
+        return res;
+	}
+	
 	/**
 	 * 
 	 * @param strUrl
@@ -221,7 +244,6 @@ public class JenkinsService {
 				}
 			}
 		}
-		
 		return res;
 	}
 	
@@ -309,7 +331,7 @@ public class JenkinsService {
 			res._jobName = jobName;
 			res._strStatus = json.getString( "result" );
 			res._strNumber = json.getString( "number" );
-			res._strUrl = URL_JENKINS_BASE + "job/" + jobName + "/lastBuild";
+			res._strUrl = URL_JENKINS_BASE + "job/" + jobName + "/" + res._strNumber;
 		}
 		catch ( JSONException e )
 		{
@@ -380,11 +402,12 @@ public class JenkinsService {
 	/**
 	 * 
 	 * @param url
+	 * @param haveParameter
 	 * @return
 	 */
-	private String performsGetJenkinsUrlAndGetsResult(String url, boolean haveParameter) {
-		String res = "";
-		    
+	public HttpResponse performsGetJenkinsUrl(String url, boolean haveParameter) {
+		HttpResponse res = null;
+	    
 		// Build token
 		String buildToken = "BUILD_TOKEN";
 
@@ -417,7 +440,25 @@ public class JenkinsService {
 
 		try {
 			// Execute your request with the given context
-			HttpResponse response = client.execute(get, context);
+			res = client.execute(get, context);
+		}
+		catch (IOException e) {
+			AppLogService.error( e.getMessage( ) );
+		}
+
+		return res;
+	}
+	
+	/**
+	 * 
+	 * @param url
+	 * @return
+	 */
+	private String performsGetJenkinsUrlAndGetsResult(String url, boolean haveParameter) {
+		String res = "";
+
+		try {
+			HttpResponse response = performsGetJenkinsUrl(url, haveParameter);
 			HttpEntity entity = response.getEntity();
 			res = EntityUtils.toString(entity);;
 		}
@@ -447,7 +488,6 @@ public class JenkinsService {
 	 *
 	 */
 	static class PreemptiveAuth implements HttpRequestInterceptor {
-
 		/*
 		 * (non-Javadoc)
 		 *
@@ -474,8 +514,6 @@ public class JenkinsService {
 					authState.setCredentials(creds);
 				}
 			}
-
 		}
-
 	}
 }

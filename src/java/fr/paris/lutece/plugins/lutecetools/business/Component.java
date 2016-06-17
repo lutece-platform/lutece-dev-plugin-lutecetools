@@ -492,12 +492,21 @@ public class Component extends AbstractComponent implements Comparable
     }
 
     /**
-     * @return the Jenkins job url
+     * @return the Jenkins job build url
      */
     @JsonIgnore
-    public String getJenkinsJobUrl(  )
+    public String getJenkinsJobBuildUrl(  )
     {
-        return JenkinsService.instance(  ).getJenkinsJobUrl( this );
+        return JenkinsService.instance(  ).getJenkinsJobBuildUrl( this );
+    }
+
+    /**
+     * @return the Jenkins job badge icon url
+     */
+    @JsonIgnore
+    public String getJenkinsJobBadgeIconUrl(  )
+    {
+        return JenkinsService.instance(  ).getJenkinsJobBadgeIconUrl( this );
     }
 
     /**
