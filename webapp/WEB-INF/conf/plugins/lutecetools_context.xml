@@ -6,6 +6,7 @@
 
     <bean id="lutecetools.componentRest"  class="fr.paris.lutece.plugins.lutecetools.web.rs.ComponentRest" />
     <bean id="lutecetools.statsRest"  class="fr.paris.lutece.plugins.lutecetools.web.rs.StatsRest" />
+    <bean id="lutecetools.jenkinsRest"  class="fr.paris.lutece.plugins.lutecetools.web.rs.JenkinsRest" />
     <bean id="lutecetools.lutecetoolsAsynchronousUploadHandler" class="fr.paris.lutece.plugins.lutecetools.service.LutecetoolsAsynchronousUploadHandler"/>
     
     <bean id="lutecetools.sitePropertiesGroup" class="fr.paris.lutece.portal.service.site.properties.SitePropertiesGroup" >

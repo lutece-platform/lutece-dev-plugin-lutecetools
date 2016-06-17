@@ -38,9 +38,12 @@ public final class Constants
     public static final String PATH_COMPONENT = "component";
     public static final String PATH_PLUGIN = "lutecetools/";
     public static final String PATH_STATS = "stats";
+    public static final String PATH_JENKINS = "jenkins";
+    public static final String PATH_JENKINS_BADGE = "/badge";
     public static final String PATH_ID = "id";
     public static final String PATH_ALL = "s";
     public static final String PARAMETER_FORMAT = "format";
+    public static final String PARAMETER_URL = "url";
     public static final String MEDIA_TYPE_JSON = "json";
     public static final String MEDIA_TYPE_XML = "xml";
 }
