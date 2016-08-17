@@ -189,6 +189,7 @@
                             <#if component.gitHubPullRequests gt 0>
                                 <a href="${component.snapshotScmUrl?remove_ending(".git")}/pulls" title="${i18n("lutecetools.components.oldestpr")?html} ${(component.oldestPullRequest?number_to_date)?html}">
                                 ${component.gitHubPullRequests}
+                                <img src="images/skin/plugins/lutecetools/pull-request.png" alt="Pull request icon" height="24">
                                 </a>
                             </#if>
                         </td>
