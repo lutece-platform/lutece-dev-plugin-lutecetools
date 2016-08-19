@@ -41,7 +41,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.List;
 
-
 /**
  * Component
  */
@@ -63,6 +62,8 @@ public class Component extends AbstractComponent implements Comparable
     private String _strGitHubOwner;
     private boolean _bGitHubReadme;
     private int _nGithubPullRequests;
+    private String _strGitHubErrors;
+    private int _nGitHubStatus;
     private long _nOldestPullRequest;
     private long _lLastUpdate;
     private List<String> _listBranches;
@@ -74,16 +75,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the CoreVersion
+     * 
      * @return The CoreVersion
      */
-    public String getCoreVersion(  )
+    public String getCoreVersion( )
     {
         return _strCoreVersion;
     }
 
     /**
      * Sets the CoreVersion
-     * @param strCoreVersion The CoreVersion
+     * 
+     * @param strCoreVersion
+     *            The CoreVersion
      */
     public void setCoreVersion( String strCoreVersion )
     {
@@ -92,16 +96,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the ParentPomVersion
+     * 
      * @return The ParentPomVersion
      */
-    public String getParentPomVersion(  )
+    public String getParentPomVersion( )
     {
         return _strParentPomVersion;
     }
 
     /**
      * Sets the ParentPomVersion
-     * @param strParentPomVersion The ParentPomVersion
+     * 
+     * @param strParentPomVersion
+     *            The ParentPomVersion
      */
     public void setParentPomVersion( String strParentPomVersion )
     {
@@ -110,16 +117,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the SonarNbLines
+     * 
      * @return The SonarNbLines
      */
-    public String getSonarNbLines(  )
+    public String getSonarNbLines( )
     {
         return _strSonarNbLines;
     }
 
     /**
      * Sets the SonarNbLines
-     * @param strSonarNbLines The SonarNbLines
+     * 
+     * @param strSonarNbLines
+     *            The SonarNbLines
      */
     public void setSonarNbLines( String strSonarNbLines )
     {
@@ -128,16 +138,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the SonarRCI
+     * 
      * @return The SonarRCI
      */
-    public String getSonarRCI(  )
+    public String getSonarRCI( )
     {
         return _strSonarRCI;
     }
 
     /**
      * Sets the SonarRCI
-     * @param strSonarRCI The SonarRCI
+     * 
+     * @param strSonarRCI
+     *            The SonarRCI
      */
     public void setSonarRCI( String strSonarRCI )
     {
@@ -146,16 +159,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the JiraKey
+     * 
      * @return The JiraKey
      */
-    public String getJiraKey(  )
+    public String getJiraKey( )
     {
         return _strJiraKey;
     }
 
     /**
      * Sets the JiraKey
-     * @param strJiraKey The JiraKey
+     * 
+     * @param strJiraKey
+     *            The JiraKey
      */
     public void setJiraKey( String strJiraKey )
     {
@@ -164,16 +180,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the JiraLastReleasedVersion
+     * 
      * @return The JiraLastReleasedVersion
      */
-    public String getJiraLastReleasedVersion(  )
+    public String getJiraLastReleasedVersion( )
     {
         return _strJiraLastReleasedVersion;
     }
 
     /**
      * Sets the JiraLastReleasedVersion
-     * @param strJiraLastReleasedVersion The JiraLastReleasedVersion
+     * 
+     * @param strJiraLastReleasedVersion
+     *            The JiraLastReleasedVersion
      */
     public void setJiraLastReleasedVersion( String strJiraLastReleasedVersion )
     {
@@ -182,16 +201,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the JiraLastUnreleasedVersion
+     * 
      * @return The JiraLastUnreleasedVersion
      */
-    public String getJiraLastUnreleasedVersion(  )
+    public String getJiraLastUnreleasedVersion( )
     {
         return _strJiraLastUnreleasedVersion;
     }
 
     /**
      * Sets the JiraLastUnreleasedVersion
-     * @param strJiraLastUnreleasedVersion The JiraLastUnreleasedVersion
+     * 
+     * @param strJiraLastUnreleasedVersion
+     *            The JiraLastUnreleasedVersion
      */
     public void setJiraLastUnreleasedVersion( String strJiraLastUnreleasedVersion )
     {
@@ -200,16 +222,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the JiraIssuesCount
+     * 
      * @return The JiraIssuesCount
      */
-    public int getJiraIssuesCount(  )
+    public int getJiraIssuesCount( )
     {
         return _nJiraIssuesCount;
     }
 
     /**
      * Sets the JiraIssuesCount
-     * @param nJiraIssuesCount The JiraIssuesCount
+     * 
+     * @param nJiraIssuesCount
+     *            The JiraIssuesCount
      */
     public void setJiraIssuesCount( int nJiraIssuesCount )
     {
@@ -218,16 +243,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the JiraUnresolvedIssuesCount
+     * 
      * @return The JiraUnresolvedIssuesCount
      */
-    public int getJiraUnresolvedIssuesCount(  )
+    public int getJiraUnresolvedIssuesCount( )
     {
         return _nJiraUnresolvedIssuesCount;
     }
 
     /**
      * Sets the JiraUnresolvedIssuesCount
-     * @param nJiraUnresolvedIssuesCount The JiraUnresolvedIssuesCount
+     * 
+     * @param nJiraUnresolvedIssuesCount
+     *            The JiraUnresolvedIssuesCount
      */
     public void setJiraUnresolvedIssuesCount( int nJiraUnresolvedIssuesCount )
     {
@@ -236,16 +264,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the JiraKeyError
+     * 
      * @return The JiraKeyError
      */
-    public int getJiraKeyError(  )
+    public int getJiraKeyError( )
     {
         return _nJiraKeyError;
     }
 
     /**
      * Sets the JiraKeyError
-     * @param nJiraKeyError The JiraKeyError
+     * 
+     * @param nJiraKeyError
+     *            The JiraKeyError
      */
     public void setJiraKeyError( int nJiraKeyError )
     {
@@ -254,16 +285,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the SnapshotVersion
+     * 
      * @return The SnapshotVersion
      */
-    public String getSnapshotVersion(  )
+    public String getSnapshotVersion( )
     {
         return _strSnapshotVersion;
     }
 
     /**
      * Sets the SnapshotVersion
-     * @param strSnapshotVersion The SnapshotVersion
+     * 
+     * @param strSnapshotVersion
+     *            The SnapshotVersion
      */
     public void setSnapshotVersion( String strSnapshotVersion )
     {
@@ -272,16 +306,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the SnapshotCoreVersion
+     * 
      * @return The SnapshotCoreVersion
      */
-    public String getSnapshotCoreVersion(  )
+    public String getSnapshotCoreVersion( )
     {
         return _strSnapshotCoreVersion;
     }
 
     /**
      * Sets the SnapshotCoreVersion
-     * @param strSnapshotCoreVersion The SnapshotCoreVersion
+     * 
+     * @param strSnapshotCoreVersion
+     *            The SnapshotCoreVersion
      */
     public void setSnapshotCoreVersion( String strSnapshotCoreVersion )
     {
@@ -290,16 +327,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the SnapshotParentPomVersion
+     * 
      * @return The SnapshotParentPomVersion
      */
-    public String getSnapshotParentPomVersion(  )
+    public String getSnapshotParentPomVersion( )
     {
         return _strSnapshotParentPomVersion;
     }
 
     /**
      * Sets the SnapshotParentPomVersion
-     * @param strSnapshotParentPomVersion The SnapshotParentPomVersion
+     * 
+     * @param strSnapshotParentPomVersion
+     *            The SnapshotParentPomVersion
      */
     public void setSnapshotParentPomVersion( String strSnapshotParentPomVersion )
     {
@@ -308,7 +348,8 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      *
-     * @param bGitHub The GitHUb status
+     * @param bGitHub
+     *            The GitHUb status
      */
     public void setGitHubRepo( boolean bGitHub )
     {
@@ -319,14 +360,15 @@ public class Component extends AbstractComponent implements Comparable
      *
      * @return The GitHUb status
      */
-    public boolean getGitHubRepo(  )
+    public boolean getGitHubRepo( )
     {
         return _bGitHubRepo;
     }
 
     /**
      *
-     * @param strGitHubOwner The GitHub owner
+     * @param strGitHubOwner
+     *            The GitHub owner
      */
     public void setGitHubOwner( String strGitHubOwner )
     {
@@ -337,14 +379,15 @@ public class Component extends AbstractComponent implements Comparable
      *
      * @return The GitHub owner
      */
-    public String getGitHubOwner(  )
+    public String getGitHubOwner( )
     {
         return _strGitHubOwner;
     }
 
     /**
      *
-     * @param bGitHubReadme The GitHub readme status
+     * @param bReadme
+     *            The GitHub readme status
      */
     public void setGitHubReadme( boolean bReadme )
     {
@@ -355,14 +398,36 @@ public class Component extends AbstractComponent implements Comparable
      *
      * @return The GitHub readme status
      */
-    public boolean getGitHubReadme(  )
+    public boolean getGitHubReadme( )
     {
         return _bGitHubReadme;
     }
 
     /**
+     * Set status
+     * @param nStatus  The status
+     */
+    public void setGitHubStatus( int nStatus )
+    {
+        _nGitHubStatus = nStatus;
+    }
+    
+    /**
+     * Set Errors
+     * 
+     * @param strGitHubErrors
+     *            errors
+     */
+    public void setGitHubErrors( String strGitHubErrors )
+    {
+        _strGitHubErrors = strGitHubErrors;
+    }
+
+    /**
      * Sets the number of open pull requests for the component
-     * @param nPullRequests number of open pull requests
+     * 
+     * @param nPullRequests
+     *            number of open pull requests
      */
     public void setGitHubPullRequests( int nPullRequests )
     {
@@ -371,16 +436,19 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Gets the number of open pull requests for the component
+     * 
      * @return number of open pull requests
      */
-    public int getGitHubPullRequests(  )
+    public int getGitHubPullRequests( )
     {
         return _nGithubPullRequests;
     }
 
     /**
      * Sets the oldest pull request update date
-     * @param nOldestPullRequest oldest pull request update date
+     * 
+     * @param nOldestPullRequest
+     *            oldest pull request update date
      */
     public void setOldestPullRequest( long nOldestPullRequest )
     {
@@ -389,9 +457,10 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Gets the oldest pull request update date
+     * 
      * @return oldest pull request update date
      */
-    public long getOldestPullRequest(  )
+    public long getOldestPullRequest( )
     {
         return _nOldestPullRequest;
     }
@@ -399,13 +468,14 @@ public class Component extends AbstractComponent implements Comparable
     /**
      * @return the Scm Url
      */
-    public String getScmUrl(  )
+    public String getScmUrl( )
     {
         return ( _strScmUrl == null ) ? "" : _strScmUrl;
     }
 
     /**
-     * @param strScmUrl the Scm Url to set
+     * @param strScmUrl
+     *            the Scm Url to set
      */
     public void setScmUrl( String strScmUrl )
     {
@@ -415,13 +485,14 @@ public class Component extends AbstractComponent implements Comparable
     /**
      * @return the Scm Url
      */
-    public String getSnapshotScmUrl(  )
+    public String getSnapshotScmUrl( )
     {
         return ( _strSnapshotScmUrl == null ) ? "" : _strSnapshotScmUrl;
     }
 
     /**
-     * @param strScmUrl the Scm Url to set
+     * @param strScmUrl
+     *            the Scm Url to set
      */
     public void setSnapshotScmUrl( String strScmUrl )
     {
@@ -430,7 +501,9 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Sets the branches list
-     * @param listBranches branches list
+     * 
+     * @param listBranches
+     *            branches list
      */
     public void setBranchesList( List<String> listBranches )
     {
@@ -439,9 +512,10 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Returns the branches list
+     * 
      * @return branches list
      */
-    public List<String> getBranchesList(  )
+    public List<String> getBranchesList( )
     {
         return _listBranches;
     }
@@ -449,76 +523,75 @@ public class Component extends AbstractComponent implements Comparable
     /**
      * @return the GitHub Status
      */
-    @JsonIgnore
-    public int getGitHubStatus(  )
+    public int getGitHubStatus( )
     {
-        return GitHubService.getGitHubStatus( this );
+        return _nGitHubStatus;
     }
 
     /**
      * @return the GitHub Status
      */
-    @JsonIgnore
-    public String getGitHubErrors(  )
+    public String getGitHubErrors( )
     {
-        return GitHubService.getGitHubErrors( this );
+        return _strGitHubErrors;
     }
 
     /**
      * @return the Jira Status
      */
     @JsonIgnore
-    public int getJiraStatus(  )
+    public int getJiraStatus( )
     {
-        return JiraService.instance(  ).getJiraStatus( this );
+        return JiraService.instance( ).getJiraStatus( this );
     }
 
     /**
      * @return the Jira Status
      */
     @JsonIgnore
-    public String getJiraErrors(  )
+    public String getJiraErrors( )
     {
-        return JiraService.instance(  ).getJiraErrors( this );
+        return JiraService.instance( ).getJiraErrors( this );
     }
 
     /**
      * @return the Jenkins Status
      */
     @JsonIgnore
-    public String getJenkinsStatus(  )
+    public String getJenkinsStatus( )
     {
-        return JenkinsService.instance(  ).getJenkinsStatus( this );
+        return JenkinsService.instance( ).getJenkinsStatus( this );
     }
 
     /**
      * @return the Jenkins job build url
      */
     @JsonIgnore
-    public String getJenkinsJobBuildUrl(  )
+    public String getJenkinsJobBuildUrl( )
     {
-        return JenkinsService.instance(  ).getJenkinsJobBuildUrl( this );
+        return JenkinsService.instance( ).getJenkinsJobBuildUrl( this );
     }
 
     /**
      * @return the Jenkins job badge icon url
      */
     @JsonIgnore
-    public String getJenkinsJobBadgeIconUrl(  )
+    public String getJenkinsJobBadgeIconUrl( )
     {
-        return JenkinsService.instance(  ).getJenkinsJobBadgeIconUrl( this );
+        return JenkinsService.instance( ).getJenkinsJobBadgeIconUrl( this );
     }
 
     /**
      * @return the LastUpdate
      */
-    public long getLastUpdate(  )
+    public long getLastUpdate( )
     {
         return _lLastUpdate;
     }
 
     /**
-     * @param lLastUpdate the Last Update to set
+     * @param lLastUpdate
+     *            the Last Update to set
      */
     public void setLastUpdate( long lLastUpdate )
     {
@@ -527,24 +600,25 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Readable implementation
+     * 
      * @return The component as a string
      */
     @JsonIgnore
     @Override
-    public String toString(  )
+    public String toString( )
     {
-        StringBuilder sb = new StringBuilder(  );
-        sb.append( "Component : " ).append( getArtifactId(  ) );
-        sb.append( "\n  GitHub status: " ).append( getGitHubStatus(  ) );
-        sb.append( "\n  [release] Version: " ).append( getVersion(  ) );
-        sb.append( "\n  [release] Core version: " ).append( getCoreVersion(  ) );
-        sb.append( "\n  [release] SCM URL: " ).append( getScmUrl(  ) );
-        sb.append( "\n  [release] Parent POM Version: " ).append( getParentPomVersion(  ) );
-        sb.append( "\n  [snapshot] Core version: " ).append( getSnapshotCoreVersion(  ) );
-        sb.append( "\n  [snapshot] SCM URL: " ).append( getSnapshotScmUrl(  ) );
-        sb.append( "\n  [snapshot] Parent POM Version: " ).append( getSnapshotParentPomVersion(  ) );
+        StringBuilder sb = new StringBuilder( );
+        sb.append( "Component : " ).append( getArtifactId( ) );
+        sb.append( "\n  GitHub status: " ).append( getGitHubStatus( ) );
+        sb.append( "\n  [release] Version: " ).append( getVersion( ) );
+        sb.append( "\n  [release] Core version: " ).append( getCoreVersion( ) );
+        sb.append( "\n  [release] SCM URL: " ).append( getScmUrl( ) );
+        sb.append( "\n  [release] Parent POM Version: " ).append( getParentPomVersion( ) );
+        sb.append( "\n  [snapshot] Core version: " ).append( getSnapshotCoreVersion( ) );
+        sb.append( "\n  [snapshot] SCM URL: " ).append( getSnapshotScmUrl( ) );
+        sb.append( "\n  [snapshot] Parent POM Version: " ).append( getSnapshotParentPomVersion( ) );
 
-        List<String> listBranches = getBranchesList(  );
+        List<String> listBranches = getBranchesList( );
 
         if ( listBranches != null )
         {
@@ -556,6 +630,6 @@ public class Component extends AbstractComponent implements Comparable
             }
         }
 
-        return sb.toString(  );
+        return sb.toString( );
     }
 }
