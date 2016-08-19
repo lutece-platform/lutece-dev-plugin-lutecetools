@@ -46,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Dependencies Service
  */
@@ -69,19 +68,22 @@ public final class DependenciesService
     /**
      * private constructor
      */
-    private DependenciesService(  )
+    private DependenciesService( )
     {
     }
 
     /**
      * Process dependencies generation
-     * @param strSource The source
-     * @param strFormat The output
+     * 
+     * @param strSource
+     *            The source
+     * @param strFormat
+     *            The output
      * @return The dependencies
      */
     public static String process( String strSource, String strFormat )
     {
-        String[] components = strSource.split( "\\s+" );
+        String [ ] components = strSource.split( "\\s+" );
 
         List<Dependency> list = getDependenciesList( components );
 
@@ -89,30 +91,34 @@ public final class DependenciesService
         {
             return getDependenciesText( list );
         }
-        else if ( ( strFormat != null ) && strFormat.equals( FORMAT_XML ) )
-        {
-            return getDependenciesXML( list );
-        }
-        else if ( ( strFormat != null ) && strFormat.equals( FORMAT_POM ) )
-        {
-            return getDependenciesPOM( list );
-        }
+        else
+            if ( ( strFormat != null ) && strFormat.equals( FORMAT_XML ) )
+            {
+                return getDependenciesXML( list );
+            }
+            else
+                if ( ( strFormat != null ) && strFormat.equals( FORMAT_POM ) )
+                {
+                    return getDependenciesPOM( list );
+                }
 
         return "Invalid format";
     }
 
     /**
      * Gets the dependencies list
-     * @param components The array of components
+     * 
+     * @param components
+     *            The array of components
      * @return The list
      */
-    private static List<Dependency> getDependenciesList( String[] components )
+    private static List<Dependency> getDependenciesList( String [ ] components )
     {
-        List<Dependency> list = new ArrayList<Dependency>(  );
+        List<Dependency> list = new ArrayList<Dependency>( );
 
         for ( String name : components )
         {
-            Dependency dependency = new Dependency(  );
+            Dependency dependency = new Dependency( );
             dependency.setArtifactId( name );
             dependency.setGroupId( "fr.paris.lutece.plugins" );
             dependency.setComponentType( "lutece-plugin" );
@@ -127,54 +133,57 @@ public final class DependenciesService
 
     /**
      * Returns the dependencies formatted with XML format
-     * @param list The dependencies list
+     * 
+     * @param list
+     *            The dependencies list
      * @return The output
      */
     private static String getDependenciesXML( List<Dependency> list )
     {
-        StringBuffer sb = new StringBuffer(  );
+        StringBuffer sb = new StringBuffer( );
 
         for ( Dependency dependency : list )
         {
             XmlUtil.beginElement( sb, TAG_DEPENDENCY );
-            XmlUtil.addElement( sb.append( INDENT ), TAG_GROUP_ID, dependency.getGroupId(  ) );
-            XmlUtil.addElement( sb.append( INDENT ), TAG_ARTIFACT_ID, dependency.getArtifactId(  ) );
-            XmlUtil.addElement( sb.append( INDENT ), TAG_VERSION, dependency.getVersion(  ) );
-            XmlUtil.addElement( sb.append( INDENT ), TAG_TYPE, dependency.getComponentType(  ) );
+            XmlUtil.addElement( sb.append( INDENT ), TAG_GROUP_ID, dependency.getGroupId( ) );
+            XmlUtil.addElement( sb.append( INDENT ), TAG_ARTIFACT_ID, dependency.getArtifactId( ) );
+            XmlUtil.addElement( sb.append( INDENT ), TAG_VERSION, dependency.getVersion( ) );
+            XmlUtil.addElement( sb.append( INDENT ), TAG_TYPE, dependency.getComponentType( ) );
             XmlUtil.endElement( sb, TAG_DEPENDENCY );
         }
 
-        return sb.toString(  );
+        return sb.toString( );
     }
 
     /**
      * Returns the dependencies formatted with Text format
-     * @param list The dependencies list
+     * 
+     * @param list
+     *            The dependencies list
      * @return The output
      */
     private static String getDependenciesText( List<Dependency> list )
     {
-        StringBuilder sb = new StringBuilder(  );
+        StringBuilder sb = new StringBuilder( );
 
         for ( Dependency dependency : list )
         {
-            sb.append( dependency.getArtifactId(  ) ).append( "\t" ).append( dependency.getVersion(  ) ).append( "\n" );
+            sb.append( dependency.getArtifactId( ) ).append( "\t" ).append( dependency.getVersion( ) ).append( "\n" );
         }
 
-        return sb.toString(  );
-    }
-    
-    private static String getDependenciesPOM( List<Dependency> list ) 
-    {
-        Site site = new Site();
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put( MARK_SITE , site );
-        model.put( MARK_DEPENDENCIES , list );
-        model.put( MARK_CORE_VERSION , MavenRepoService.getLatestCoreVersion() );
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_POM , LocaleService.getDefault(), model );
-        
-        return template.getHtml();
+        return sb.toString( );
     }
 
-    
+    private static String getDependenciesPOM( List<Dependency> list )
+    {
+        Site site = new Site( );
+        Map<String, Object> model = new HashMap<String, Object>( );
+        model.put( MARK_SITE, site );
+        model.put( MARK_DEPENDENCIES, list );
+        model.put( MARK_CORE_VERSION, MavenRepoService.getLatestCoreVersion( ) );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_POM, LocaleService.getDefault( ), model );
+
+        return template.getHtml( );
+    }
+
 }

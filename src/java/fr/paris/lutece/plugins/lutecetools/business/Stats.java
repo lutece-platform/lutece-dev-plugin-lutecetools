@@ -47,15 +47,16 @@ public class Stats
     /**
      * @return the mavenCount
      */
-    public int getMavenCount()
+    public int getMavenCount( )
     {
         return _nMavenCount;
     }
 
     /**
-     * @param nMavenCount the mavenCount to set
+     * @param nMavenCount
+     *            the mavenCount to set
      */
-    public void setMavenCount(int nMavenCount)
+    public void setMavenCount( int nMavenCount )
     {
         _nMavenCount = nMavenCount;
     }
@@ -63,15 +64,16 @@ public class Stats
     /**
      * @return the nGithubCount
      */
-    public int getGithubCount()
+    public int getGithubCount( )
     {
         return _nGithubCount;
     }
 
     /**
-     * @param nGithubCount the nGithubCount to set
+     * @param nGithubCount
+     *            the nGithubCount to set
      */
-    public void setGithubCount(int nGithubCount)
+    public void setGithubCount( int nGithubCount )
     {
         _nGithubCount = nGithubCount;
     }
@@ -79,15 +81,16 @@ public class Stats
     /**
      * @return the nGithubOK
      */
-    public int getGithubOK()
+    public int getGithubOK( )
     {
         return _nGithubOK;
     }
 
     /**
-     * @param nGithubOK the nGithubOK to set
+     * @param nGithubOK
+     *            the nGithubOK to set
      */
-    public void setGithubOK(int nGithubOK)
+    public void setGithubOK( int nGithubOK )
     {
         _nGithubOK = nGithubOK;
     }
@@ -95,30 +98,33 @@ public class Stats
     /**
      * @return the nJiraOK
      */
-    public int getJiraOK()
+    public int getJiraOK( )
     {
         return _nJiraOK;
     }
 
     /**
-     * @param nJiraOK the nJiraOK to set
+     * @param nJiraOK
+     *            the nJiraOK to set
      */
-    public void setJiraOK(int nJiraOK)
+    public void setJiraOK( int nJiraOK )
     {
         _nJiraOK = nJiraOK;
     }
+
     /**
      * @return the nReadmeOK
      */
-    public int getReadmeOK()
+    public int getReadmeOK( )
     {
         return _nReadmeOK;
     }
 
     /**
-     * @param nReadmeOK the nReadmeOK to set
+     * @param nReadmeOK
+     *            the nReadmeOK to set
      */
-    public void setReadmeOK(int nReadmeOK)
+    public void setReadmeOK( int nReadmeOK )
     {
         _nReadmeOK = nReadmeOK;
     }

@@ -36,16 +36,16 @@ package fr.paris.lutece.plugins.lutecetools.business;
 /**
  * Site
  */
-public class Site extends Dependency 
+public class Site extends Dependency
 {
     private static final String DEFAULT_ARTIFACT_ID = "site-mysite";
     private static final String DEFAULT_GROUP_ID = "fr.paris.lutece";
-    private static final String DEFAULT_NAME ="My site";
+    private static final String DEFAULT_NAME = "My site";
     private static final String DEFAULT_VERSION = "1.0.0-SNAPSHOT";
-    private static final String DEFAULT_TYPE ="lutece-site";
+    private static final String DEFAULT_TYPE = "lutece-site";
     private String _strName;
-    
-    public Site()
+
+    public Site( )
     {
         setArtifactId( DEFAULT_ARTIFACT_ID );
         setGroupId( DEFAULT_GROUP_ID );
@@ -57,15 +57,16 @@ public class Site extends Dependency
     /**
      * @return the name
      */
-    public String getName() 
+    public String getName( )
     {
         return _strName;
     }
 
     /**
-     * @param strName the name to set
+     * @param strName
+     *            the name to set
      */
-    public void setName(String strName) 
+    public void setName( String strName )
     {
         _strName = strName;
     }

@@ -52,13 +52,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * This class provides a simple implementation of an XPage
  */
 @Controller( xpageName = "components", pageTitleI18nKey = "lutecetools.xpage.components.pageTitle", pagePathI18nKey = "lutecetools.xpage.components.pagePath" )
 public class ComponentListApp extends MVCApplication
 {
+
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/components.html";
     private static final String MARK_COMPONENTS_LIST = "components_list";
     private static final String MARK_GITHUB_FILTER = "github_filter";
@@ -76,22 +76,21 @@ public class ComponentListApp extends MVCApplication
     private static final String PARAMETER_CORE_VERSIONS = "core";
     private static final String VALUE_ON = "on";
     private static final long serialVersionUID = 1L;
-    
+
     // RCI color mark
-    
     private static final String PROPERTY_SONAR_RCI_SUCCESS = "lutecetools.sonar.mark.rci.success";
     private static final String SONAR_RCI_SUCCESS = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_SUCCESS );
     private static final String PROPERTY_SONAR_RCI_WARNING = "lutecetools.sonar.mark.rci.warning";
     private static final String SONAR_RCI_WARNING = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_WARNING );
-    
+
     // Errors
-    
     private static final String ERROR_NOT_FOUND = "lutecetools.error.research.notFound";
-    
-    
+
     /**
      * Returns the content of the page lutecetools.
-     * @param request The HTTP request
+     *
+     * @param request
+     *            The HTTP request
      * @return The view
      */
     @View( value = VIEW_HOME, defaultView = true )
@@ -105,21 +104,21 @@ public class ComponentListApp extends MVCApplication
         int nTotalPRs = 0;
         long oldestPR = Long.MAX_VALUE;
 
-        Map<String, Object> model = getModel(  );
+        Map<String, Object> model = getModel( );
 
-        ComponentsInfos ci = MavenRepoService.instance(  ).getComponents( );
-        
+        ComponentsInfos ci = MavenRepoService.instance( ).getComponents( );
+
         if ( bGitHubFilter )
         {
-            ci.setListComponents( filterGitHub( ci.getListComponents(  ) ) );
+            ci.setListComponents( filterGitHub( ci.getListComponents( ) ) );
         }
-        
+
         for ( Component c : ci.getListComponents( ) )
         {
-        	if ( c.getSonarNbLines( ) != null )
-        	{
-        		nTotal += Integer.parseInt( c.getSonarNbLines( ).replace( ",", "" ) );
-        	}
+            if ( c.getSonarNbLines( ) != null )
+            {
+                nTotal += Integer.parseInt( c.getSonarNbLines( ).replace( ",", "" ) );
+            }
             if ( c.getGitHubPullRequests( ) > 0 )
             {
                 nTotalPRs = nTotalPRs + c.getGitHubPullRequests( );
@@ -129,9 +128,9 @@ public class ComponentListApp extends MVCApplication
                 }
             }
         }
-        
-        model.put( MARK_INTEGER_SUCCESS, SONAR_RCI_SUCCESS);
-        model.put( MARK_INTEGER_WARNING, SONAR_RCI_WARNING);
+
+        model.put( MARK_INTEGER_SUCCESS, SONAR_RCI_SUCCESS );
+        model.put( MARK_INTEGER_WARNING, SONAR_RCI_WARNING );
         model.put( MARK_COMPONENTS_LIST, ci );
         model.put( MARK_TOTAL_LINES, nTotal );
         if ( nTotalPRs > 0 )
@@ -141,14 +140,16 @@ public class ComponentListApp extends MVCApplication
         }
         model.put( MARK_GITHUB_FILTER, bGitHubFilter );
         model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );
-        model.put( MARK_LOGS, MavenRepoService.getLogs() );
-        
-        return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
+        model.put( MARK_LOGS, MavenRepoService.getLogs( ) );
+
+        return getXPage( TEMPLATE_XPAGE, request.getLocale( ), model );
     }
 
     /**
      * Refresh action processing
-     * @param request The HTTP request
+     *
+     * @param request
+     *            The HTTP request
      * @return The page
      */
     @Action( ACTION_REFRESH )
@@ -159,30 +160,34 @@ public class ComponentListApp extends MVCApplication
 
     /**
      * Clear Cache action processing
-     * @param request The HTTP request
+     *
+     * @param request
+     *            The HTTP request
      * @return The page
      */
     @Action( ACTION_CLEAR_CACHE )
     public XPage clearCache( HttpServletRequest request )
     {
-        ComponentService.clearCache(  );
-        MavenRepoService.clearLogs();
+        ComponentService.clearCache( );
+        MavenRepoService.clearLogs( );
 
         return redirect( request, VIEW_HOME, getViewParameters( request ) );
     }
 
     /**
      * Filter a list of component to keep only github hosted ones
-     * @param listComponents The list to filter
+     *
+     * @param listComponents
+     *            The list to filter
      * @return The filtered list
      */
     private List<Component> filterGitHub( List<Component> listComponents )
     {
-        List<Component> list = new ArrayList<Component>(  );
+        List<Component> list = new ArrayList<Component>( );
 
         for ( Component c : listComponents )
         {
-            if ( c.getGitHubStatus(  ) > 0 )
+            if ( c.getGitHubStatus( ) > 0 )
             {
                 list.add( c );
             }
@@ -193,12 +198,14 @@ public class ComponentListApp extends MVCApplication
 
     /**
      * Get the parameters send with the action to resend to the view
-     * @param request The HTTP Request
+     *
+     * @param request
+     *            The HTTP Request
      * @return The parameters
      */
     private Map<String, String> getViewParameters( HttpServletRequest request )
     {
-        Map<String, String> mapParameters = new HashMap<String, String>(  );
+        Map<String, String> mapParameters = new HashMap<String, String>( );
         String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
 
@@ -214,5 +221,5 @@ public class ComponentListApp extends MVCApplication
 
         return mapParameters;
     }
-    
+
 }

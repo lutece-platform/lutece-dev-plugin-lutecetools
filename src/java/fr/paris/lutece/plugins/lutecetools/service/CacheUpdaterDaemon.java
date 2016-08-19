@@ -37,19 +37,18 @@ import fr.paris.lutece.portal.service.daemon.Daemon;
 
 import java.util.Date;
 
-
 /**
  * Cache Updater Deamon
  */
 public class CacheUpdaterDaemon extends Daemon
 {
     @Override
-    public void run(  )
+    public void run( )
     {
-        long t1 = new Date(  ).getTime(  );
-        MavenRepoService.instance(  ).updateCache(  );
+        long t1 = new Date( ).getTime( );
+        MavenRepoService.instance( ).updateCache( );
 
-        long t2 = new Date(  ).getTime(  );
+        long t2 = new Date( ).getTime( );
         setLastRunLogs( "Lutece Tools - Cache for Maven info updated : duration = " + ( t2 - t1 ) + "ms" );
     }
 }

@@ -44,26 +44,26 @@ import java.util.List;
  */
 public class VersionUtils
 {
-    
+
     public static String getLatestVersion( List<String> listVersions )
     {
-        List<Version> list = new ArrayList<Version>();
-        for( String strVersion : listVersions )
+        List<Version> list = new ArrayList<Version>( );
+        for ( String strVersion : listVersions )
         {
             try
             {
                 Version v = Version.parse( strVersion );
-                list.add(v);
+                list.add( v );
             }
-            catch( VersionParsingException ex) 
+            catch( VersionParsingException ex )
             {
-                AppLogService.info( ex.getMessage() );
+                AppLogService.info( ex.getMessage( ) );
             }
         }
-        Collections.sort(list);
-        Version latest = list.get( list.size() - 1 );
-        
-        return latest.getVersion();
+        Collections.sort( list );
+        Version latest = list.get( list.size( ) - 1 );
+
+        return latest.getVersion( );
     }
-    
+
 }

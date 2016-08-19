@@ -44,7 +44,6 @@ import java.io.IOException;
 
 import java.util.Date;
 
-
 /**
  * ComponentService
  */
@@ -52,30 +51,34 @@ public class ComponentService
 {
     private static final String DSKEY_PREFIX = "lutecetools.database.";
     private static final String DAEMON_KEY = "lutecetoolsCacheUpdater";
-    private static final ObjectMapper _mapper = new ObjectMapper(  );
+    private static final ObjectMapper _mapper = new ObjectMapper( );
 
     /**
      * Save a component into the Datastore as JSON format
-     * @param component The component
+     * 
+     * @param component
+     *            The component
      */
     public static void save( Component component )
     {
         try
         {
-            component.setLastUpdate( new Date(  ).getTime(  ) );
+            component.setLastUpdate( new Date( ).getTime( ) );
 
             String strJSON = getAsJSON( component );
-            DatastoreService.setDataValue( DSKEY_PREFIX + component.getArtifactId(  ), strJSON );
+            DatastoreService.setDataValue( DSKEY_PREFIX + component.getArtifactId( ), strJSON );
         }
-        catch ( IOException ex )
+        catch( IOException ex )
         {
-            AppLogService.error( "LuteceTools : Error saving component : " + ex.getMessage(  ), ex );
+            AppLogService.error( "LuteceTools : Error saving component : " + ex.getMessage( ), ex );
         }
     }
 
     /**
      * Load a component from the Datastore
-     * @param strArtifactId The Artifact ID
+     * 
+     * @param strArtifactId
+     *            The Artifact ID
      * @return The component
      */
     public static Component load( String strArtifactId )
@@ -89,9 +92,9 @@ public class ComponentService
             {
                 component = loadFromJSON( strJSON );
             }
-            catch ( IOException ex )
+            catch( IOException ex )
             {
-                AppLogService.error( "LuteceTools : Error loading component : " + ex.getMessage(  ), ex );
+                AppLogService.error( "LuteceTools : Error loading component : " + ex.getMessage( ), ex );
             }
         }
 
@@ -101,7 +104,7 @@ public class ComponentService
     /**
      * Clear cache by removing datastore data
      */
-    public static void clearCache(  )
+    public static void clearCache( )
     {
         AppLogService.info( "LuteceTools : clear the cache of the component list ..." );
         AppDaemonService.stopDaemon( DAEMON_KEY );
@@ -112,24 +115,28 @@ public class ComponentService
 
     /**
      * Convert a component into JSON
-     * @param component The component
+     * 
+     * @param component
+     *            The component
      * @return JSON
-     * @throws IOException if an error occurs
+     * @throws IOException
+     *             if an error occurs
      */
-    private static String getAsJSON( Component component )
-        throws IOException
+    private static String getAsJSON( Component component ) throws IOException
     {
         return _mapper.writeValueAsString( component );
     }
 
     /**
      * Convert JSON into Component
-     * @param strJson The JSON
+     * 
+     * @param strJson
+     *            The JSON
      * @return The component
-     * @throws IOException if an error occurs
+     * @throws IOException
+     *             if an error occurs
      */
-    private static Component loadFromJSON( String strJson )
-        throws IOException
+    private static Component loadFromJSON( String strJson ) throws IOException
     {
         return _mapper.readValue( strJson, Component.class );
     }

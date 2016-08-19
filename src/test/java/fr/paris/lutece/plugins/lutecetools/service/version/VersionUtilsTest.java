@@ -51,20 +51,20 @@ public class VersionUtilsTest extends LuteceTestCase
      * Test of getLatestVersion method, of class VersionUtils.
      */
     @Test
-    public void testGetLatestVersion()
+    public void testGetLatestVersion( )
     {
-        System.out.println("getLatestVersion");
-        List<String> listVersions = new ArrayList<String>();
-        listVersions.add( "1.1.2");
-        listVersions.add( "3.1.2");
-        listVersions.add( "2.4.2");
-        listVersions.add( "3.1");
-        
-        VersionUtils instance = new VersionUtils();
+        System.out.println( "getLatestVersion" );
+        List<String> listVersions = new ArrayList<String>( );
+        listVersions.add( "1.1.2" );
+        listVersions.add( "3.1.2" );
+        listVersions.add( "2.4.2" );
+        listVersions.add( "3.1" );
+
+        VersionUtils instance = new VersionUtils( );
         String expResult = "3.1.2";
-        String result = instance.getLatestVersion(listVersions);
+        String result = instance.getLatestVersion( listVersions );
         System.out.println( result );
-        assertEquals(expResult, result);
+        assertEquals( expResult, result );
     }
-    
+
 }

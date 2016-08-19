@@ -43,43 +43,42 @@ public class StatsService
 {
     /**
      * Build stats
+     * 
      * @return The stats
      */
-    public static Stats getStats()
+    public static Stats getStats( )
     {
-        Stats stats = new Stats();
-        ComponentsInfos ci = MavenRepoService.instance().getComponents();
+        Stats stats = new Stats( );
+        ComponentsInfos ci = MavenRepoService.instance( ).getComponents( );
         int nGithubCount = 0;
         int nGithubOK = 0;
         int nJiraOK = 0;
         int nReadmeOk = 0;
-        for( Component component : ci.getListComponents() )
+        for ( Component component : ci.getListComponents( ) )
         {
-            if( component.getGitHubStatus() > 0 )
+            if ( component.getGitHubStatus( ) > 0 )
             {
                 nGithubCount++;
-                if( component.getGitHubStatus() > 3 )
+                if ( component.getGitHubStatus( ) > 3 )
                 {
                     nGithubOK++;
                 }
             }
-            if( component.getJiraStatus() > 1 )
+            if ( component.getJiraStatus( ) > 1 )
             {
                 nJiraOK++;
             }
-            if( component.getGitHubReadme() )
+            if ( component.getGitHubReadme( ) )
             {
                 nReadmeOk++;
             }
         }
-        stats.setMavenCount( ci.getComponentCount() );
+        stats.setMavenCount( ci.getComponentCount( ) );
         stats.setGithubCount( nGithubCount );
         stats.setGithubOK( nGithubOK );
         stats.setJiraOK( nJiraOK );
         stats.setReadmeOK( nReadmeOk );
-        return stats;  
+        return stats;
     }
-    
-    
-    
+
 }

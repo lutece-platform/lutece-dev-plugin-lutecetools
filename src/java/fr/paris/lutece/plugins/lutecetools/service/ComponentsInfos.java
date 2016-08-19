@@ -37,7 +37,6 @@ import fr.paris.lutece.plugins.lutecetools.business.Component;
 
 import java.util.List;
 
-
 /**
  *
  * @author pierre
@@ -52,13 +51,14 @@ public class ComponentsInfos
     /**
      * @return the nComponentCount
      */
-    public int getComponentCount(  )
+    public int getComponentCount( )
     {
         return _nComponentCount;
     }
 
     /**
-     * @param nComponentCount the nComponentCount to set
+     * @param nComponentCount
+     *            the nComponentCount to set
      */
     public void setComponentCount( int nComponentCount )
     {
@@ -68,13 +68,14 @@ public class ComponentsInfos
     /**
      * @return the nComponentAvailable
      */
-    public int getComponentAvailable(  )
+    public int getComponentAvailable( )
     {
         return _nComponentAvailable;
     }
 
     /**
-     * @param nComponentAvailable the nComponentAvailable to set
+     * @param nComponentAvailable
+     *            the nComponentAvailable to set
      */
     public void setComponentAvailable( int nComponentAvailable )
     {
@@ -84,13 +85,14 @@ public class ComponentsInfos
     /**
      * @return the listComponents
      */
-    public List<Component> getListComponents(  )
+    public List<Component> getListComponents( )
     {
         return _listComponents;
     }
 
     /**
-     * @param listComponents the listComponents to set
+     * @param listComponents
+     *            the listComponents to set
      */
     public void setListComponents( List<Component> listComponents )
     {
@@ -100,12 +102,12 @@ public class ComponentsInfos
     /**
      * @return the bComplete
      */
-    public boolean isComplete(  )
+    public boolean isComplete( )
     {
         return _nComponentAvailable == _nComponentCount;
     }
 
-    public int getPercentAvailable(  )
+    public int getPercentAvailable( )
     {
         if ( _nComponentCount == 0 )
         {

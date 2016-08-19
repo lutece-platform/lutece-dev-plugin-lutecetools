@@ -38,7 +38,6 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 import org.junit.Test;
 
-
 /**
  *
  * @author pierre
@@ -48,29 +47,25 @@ public class MavenRepoServiceTest extends LuteceTestCase
     /**
      * Test of getComponentsList method, of class MavenRepoService.
      */
-/*    
-    @Test
-    public void testGetComponentsList(  )
-    {
-        System.out.println( "getComponentsList" );
-
-        ComponentsInfos result = MavenRepoService.instance(  ).getComponents(  );
-    }
-*/    
+    /*
+     * @Test public void testGetComponentsList( ) { System.out.println( "getComponentsList" );
+     * 
+     * ComponentsInfos result = MavenRepoService.instance( ).getComponents( ); }
+     */
     /**
      * Test of getComponent method, of class MavenRepoService.
      */
     @Test
-    public void testGetComponent(  )
+    public void testGetComponent( )
     {
         System.out.println( "getComponent" );
 
-        Component component = MavenRepoService.getComponent( "module-mylutece-persona" , true  );
+        Component component = MavenRepoService.getComponent( "module-mylutece-persona", true );
         System.out.println( component );
-        
-        component = MavenRepoService.getComponent( "module-document-cmis" , true  );
+
+        component = MavenRepoService.getComponent( "module-document-cmis", true );
         System.out.println( component );
-        
+
     }
 
 }

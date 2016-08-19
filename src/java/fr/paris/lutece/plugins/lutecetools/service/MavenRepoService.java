@@ -61,7 +61,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-
 /**
  * Version Service
  */
@@ -70,46 +69,40 @@ public final class MavenRepoService
     private static final String PROPERTY_MAVEN_REPO_URL = "lutecetools.maven.repository.url";
     private static final String URL_MAVEN_REPO = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL );
     private static final String PROPERTY_MAVEN_PATH_PLUGINS = "lutecetools.maven.repository.path.plugins";
-    private static final String URL_PLUGINS = URL_MAVEN_REPO +
-        AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
+    private static final String URL_PLUGINS = URL_MAVEN_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
     private static final String PROPERTY_MAVEN_PATH_SITE_POM = "lutecetools.maven.repository.path.site-pom";
-    private static final String URL_SITE_POM = URL_MAVEN_REPO +
-        AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_SITE_POM );
+    private static final String URL_SITE_POM = URL_MAVEN_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_SITE_POM );
     private static final String PROPERTY_MAVEN_PATH_CORE = "lutecetools.maven.repository.path.core";
-    private static final String URL_CORE = URL_MAVEN_REPO +
-        AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
+    private static final String URL_CORE = URL_MAVEN_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
     private static final String KEY_SITE_POM_VERSION = "lutecetools.pom.site.version";
     private static final String RELEASE_NOT_FOUND = "Release not found";
 
     // SNAPSHOT
     private static final String PROPERTY_SNAPSHOT_REPO_URL = "lutecetools.snapshot.repository.url";
     private static final String URL_SNAPSHOT_REPO = AppPropertiesService.getProperty( PROPERTY_SNAPSHOT_REPO_URL );
-    private static final String URL_SNAPSHOT_PLUGINS = URL_SNAPSHOT_REPO +
-        AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
-    private static final String URL_SNAPSHOT_CORE = URL_SNAPSHOT_REPO +
-        AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
+    private static final String URL_SNAPSHOT_PLUGINS = URL_SNAPSHOT_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
+    private static final String URL_SNAPSHOT_CORE = URL_SNAPSHOT_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
     private static final String EXCEPTION_MESSAGE = "LuteceTools - MavenRepoService : Error retrieving pom infos : ";
     private static final String PROPERTY_NON_AVAILABLE = "lutecetools.nonAvailable";
     private static final String NON_AVAILABLE = AppPropertiesService.getProperty( PROPERTY_NON_AVAILABLE );
     private static final String PROPERTY_UPDATE_DELAY = "lutecetools.update.delay";
     private static final long DEFAULT_UPDATE_DELAY = 7200000L; // 2 hours
-    private static final long UPDATE_DELAY = AppPropertiesService.getPropertyLong( PROPERTY_UPDATE_DELAY,
-            DEFAULT_UPDATE_DELAY );
-    
+    private static final long UPDATE_DELAY = AppPropertiesService.getPropertyLong( PROPERTY_UPDATE_DELAY, DEFAULT_UPDATE_DELAY );
+
     // Keys
- 	private static final String KEY_NCLOC = "ncloc";
- 	private static final String KEY_SQALE_DEBT_RATIO = "sqale_debt_ratio";
- 	
- // Tags
- 	private static final String TAG_LUTECE_CORE = "lutece-core";
-    
+    private static final String KEY_NCLOC = "ncloc";
+    private static final String KEY_SQALE_DEBT_RATIO = "sqale_debt_ratio";
+
+    // Tags
+    private static final String TAG_LUTECE_CORE = "lutece-core";
+
     private static MavenRepoService _singleton;
-    private static StringBuilder _sbLogs = new StringBuilder();
-    
+    private static StringBuilder _sbLogs = new StringBuilder( );
+
     /**
      * Private constructor
      */
-    private MavenRepoService(  )
+    private MavenRepoService( )
     {
     }
 
@@ -118,11 +111,11 @@ public final class MavenRepoService
      *
      * @return the unique instance
      */
-    public static synchronized MavenRepoService instance(  )
+    public static synchronized MavenRepoService instance( )
     {
         if ( _singleton == null )
         {
-            _singleton = new MavenRepoService(  );
+            _singleton = new MavenRepoService( );
         }
 
         return _singleton;
@@ -131,17 +124,18 @@ public final class MavenRepoService
     /**
      * Set the component's version
      *
-     * @param component The component
+     * @param component
+     *            The component
      */
     public static void setReleaseVersion( Dependency component )
     {
-        component.setVersion( getVersion( URL_PLUGINS + component.getArtifactId(  ) ) );
+        component.setVersion( getVersion( URL_PLUGINS + component.getArtifactId( ) ) );
     }
 
     /**
      * Set the POM site version
      */
-    public static void setPomSiteVersion(  )
+    public static void setPomSiteVersion( )
     {
         String strVersion = getVersion( URL_SITE_POM );
         DatastoreService.setDataValue( KEY_SITE_POM_VERSION, strVersion );
@@ -150,7 +144,8 @@ public final class MavenRepoService
     /**
      * Retrieve a version from the maven repository
      *
-     * @param strUrl The maven repository URL
+     * @param strUrl
+     *            The maven repository URL
      * @return The version
      */
     public static String getVersion( String strUrl )
@@ -159,10 +154,10 @@ public final class MavenRepoService
 
         try
         {
-            HttpAccess httpAccess = new HttpAccess(  );
+            HttpAccess httpAccess = new HttpAccess( );
             String strHtml = httpAccess.doGet( strUrl );
             List<String> listElement = getAnchorsList( strHtml );
-            List<String> listVersions = new ArrayList<String>();
+            List<String> listVersions = new ArrayList<String>( );
             for ( String strAnchor : listElement )
             {
                 if ( strAnchor.matches( "^[\\d].*" ) )
@@ -173,10 +168,9 @@ public final class MavenRepoService
 
             return VersionUtils.getLatestVersion( listVersions );
         }
-        catch ( HttpAccessException e )
+        catch( HttpAccessException e )
         {
-            AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving release version : " +
-                e.getMessage(  ), e );
+            AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving release version : " + e.getMessage( ), e );
         }
 
         return strVersion;
@@ -184,14 +178,15 @@ public final class MavenRepoService
 
     /**
      * Gets the component list
+     * 
      * @return the component list
      */
-    public ComponentsInfos getComponents()
+    public ComponentsInfos getComponents( )
     {
-        ComponentsInfos ci = new ComponentsInfos(  );
-        List<Component> list = new ArrayList<Component>(  );
-        List<String> listComponents = getComponentsListFromRepository(  );
-        int nTotal = listComponents.size(  );
+        ComponentsInfos ci = new ComponentsInfos( );
+        List<Component> list = new ArrayList<Component>( );
+        List<String> listComponents = getComponentsListFromRepository( );
+        int nTotal = listComponents.size( );
         int nCount = 0;
         int nAvailable = 0;
 
@@ -201,7 +196,7 @@ public final class MavenRepoService
             list.add( c );
             nCount++;
 
-            if ( !c.getVersion(  ).equals( NON_AVAILABLE ) )
+            if ( !c.getVersion( ).equals( NON_AVAILABLE ) )
             {
                 nAvailable++;
             }
@@ -217,31 +212,31 @@ public final class MavenRepoService
 
     /**
      * Get the components list
+     * 
      * @return The list
      */
-    public static List<String> getComponentsListFromRepository(  )
+    public static List<String> getComponentsListFromRepository( )
     {
-        List<String> list = new ArrayList<>(  );
+        List<String> list = new ArrayList<>( );
 
         try
         {
-            HttpAccess httpAccess = new HttpAccess(  );
+            HttpAccess httpAccess = new HttpAccess( );
             String strHtml = httpAccess.doGet( URL_PLUGINS );
             list = getAnchorsList( strHtml );
-            
+
             // remove the 4 first links
             // list.remove( 3 );
             // list.remove( 2 );
             // list.remove( 1 );
             list.remove( 0 );
-            
+
             // add lutece-core
             list.add( 0, TAG_LUTECE_CORE );
         }
-        catch ( HttpAccessException e )
+        catch( HttpAccessException e )
         {
-            AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving release version : " +
-                e.getMessage(  ), e );
+            AppLogService.error( "LuteceTools - MavenRepoService : Error retrieving release version : " + e.getMessage( ), e );
         }
 
         return list;
@@ -250,7 +245,8 @@ public final class MavenRepoService
     /**
      * Gets a component using cache feature
      *
-     * @param strArtifactId The component name
+     * @param strArtifactId
+     *            The component name
      * @param bFetch
      * @return The component
      */
@@ -262,13 +258,13 @@ public final class MavenRepoService
         {
             if ( bFetch )
             {
-                StringBuilder sbLogs = new StringBuilder();
-                component = fetchComponent( strArtifactId , sbLogs );
+                StringBuilder sbLogs = new StringBuilder( );
+                component = fetchComponent( strArtifactId, sbLogs );
                 ComponentService.save( component );
             }
             else
             {
-                component = new Component(  );
+                component = new Component( );
                 component.setArtifactId( strArtifactId );
                 component.setCoreVersion( NON_AVAILABLE );
                 component.setParentPomVersion( NON_AVAILABLE );
@@ -287,161 +283,175 @@ public final class MavenRepoService
 
     /**
      * Fetch the component from the Maven repository
-     * @param strArtifactId The Artifact ID
-     * @param sbLogs Logs
+     * 
+     * @param strArtifactId
+     *            The Artifact ID
+     * @param sbLogs
+     *            Logs
      * @return The component
      */
-    private static Component fetchComponent( String strArtifactId , StringBuilder sbLogs )
+    private static Component fetchComponent( String strArtifactId, StringBuilder sbLogs )
     {
-        Component component = new Component(  );
+        Component component = new Component( );
         component.setArtifactId( strArtifactId );
-        if (strArtifactId.equals( TAG_LUTECE_CORE ))
+        if ( strArtifactId.equals( TAG_LUTECE_CORE ) )
         {
-        	component.setVersion( getVersion( URL_CORE ) );
+            component.setVersion( getVersion( URL_CORE ) );
         }
         else
         {
-        	component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
+            component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
         }
-        
-        HashMap<String, String> metrics = SonarService.instance(  ).getSonarMetrics( strArtifactId );
+
+        HashMap<String, String> metrics = SonarService.instance( ).getSonarMetrics( strArtifactId );
         for ( Map.Entry<String, String> entry : metrics.entrySet( ) )
         {
-        	if ( entry.getKey().equals( KEY_NCLOC ) )
-        	{
-        		component.setSonarNbLines( entry.getValue( ) );
-        	}
-        	else if ( entry.getKey().equals( KEY_SQALE_DEBT_RATIO ) )
-        	{
-        		component.setSonarRCI( entry.getValue( ) );
-        	}
+            if ( entry.getKey( ).equals( KEY_NCLOC ) )
+            {
+                component.setSonarNbLines( entry.getValue( ) );
+            }
+            else
+                if ( entry.getKey( ).equals( KEY_SQALE_DEBT_RATIO ) )
+                {
+                    component.setSonarRCI( entry.getValue( ) );
+                }
         }
 
-        long t1 = new Date(  ).getTime(  );
-        getPomInfos( component , sbLogs );
+        long t1 = new Date( ).getTime( );
+        getPomInfos( component, sbLogs );
 
-        long t2 = new Date(  ).getTime(  );
-        sbLogs.append("\nLutece Tools - Fetching Maven Info for '").append( component.getArtifactId(  ) ).append("' - duration : ").append(t2 - t1).append("ms.");
-        GitHubService.instance(  ).setGitHubInfos( component , sbLogs  );
-        JiraService.instance(  ).setJiraInfos( component , sbLogs );
-        
+        long t2 = new Date( ).getTime( );
+        sbLogs.append( "\nLutece Tools - Fetching Maven Info for '" ).append( component.getArtifactId( ) ).append( "' - duration : " ).append( t2 - t1 )
+                .append( "ms." );
+        GitHubService.instance( ).setGitHubInfos( component, sbLogs );
+        JiraService.instance( ).setJiraInfos( component, sbLogs );
+
         return component;
     }
 
     /**
      * Fill component infos coming from the pom
      *
-     * @param component The component name
-     * @param sbLogs Logs
+     * @param component
+     *            The component name
+     * @param sbLogs
+     *            Logs
      */
     private static void getPomInfos( Component component, StringBuilder sbLogs )
     {
         StringBuilder sbPomUrl;
-        
-        if ( component.getArtifactId(  ).equals( TAG_LUTECE_CORE ) )
+
+        if ( component.getArtifactId( ).equals( TAG_LUTECE_CORE ) )
         {
-        	sbPomUrl = new StringBuilder( URL_CORE );
-        	sbPomUrl.append( component.getVersion(  ) ).append( "/" );
+            sbPomUrl = new StringBuilder( URL_CORE );
+            sbPomUrl.append( component.getVersion( ) ).append( "/" );
         }
         else
         {
-        	sbPomUrl = new StringBuilder( URL_PLUGINS );
-        	sbPomUrl.append( component.getArtifactId(  ) ).append( "/" ).append( component.getVersion(  ) ).append( "/" );
+            sbPomUrl = new StringBuilder( URL_PLUGINS );
+            sbPomUrl.append( component.getArtifactId( ) ).append( "/" ).append( component.getVersion( ) ).append( "/" );
         }
-        sbPomUrl.append( component.getArtifactId(  ) ).append( "-" ).append( component.getVersion(  ) ).append( ".pom" );
-        getPomInfos( component, sbPomUrl.toString(  ), false , sbLogs );
+        sbPomUrl.append( component.getArtifactId( ) ).append( "-" ).append( component.getVersion( ) ).append( ".pom" );
+        getPomInfos( component, sbPomUrl.toString( ), false, sbLogs );
 
-        String strSnapshotPomUrl = getSnapshotPomUrl( component , sbLogs );
+        String strSnapshotPomUrl = getSnapshotPomUrl( component, sbLogs );
 
         if ( strSnapshotPomUrl != null )
         {
-            getPomInfos( component, strSnapshotPomUrl, true , sbLogs );
+            getPomInfos( component, strSnapshotPomUrl, true, sbLogs );
         }
         else
         {
-            sbLogs.append( "\n*** ERROR *** No snapshot pom found for plugin : " + component.getArtifactId(  ) );
+            sbLogs.append( "\n*** ERROR *** No snapshot pom found for plugin : " + component.getArtifactId( ) );
         }
     }
 
     /**
      * Retreive POM infos for a given component
      *
-     * @param component The component
-     * @param strPomUrl The POM URL
-     * @param bSnapshot false for release, true for snapshot
-     * @param sbLogs  Logs
+     * @param component
+     *            The component
+     * @param strPomUrl
+     *            The POM URL
+     * @param bSnapshot
+     *            false for release, true for snapshot
+     * @param sbLogs
+     *            Logs
      */
     private static void getPomInfos( Component component, String strPomUrl, boolean bSnapshot, StringBuilder sbLogs )
     {
         try
         {
-            HttpAccess httpAccess = new HttpAccess(  );
+            HttpAccess httpAccess = new HttpAccess( );
             String strPom = httpAccess.doGet( strPomUrl );
-            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance(  );
-            SAXParser saxParser = saxParserFactory.newSAXParser(  );
-            SaxPomHandler handler = new SaxPomHandler(  );
+            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance( );
+            SAXParser saxParser = saxParserFactory.newSAXParser( );
+            SaxPomHandler handler = new SaxPomHandler( );
             saxParser.parse( new InputSource( new StringReader( strPom ) ), handler );
 
             if ( bSnapshot )
             {
-                component.setSnapshotParentPomVersion( handler.getParentPomVersion(  ) );
-                component.setSnapshotCoreVersion( handler.getCoreVersion(  ) );
-                component.setSnapshotScmUrl( handler.getScmUrl(  ) );
+                component.setSnapshotParentPomVersion( handler.getParentPomVersion( ) );
+                component.setSnapshotCoreVersion( handler.getCoreVersion( ) );
+                component.setSnapshotScmUrl( handler.getScmUrl( ) );
             }
             else
             {
-                component.setParentPomVersion( handler.getParentPomVersion(  ) );
-                component.setCoreVersion( handler.getCoreVersion(  ) );
-                component.setScmUrl( handler.getScmUrl(  ) );
+                component.setParentPomVersion( handler.getParentPomVersion( ) );
+                component.setCoreVersion( handler.getCoreVersion( ) );
+                component.setScmUrl( handler.getScmUrl( ) );
             }
 
-            component.setJiraKey( handler.getJiraKey(  ) );
+            component.setJiraKey( handler.getJiraKey( ) );
         }
-        catch ( IOException e )
+        catch( IOException e )
         {
-            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage(  ), e );
+            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage( ), e );
         }
-        catch ( HttpAccessException e )
+        catch( HttpAccessException e )
         {
-            sbLogs.append("\n*** ERROR *** Error reading pom for component ").append(component.getArtifactId()).append(EXCEPTION_MESSAGE).append(e.getMessage(  ));
+            sbLogs.append( "\n*** ERROR *** Error reading pom for component " ).append( component.getArtifactId( ) ).append( EXCEPTION_MESSAGE )
+                    .append( e.getMessage( ) );
         }
-        catch ( ParserConfigurationException e )
+        catch( ParserConfigurationException e )
         {
-            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage(  ), e );
+            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage( ), e );
         }
-        catch ( SAXException e )
+        catch( SAXException e )
         {
-            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage(  ), e );
+            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage( ), e );
         }
     }
 
     /**
      * Retrieve the POM URL for the latest snapshot
      *
-     * @param component The component
-     * @param sbLogs  The logs 
+     * @param component
+     *            The component
+     * @param sbLogs
+     *            The logs
      * @return The URL
      */
-    private static String getSnapshotPomUrl( Component component , StringBuilder sbLogs )
+    private static String getSnapshotPomUrl( Component component, StringBuilder sbLogs )
     {
         String strPomUrl = null;
         String strSnapshotsDirUrl;
 
-        if ( component.getArtifactId(  ).equals( TAG_LUTECE_CORE ) )
+        if ( component.getArtifactId( ).equals( TAG_LUTECE_CORE ) )
         {
-        	strSnapshotsDirUrl = URL_SNAPSHOT_CORE;
+            strSnapshotsDirUrl = URL_SNAPSHOT_CORE;
         }
         else
         {
-        	strSnapshotsDirUrl = URL_SNAPSHOT_PLUGINS + component.getArtifactId(  );
+            strSnapshotsDirUrl = URL_SNAPSHOT_PLUGINS + component.getArtifactId( );
         }
-        
+
         try
         {
-            HttpAccess httpAccess = new HttpAccess(  );
+            HttpAccess httpAccess = new HttpAccess( );
             String strHtml = httpAccess.doGet( strSnapshotsDirUrl );
             List<String> listElement = getAnchorsList( strHtml );
-            List<String> listVersions = new ArrayList<String>();
+            List<String> listVersions = new ArrayList<String>( );
 
             for ( String strAnchor : listElement )
             {
@@ -466,9 +476,9 @@ public final class MavenRepoService
                 }
             }
         }
-        catch ( HttpAccessException e )
+        catch( HttpAccessException e )
         {
-            sbLogs.append("\n*** ERROR ***  Error retrieving release version : ").append(e.getMessage(  ));
+            sbLogs.append( "\n*** ERROR ***  Error retrieving release version : " ).append( e.getMessage( ) );
         }
 
         return strPomUrl;
@@ -477,19 +487,20 @@ public final class MavenRepoService
     /**
      * Gets anchor list using regexp
      *
-     * @param strHtml The HTML code
+     * @param strHtml
+     *            The HTML code
      * @return The list
      */
     static List<String> getAnchorsList2( String strHtml )
     {
-        List<String> list = new ArrayList<String>(  );
+        List<String> list = new ArrayList<String>( );
         String strPattern = "<a[^>]*>(.+?)</a>";
         Pattern p = Pattern.compile( strPattern, Pattern.DOTALL );
         Matcher m = p.matcher( strHtml );
 
-        while ( m.find(  ) )
+        while ( m.find( ) )
         {
-            list.add( strHtml.substring( m.start(  ), m.end(  ) ) );
+            list.add( strHtml.substring( m.start( ), m.end( ) ) );
         }
 
         return list;
@@ -498,12 +509,13 @@ public final class MavenRepoService
     /**
      * Gets anchor list using more optimized method
      *
-     * @param strHtml The HTML code
+     * @param strHtml
+     *            The HTML code
      * @return The list
      */
     private static List<String> getAnchorsList( String strHtml )
     {
-        List<String> list = new ArrayList<String>(  );
+        List<String> list = new ArrayList<String>( );
         String strCurrent = strHtml;
 
         int nPos = strCurrent.indexOf( "<a " );
@@ -525,12 +537,11 @@ public final class MavenRepoService
     /**
      * Update the cache (reset and rebuild)
      */
-    public void updateCache(  )
+    public void updateCache( )
     {
-        GitHubService.updateGitHubRepositoriesList(  );
+        GitHubService.updateGitHubRepositoriesList( );
 
-        List<String> listComponents = getComponentsListFromRepository(  );
-        
+        List<String> listComponents = getComponentsListFromRepository( );
 
         for ( String strArtifactId : listComponents )
         {
@@ -538,32 +549,34 @@ public final class MavenRepoService
 
             if ( shouldBeUpdated( component ) )
             {
-//                _sbLogs.append("\nThread is fetching artifact : ").append(strArtifactId);
+                // _sbLogs.append("\nThread is fetching artifact : ").append(strArtifactId);
 
-                component = fetchComponent( strArtifactId , _sbLogs );
+                component = fetchComponent( strArtifactId, _sbLogs );
                 ComponentService.save( component );
-//                _sbLogs.append("\nThread has fetched artifact : ").append(strArtifactId);
+                // _sbLogs.append("\nThread has fetched artifact : ").append(strArtifactId);
             }
             else
             {
-                _sbLogs.append("\nComponent").append(strArtifactId).append(" is up to date");
+                _sbLogs.append( "\nComponent" ).append( strArtifactId ).append( " is up to date" );
             }
         }
     }
-    
-    public static String getLogs()
+
+    public static String getLogs( )
     {
-        return _sbLogs.toString();
+        return _sbLogs.toString( );
     }
-    
-    public static void clearLogs()
+
+    public static void clearLogs( )
     {
-        _sbLogs = new StringBuilder();
+        _sbLogs = new StringBuilder( );
     }
 
     /**
      * Returns true if the component should be updated
-     * @param component The component
+     * 
+     * @param component
+     *            The component
      * @return true if the component should be updated
      */
     private boolean shouldBeUpdated( Component component )
@@ -575,12 +588,12 @@ public final class MavenRepoService
         }
 
         // The last update is too far
-        long lNow = new Date(  ).getTime(  );
+        long lNow = new Date( ).getTime( );
 
-        return ( lNow - component.getLastUpdate(  ) ) > UPDATE_DELAY;
+        return ( lNow - component.getLastUpdate( ) ) > UPDATE_DELAY;
     }
-    
-    public static String getLatestCoreVersion()
+
+    public static String getLatestCoreVersion( )
     {
         return getVersion( URL_CORE );
     }

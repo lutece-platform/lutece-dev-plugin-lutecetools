@@ -32,64 +32,62 @@ public class StatsRest
     private static final String KEY_GITHUB_OK = "github-ok";
     private static final String KEY_JIRA_OK = "jira-ok";
     private static final String KEY_README_OK = "readme-ok";
-    
-    private static final ObjectMapper _mapper = new ObjectMapper(  );
+
+    private static final ObjectMapper _mapper = new ObjectMapper( );
 
     @GET
     @Path( "/" )
-    public Response getStats( 
-            @HeaderParam( HttpHeaders.ACCEPT ) String strAccept, 
-            @QueryParam( Constants.PARAMETER_FORMAT ) String strFormat 
-        ) throws IOException
+    public Response getStats( @HeaderParam( HttpHeaders.ACCEPT ) String strAccept, @QueryParam( Constants.PARAMETER_FORMAT ) String strFormat )
+            throws IOException
     {
         String entity;
         String mediaType = MediaType.APPLICATION_JSON;
 
         if ( strFormat != null )
         {
-            if( strFormat.equals( Constants.MEDIA_TYPE_XML ))
+            if ( strFormat.equals( Constants.MEDIA_TYPE_XML ) )
             {
-                entity = getStatsXml(  );
+                entity = getStatsXml( );
                 mediaType = MediaType.APPLICATION_XML;
             }
             else
             {
-                entity = getStatsJson(  );
+                entity = getStatsJson( );
             }
         }
-        else if ( ( strAccept != null ) && strAccept.contains( MediaType.APPLICATION_XML ) )
-        {
-            entity = getStatsXml(  );
-            mediaType = MediaType.APPLICATION_XML;
-        }
         else
-        {
-            entity = getStatsJson(  );
-        }
+            if ( ( strAccept != null ) && strAccept.contains( MediaType.APPLICATION_XML ) )
+            {
+                entity = getStatsXml( );
+                mediaType = MediaType.APPLICATION_XML;
+            }
+            else
+            {
+                entity = getStatsJson( );
+            }
 
-        return Response.ok( entity, mediaType ).build(  );
+        return Response.ok( entity, mediaType ).build( );
     }
 
-    private String getStatsJson() throws IOException
+    private String getStatsJson( ) throws IOException
     {
-        Stats stats = StatsService.getStats();
-        return _mapper.writeValueAsString(stats);
+        Stats stats = StatsService.getStats( );
+        return _mapper.writeValueAsString( stats );
     }
 
-    private String getStatsXml() throws IOException
+    private String getStatsXml( ) throws IOException
     {
-        Stats stats = StatsService.getStats();
-        StringBuffer sbXML = new StringBuffer( XmlUtil.getXmlHeader(  ) );
+        Stats stats = StatsService.getStats( );
+        StringBuffer sbXML = new StringBuffer( XmlUtil.getXmlHeader( ) );
         XmlUtil.beginElement( sbXML, KEY_STATS );
-        XmlUtil.addElement(sbXML, KEY_MAVEN_COUNT, stats.getMavenCount() );
-        XmlUtil.addElement(sbXML, KEY_GITHUB_COUNT, stats.getGithubCount() );
-        XmlUtil.addElement(sbXML, KEY_GITHUB_OK, stats.getGithubOK() );
-        XmlUtil.addElement(sbXML, KEY_JIRA_OK, stats.getJiraOK() );
-        XmlUtil.addElement(sbXML, KEY_README_OK, stats.getReadmeOK() );
+        XmlUtil.addElement( sbXML, KEY_MAVEN_COUNT, stats.getMavenCount( ) );
+        XmlUtil.addElement( sbXML, KEY_GITHUB_COUNT, stats.getGithubCount( ) );
+        XmlUtil.addElement( sbXML, KEY_GITHUB_OK, stats.getGithubOK( ) );
+        XmlUtil.addElement( sbXML, KEY_JIRA_OK, stats.getJiraOK( ) );
+        XmlUtil.addElement( sbXML, KEY_README_OK, stats.getReadmeOK( ) );
         XmlUtil.endElement( sbXML, KEY_STATS );
 
-        return sbXML.toString(  );
+        return sbXML.toString( );
     }
-
 
 }

@@ -46,31 +46,32 @@ public class VersionTest extends LuteceTestCase
 
     /**
      * Test of parse method, of class Version.
+     * 
      * @throws fr.paris.lutece.plugins.lutecetools.service.version.VersionParsingException
      */
     @Test
-    public void testParse() throws VersionParsingException
+    public void testParse( ) throws VersionParsingException
     {
-        System.out.println("parse");
+        System.out.println( "parse" );
         String strSource = "12.10.23";
-        Version result = Version.parse(strSource);
-        assertEquals( strSource, result.getVersion() );
-        System.out.println( result.getVersion() );
+        Version result = Version.parse( strSource );
+        assertEquals( strSource, result.getVersion( ) );
+        System.out.println( result.getVersion( ) );
 
         strSource = "12.10";
-        result = Version.parse(strSource);
-        assertEquals( "12.10.0", result.getVersion() );
-        System.out.println( result.getVersion() );
+        result = Version.parse( strSource );
+        assertEquals( "12.10.0", result.getVersion( ) );
+        System.out.println( result.getVersion( ) );
 
         strSource = "12.10.23-SNAPSHOT";
-        result = Version.parse(strSource);
-        assertEquals( strSource, result.getVersion() );
-        System.out.println( result.getVersion() );
+        result = Version.parse( strSource );
+        assertEquals( strSource, result.getVersion( ) );
+        System.out.println( result.getVersion( ) );
 
         strSource = "12.10-SNAPSHOT";
-        result = Version.parse(strSource);
-        assertEquals( "12.10.0-SNAPSHOT", result.getVersion() );
-        System.out.println( result.getVersion() );
+        result = Version.parse( strSource );
+        assertEquals( "12.10.0-SNAPSHOT", result.getVersion( ) );
+        System.out.println( result.getVersion( ) );
     }
-    
+
 }

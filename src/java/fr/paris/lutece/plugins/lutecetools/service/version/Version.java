@@ -46,15 +46,16 @@ public class Version implements Comparable
     /**
      * @return the nMajor
      */
-    public int getMajor()
+    public int getMajor( )
     {
         return _nMajor;
     }
 
     /**
-     * @param nMajor the nMajor to set
+     * @param nMajor
+     *            the nMajor to set
      */
-    public void setMajor(int nMajor)
+    public void setMajor( int nMajor )
     {
         _nMajor = nMajor;
     }
@@ -62,15 +63,16 @@ public class Version implements Comparable
     /**
      * @return the nMinor
      */
-    public int getMinor()
+    public int getMinor( )
     {
         return _nMinor;
     }
 
     /**
-     * @param nMinor the nMinor to set
+     * @param nMinor
+     *            the nMinor to set
      */
-    public void setMinor(int nMinor)
+    public void setMinor( int nMinor )
     {
         _nMinor = nMinor;
     }
@@ -78,15 +80,16 @@ public class Version implements Comparable
     /**
      * @return the nPatch
      */
-    public int getPatch()
+    public int getPatch( )
     {
         return _nPatch;
     }
 
     /**
-     * @param nPatch the nPatch to set
+     * @param nPatch
+     *            the nPatch to set
      */
-    public void setPatch(int nPatch)
+    public void setPatch( int nPatch )
     {
         _nPatch = nPatch;
     }
@@ -94,93 +97,93 @@ public class Version implements Comparable
     /**
      * @return the Qualifier
      */
-    public String getQualifier()
+    public String getQualifier( )
     {
         return _strQualifier;
     }
 
     /**
-     * @param strQualifier the Qualifier to set
+     * @param strQualifier
+     *            the Qualifier to set
      */
-    public void setQualifier(String strQualifier)
+    public void setQualifier( String strQualifier )
     {
         _strQualifier = strQualifier;
     }
 
     @Override
-    public int compareTo(Object o)
+    public int compareTo( Object o )
     {
         Version version = (Version) o;
-        int nDiff = _nMajor - version.getMajor();
-        if( nDiff != 0 )
+        int nDiff = _nMajor - version.getMajor( );
+        if ( nDiff != 0 )
         {
             return nDiff;
-        }   
-        nDiff = _nMinor - version.getMinor();
-        if( nDiff != 0 )
+        }
+        nDiff = _nMinor - version.getMinor( );
+        if ( nDiff != 0 )
         {
             return nDiff;
-        }   
-        nDiff = _nPatch - version.getPatch();
+        }
+        nDiff = _nPatch - version.getPatch( );
         return nDiff;
     }
-    
-    public String getVersion()
+
+    public String getVersion( )
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append( _nMajor ).append(".").append( _nMinor ).append(".").append(_nPatch);
-        if( _strQualifier != null )
+        StringBuilder sb = new StringBuilder( );
+        sb.append( _nMajor ).append( "." ).append( _nMinor ).append( "." ).append( _nPatch );
+        if ( _strQualifier != null )
         {
             sb.append( "-" ).append( _strQualifier );
         }
-        return sb.toString();
+        return sb.toString( );
     }
-    
+
     public static Version parse( String strSource ) throws VersionParsingException
     {
-        Version version = new Version();
-        
+        Version version = new Version( );
+
         try
         {
-            String strCurrent = strSource.trim();
-            
+            String strCurrent = strSource.trim( );
+
             // Search for qualifier
             int nPos = strCurrent.indexOf( "-" );
-            if( nPos != -1 )
+            if ( nPos != -1 )
             {
-                version.setQualifier( strCurrent.substring( nPos + 1));
-                strCurrent = strCurrent.substring( 0 , nPos );
+                version.setQualifier( strCurrent.substring( nPos + 1 ) );
+                strCurrent = strCurrent.substring( 0, nPos );
             }
 
             // Search for major digits
             nPos = strCurrent.indexOf( "." );
 
-            String strMajor = strCurrent.substring( 0 , nPos );
-            version.setMajor( Integer.parseInt(strMajor));
+            String strMajor = strCurrent.substring( 0, nPos );
+            version.setMajor( Integer.parseInt( strMajor ) );
 
             // Search for minor digits
-            strCurrent = strCurrent.substring( nPos + 1);
+            strCurrent = strCurrent.substring( nPos + 1 );
             nPos = strCurrent.indexOf( "." );
 
-            if( nPos != -1 )
+            if ( nPos != -1 )
             {
-                String strMinor = strCurrent.substring( 0 , nPos );
-                version.setMinor( Integer.parseInt(strMinor) );
+                String strMinor = strCurrent.substring( 0, nPos );
+                version.setMinor( Integer.parseInt( strMinor ) );
 
                 strCurrent = strCurrent.substring( nPos + 1 );
-                version.setPatch( Integer.parseInt(strCurrent));
+                version.setPatch( Integer.parseInt( strCurrent ) );
             }
             else
             {
-                version.setMinor( Integer.parseInt(strCurrent) );
+                version.setMinor( Integer.parseInt( strCurrent ) );
             }
         }
         catch( Exception e )
         {
-            throw new VersionParsingException( "Error parsing version : '" + strSource + "' : " + e.getMessage(), e );
+            throw new VersionParsingException( "Error parsing version : '" + strSource + "' : " + e.getMessage( ), e );
         }
         return version;
     }
 
-    
 }

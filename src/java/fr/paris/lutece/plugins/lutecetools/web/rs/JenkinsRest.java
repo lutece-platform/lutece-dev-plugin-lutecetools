@@ -47,7 +47,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-
 /**
  * Page resource
  */
@@ -57,14 +56,12 @@ public class JenkinsRest
     @GET
     @Path( Constants.PATH_JENKINS_BADGE )
     @Produces( "image/svg+xml" )
-    public Response getJenkinsBadge( @HeaderParam( HttpHeaders.ACCEPT )
-    String accept, @QueryParam( Constants.PARAMETER_URL )
-    String url ) throws Exception
+    public Response getJenkinsBadge( @HeaderParam( HttpHeaders.ACCEPT ) String accept, @QueryParam( Constants.PARAMETER_URL ) String url ) throws Exception
     {
         HttpEntity entity = null;
-        HttpResponse response = JenkinsService.instance(  ).performsGetJenkinsUrl( url, false );
-        entity = response.getEntity(  );
+        HttpResponse response = JenkinsService.instance( ).performsGetJenkinsUrl( url, false );
+        entity = response.getEntity( );
 
-        return Response.ok( entity.getContent(  ), "image/svg+xml" ).build(  );
+        return Response.ok( entity.getContent( ), "image/svg+xml" ).build( );
     }
 }

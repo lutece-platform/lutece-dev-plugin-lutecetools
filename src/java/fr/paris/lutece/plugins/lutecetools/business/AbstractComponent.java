@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.lutecetools.business;
 
-
 /**
  * Component
  */
@@ -44,16 +43,19 @@ public abstract class AbstractComponent implements Comparable
 
     /**
      * Returns the ArtifactId
+     * 
      * @return The ArtifactId
      */
-    public String getArtifactId(  )
+    public String getArtifactId( )
     {
         return _strArtifactId;
     }
 
     /**
      * Sets the ArtifactId
-     * @param strArtifactId The ArtifactId
+     * 
+     * @param strArtifactId
+     *            The ArtifactId
      */
     public void setArtifactId( String strArtifactId )
     {
@@ -62,16 +64,19 @@ public abstract class AbstractComponent implements Comparable
 
     /**
      * Returns the Version
+     * 
      * @return The Version
      */
-    public String getVersion(  )
+    public String getVersion( )
     {
         return _strVersion;
     }
 
     /**
      * Sets the Version
-     * @param strVersion The Version
+     * 
+     * @param strVersion
+     *            The Version
      */
     public void setVersion( String strVersion )
     {
@@ -85,8 +90,8 @@ public abstract class AbstractComponent implements Comparable
     public int compareTo( Object o )
     {
         AbstractComponent c = (AbstractComponent) o;
-        String strName1 = getArtifactId(  ).substring( getArtifactId(  ).indexOf( "-" ) + 1 );
-        String strName2 = c.getArtifactId(  ).substring( c.getArtifactId(  ).indexOf( "-" ) + 1 );
+        String strName1 = getArtifactId( ).substring( getArtifactId( ).indexOf( "-" ) + 1 );
+        String strName2 = c.getArtifactId( ).substring( c.getArtifactId( ).indexOf( "-" ) + 1 );
 
         return strName1.compareTo( strName2 );
     }
@@ -99,15 +104,15 @@ public abstract class AbstractComponent implements Comparable
     {
         AbstractComponent c = (AbstractComponent) o;
 
-        return getArtifactId(  ).equals( c.getArtifactId(  ) );
+        return getArtifactId( ).equals( c.getArtifactId( ) );
     }
 
     /**
      * {@inheritDoc }
      */
     @Override
-    public int hashCode(  )
+    public int hashCode( )
     {
-        return super.hashCode(  );
+        return super.hashCode( );
     }
 }

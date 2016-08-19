@@ -40,8 +40,6 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 
 import javax.servlet.http.HttpServletRequest;
 
-
-
 /**
  * This class provides a simple implementation of an XPage
  */
@@ -53,12 +51,14 @@ public class LuteceToolsApp extends MVCApplication
 
     /**
      * Returns the content of the page lutecetools.
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The view
      */
     @View( value = VIEW_HOME, defaultView = true )
     public XPage viewHome( HttpServletRequest request )
     {
-        return getXPage( TEMPLATE_XPAGE, request.getLocale(  ) );
+        return getXPage( TEMPLATE_XPAGE, request.getLocale( ) );
     }
 }

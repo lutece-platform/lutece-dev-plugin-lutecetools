@@ -44,21 +44,20 @@ import org.junit.Test;
  */
 public class JiraServiceTest extends LuteceTestCase
 {
-    
 
     /**
      * Test of setJiraInfos method, of class JiraService.
      */
     @Test
-    public void testSetJiraInfos()
+    public void testSetJiraInfos( )
     {
-        System.out.println("setJiraInfos");
-        Component component = new Component();
-        component.setJiraKey( "LUTECETOOL");
-        JiraService.instance().setJiraInfos(component , new StringBuilder(  ));
-        assertEquals( "1.0.0" , component.getJiraLastReleasedVersion(  ) );
-assertEquals("1.0.1", component.getJiraLastUnreleasedVersion(  ) );
-        assertEquals( 22, component.getJiraIssuesCount(  ) );
-        assertEquals( 0, component.getJiraUnresolvedIssuesCount(  ) );
+        System.out.println( "setJiraInfos" );
+        Component component = new Component( );
+        component.setJiraKey( "LUTECETOOL" );
+        JiraService.instance( ).setJiraInfos( component, new StringBuilder( ) );
+        assertEquals( "1.0.0", component.getJiraLastReleasedVersion( ) );
+        assertEquals( "1.0.1", component.getJiraLastUnreleasedVersion( ) );
+        assertEquals( 22, component.getJiraIssuesCount( ) );
+        assertEquals( 0, component.getJiraUnresolvedIssuesCount( ) );
     }
 }

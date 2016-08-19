@@ -39,8 +39,8 @@ package fr.paris.lutece.plugins.lutecetools.service.version;
  */
 public class VersionParsingException extends Exception
 {
-    public VersionParsingException( String strMessage , Throwable exception )
+    public VersionParsingException( String strMessage, Throwable exception )
     {
-        super( strMessage , exception );
+        super( strMessage, exception );
     }
-} 
+}

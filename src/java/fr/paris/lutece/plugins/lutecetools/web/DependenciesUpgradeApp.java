@@ -44,7 +44,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * This class provides a simple implementation of an XPage
  */
@@ -63,17 +62,19 @@ public class DependenciesUpgradeApp extends MVCApplication
 
     /**
      * Returns the content of the page dependenciesupgrade.
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The view
      */
     @View( value = VIEW_HOME, defaultView = true )
     public XPage viewHome( HttpServletRequest request )
     {
-        Map<String, Object> model = getModel(  );
+        Map<String, Object> model = getModel( );
         model.put( MARK_INPUT, _strInput );
         model.put( MARK_OUTPUT, _strOutput );
 
-        return getXPage( TEMPLATE_XPAGE, request.getLocale(  ), model );
+        return getXPage( TEMPLATE_XPAGE, request.getLocale( ), model );
     }
 
     @Action( ACTION_PROCESS )

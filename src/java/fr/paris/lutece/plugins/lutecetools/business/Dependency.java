@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.lutecetools.business;
 
-
 /**
  * Dependency
  */
@@ -44,16 +43,19 @@ public class Dependency extends AbstractComponent
 
     /**
      * Returns the GroupId
+     * 
      * @return The GroupId
      */
-    public String getGroupId(  )
+    public String getGroupId( )
     {
         return _strGroupId;
     }
 
     /**
      * Sets the GroupId
-     * @param strGroupId The GroupId
+     * 
+     * @param strGroupId
+     *            The GroupId
      */
     public void setGroupId( String strGroupId )
     {
@@ -62,16 +64,19 @@ public class Dependency extends AbstractComponent
 
     /**
      * Returns the ComponentType
+     * 
      * @return The ComponentType
      */
-    public String getComponentType(  )
+    public String getComponentType( )
     {
         return _strComponentType;
     }
 
     /**
      * Sets the ComponentType
-     * @param strComponentType The ComponentType
+     * 
+     * @param strComponentType
+     *            The ComponentType
      */
     public void setComponentType( String strComponentType )
     {
