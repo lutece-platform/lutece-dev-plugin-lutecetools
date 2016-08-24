@@ -291,10 +291,10 @@
                             </#if>
                         </td>
                         <td class="small">
-                            <#if component.jenkinsStatus?contains("?")>
+                            <#if component.jenkinsStatus?? & component.jenkinsStatus?contains("?")>
                                 ${component.jenkinsStatus}
                             <#else>
-                                <a href="${component.jenkinsJobBuildUrl}"><img src="${component.jenkinsJobBadgeIconUrl}"></a>
+                                <a href="${component.jenkinsJobBuildUrl!''}"><img src="${component.jenkinsJobBadgeIconUrl!''}"></a>
                             </#if>
                         </td>
                         <td>
