@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.lutecetools.web.rs;
 
 import fr.paris.lutece.plugins.lutecetools.service.JenkinsService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
+import java.io.IOException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -66,10 +67,17 @@ public class JenkinsRest
         _jenkinsService = jenkinsService;
     }
 
+    /**
+     * 
+     * @param accept
+     * @param url
+     * @return
+     * @throws IOException 
+     */
     @GET
     @Path( Constants.PATH_JENKINS_BADGE )
     @Produces( "image/svg+xml" )
-    public Response getJenkinsBadge( @HeaderParam( HttpHeaders.ACCEPT ) String accept, @QueryParam( Constants.PARAMETER_URL ) String url ) throws Exception
+    public Response getJenkinsBadge( @HeaderParam( HttpHeaders.ACCEPT ) String accept, @QueryParam( Constants.PARAMETER_URL ) String url ) throws IOException 
     {
         HttpResponse response = _jenkinsService.performsGetJenkinsUrl( url, false );
         HttpEntity entity = response.getEntity( );

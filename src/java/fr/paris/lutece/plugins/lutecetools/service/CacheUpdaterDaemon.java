@@ -45,10 +45,10 @@ public class CacheUpdaterDaemon extends Daemon
     @Override
     public void run( )
     {
-        long t1 = new Date( ).getTime( );
+        long lTime1 = new Date( ).getTime( );
         MavenRepoService.instance( ).updateCache( );
 
-        long t2 = new Date( ).getTime( );
-        setLastRunLogs( "Lutece Tools - Cache for Maven info updated : duration = " + ( t2 - t1 ) + "ms" );
+        long lTime2 = new Date( ).getTime( );
+        setLastRunLogs( "Lutece Tools - Cache for Maven info updated : duration = " + ( lTime2 - lTime1 ) + "ms" );
     }
 }

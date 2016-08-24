@@ -189,31 +189,30 @@ public final class MavenRepoService
      */
     public ComponentsInfos getComponents( )
     {
-        ComponentsInfos ci = new ComponentsInfos( );
+        ComponentsInfos ciInfos = new ComponentsInfos( );
         List<Component> list = new ArrayList<Component>( );
         List<String> listComponents = getComponentsListFromRepository( );
-        int nTotal = listComponents.size( );
         int nCount = 0;
         int nAvailable = 0;
 
         for ( String strArtifactId : listComponents )
         {
-            Component c = getComponent( strArtifactId, false );
-            list.add( c );
+            Component component = getComponent( strArtifactId, false );
+            list.add( component );
             nCount++;
 
-            if ( !c.getVersion( ).equals( NON_AVAILABLE ) )
+            if ( ! NON_AVAILABLE.equals( component.getVersion( ) ) )
             {
                 nAvailable++;
             }
         }
         Collections.sort( list );
 
-        ci.setComponentCount( nCount );
-        ci.setComponentAvailable( nAvailable );
-        ci.setListComponents( list );
+        ciInfos.setComponentCount( nCount );
+        ciInfos.setComponentAvailable( nAvailable );
+        ciInfos.setListComponents( list );
 
-        return ci;
+        return ciInfos;
     }
 
     /**
@@ -309,11 +308,11 @@ public final class MavenRepoService
             component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
         }
 
-        long t1 = new Date( ).getTime( );
+        long lTime1 = new Date( ).getTime( );
         getPomInfos( component, sbLogs );
 
-        long t2 = new Date( ).getTime( );
-        sbLogs.append( "\nLutece Tools - Fetching Maven Info for '" ).append( component.getArtifactId( ) ).append( "' - duration : " ).append( t2 - t1 )
+        long lTime2 = new Date( ).getTime( );
+        sbLogs.append( "\nLutece Tools - Fetching Maven Info for '" ).append( component.getArtifactId( ) ).append( "' - duration : " ).append( lTime2 - lTime1 )
                 .append( "ms." );
 
         for ( ComponentInfoFiller filler : _listComponentFiller )
@@ -339,14 +338,14 @@ public final class MavenRepoService
         if ( component.getArtifactId( ).equals( TAG_LUTECE_CORE ) )
         {
             sbPomUrl = new StringBuilder( URL_CORE );
-            sbPomUrl.append( component.getVersion( ) ).append( "/" );
+            sbPomUrl.append( component.getVersion( ) ).append( '/' );
         }
         else
         {
             sbPomUrl = new StringBuilder( URL_PLUGINS );
-            sbPomUrl.append( component.getArtifactId( ) ).append( "/" ).append( component.getVersion( ) ).append( "/" );
+            sbPomUrl.append( component.getArtifactId( ) ).append( '/' ).append( component.getVersion( ) ).append( '/' );
         }
-        sbPomUrl.append( component.getArtifactId( ) ).append( "-" ).append( component.getVersion( ) ).append( ".pom" );
+        sbPomUrl.append( component.getArtifactId( ) ).append( '-' ).append( component.getVersion( ) ).append( ".pom" );
         getPomInfos( component, sbPomUrl.toString( ), false, sbLogs );
 
         String strSnapshotPomUrl = getSnapshotPomUrl( component, sbLogs );
@@ -357,7 +356,7 @@ public final class MavenRepoService
         }
         else
         {
-            sbLogs.append( "\n*** ERROR *** No snapshot pom found for plugin : " + component.getArtifactId( ) );
+            sbLogs.append( "\n*** ERROR *** No snapshot pom found for plugin : " ).append(component.getArtifactId( ));
         }
     }
 
@@ -490,12 +489,12 @@ public final class MavenRepoService
     {
         List<String> list = new ArrayList<String>( );
         String strPattern = "<a[^>]*>(.+?)</a>";
-        Pattern p = Pattern.compile( strPattern, Pattern.DOTALL );
-        Matcher m = p.matcher( strHtml );
+        Pattern pattern = Pattern.compile( strPattern, Pattern.DOTALL );
+        Matcher matcher = pattern.matcher( strHtml );
 
-        while ( m.find( ) )
+        while ( matcher.find( ) )
         {
-            list.add( strHtml.substring( m.start( ), m.end( ) ) );
+            list.add( strHtml.substring( matcher.start( ), matcher.end( ) ) );
         }
 
         return list;
@@ -544,11 +543,8 @@ public final class MavenRepoService
 
             if ( shouldBeUpdated( component ) )
             {
-                // _sbLogs.append("\nThread is fetching artifact : ").append(strArtifactId);
-
                 component = fetchComponent( strArtifactId, _sbLogs );
                 ComponentService.save( component );
-                // _sbLogs.append("\nThread has fetched artifact : ").append(strArtifactId);
             }
             else
             {

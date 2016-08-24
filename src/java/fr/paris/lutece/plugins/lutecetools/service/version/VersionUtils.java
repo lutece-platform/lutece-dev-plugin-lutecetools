@@ -42,9 +42,19 @@ import java.util.List;
 /**
  * VersionUtils
  */
-public class VersionUtils
+public abstract class VersionUtils
 {
 
+    /** private constructor */
+    private VersionUtils()
+    {
+    }
+    
+    /**
+     * Get latest version
+     * @param listVersions The list of versions
+     * @return The latest
+     */
     public static String getLatestVersion( List<String> listVersions )
     {
         List<Version> list = new ArrayList<Version>( );
@@ -52,8 +62,8 @@ public class VersionUtils
         {
             try
             {
-                Version v = Version.parse( strVersion );
-                list.add( v );
+                Version version = Version.parse( strVersion );
+                list.add( version );
             }
             catch( VersionParsingException ex )
             {

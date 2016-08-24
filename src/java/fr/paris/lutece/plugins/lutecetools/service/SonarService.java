@@ -91,7 +91,7 @@ public class SonarService implements ComponentInfoFiller
     @Override
     public void fill( Component component, StringBuilder sbLogs )
     {
-        HashMap<String, String> metrics = getSonarMetrics( component.getArtifactId( ) );
+        Map<String, String> metrics = getSonarMetrics( component.getArtifactId( ) );
         for ( Map.Entry<String, String> entry : metrics.entrySet( ) )
         {
             if ( entry.getKey( ).equals( KEY_NCLOC ) )
@@ -114,9 +114,9 @@ public class SonarService implements ComponentInfoFiller
      *            The ArtifactId
      * @return The metrics HashMap
      */
-    public HashMap<String, String> getSonarMetrics( String strArtifactId )
+    public Map<String, String> getSonarMetrics( String strArtifactId )
     {
-        HashMap<String, String> metrics = new HashMap<>( );
+        Map<String, String> metrics = new HashMap<>( );
         StringBuilder sbJSONUrl;
         sbJSONUrl = new StringBuilder( URL_SONAR_JSON );
         if ( strArtifactId.equals( TAG_LUTECE_CORE ) )
@@ -131,7 +131,7 @@ public class SonarService implements ComponentInfoFiller
         try
         {
             String strHtml = httpAccess.doGet( sbJSONUrl.toString( ) );
-            JSONObject json = new JSONObject( strHtml.substring( 1, strHtml.lastIndexOf( "]" ) ) );
+            JSONObject json = new JSONObject( strHtml.substring( 1, strHtml.lastIndexOf( ']' ) ) );
             JSONArray msr = json.getJSONArray( KEY_MSR );
 
             for ( int i = 0; i < msr.length( ); i++ )

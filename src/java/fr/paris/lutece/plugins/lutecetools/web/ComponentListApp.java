@@ -46,9 +46,9 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -83,8 +83,6 @@ public class ComponentListApp extends MVCApplication
     private static final String PROPERTY_SONAR_RCI_WARNING = "lutecetools.sonar.mark.rci.warning";
     private static final String SONAR_RCI_WARNING = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_WARNING );
 
-    // Errors
-    private static final String ERROR_NOT_FOUND = "lutecetools.error.research.notFound";
 
     /**
      * Returns the content of the page lutecetools.
@@ -106,14 +104,14 @@ public class ComponentListApp extends MVCApplication
 
         Map<String, Object> model = getModel( );
 
-        ComponentsInfos ci = MavenRepoService.instance( ).getComponents( );
+        ComponentsInfos ciInfos = MavenRepoService.instance( ).getComponents( );
 
         if ( bGitHubFilter )
         {
-            ci.setListComponents( filterGitHub( ci.getListComponents( ) ) );
+            ciInfos.setListComponents( filterGitHub( ciInfos.getListComponents( ) ) );
         }
 
-        for ( Component c : ci.getListComponents( ) )
+        for ( Component c : ciInfos.getListComponents( ) )
         {
             if ( c.getSonarNbLines( ) != null )
             {
@@ -131,7 +129,7 @@ public class ComponentListApp extends MVCApplication
 
         model.put( MARK_INTEGER_SUCCESS, SONAR_RCI_SUCCESS );
         model.put( MARK_INTEGER_WARNING, SONAR_RCI_WARNING );
-        model.put( MARK_COMPONENTS_LIST, ci );
+        model.put( MARK_COMPONENTS_LIST, ciInfos );
         model.put( MARK_TOTAL_LINES, nTotal );
         if ( nTotalPRs > 0 )
         {
@@ -205,7 +203,7 @@ public class ComponentListApp extends MVCApplication
      */
     private Map<String, String> getViewParameters( HttpServletRequest request )
     {
-        Map<String, String> mapParameters = new HashMap<String, String>( );
+        Map<String, String> mapParameters = new ConcurrentHashMap<String, String>( );
         String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
 

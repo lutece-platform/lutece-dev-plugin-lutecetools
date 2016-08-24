@@ -37,8 +37,10 @@ import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import java.io.FileNotFoundException;
 
+import org.apache.commons.lang.StringUtils;
+
+import org.kohsuke.github.GitHubBuilder;
 import org.kohsuke.github.GHBranch;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHOrganization;
@@ -47,16 +49,15 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
-import org.kohsuke.github.GitHubBuilder;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * GitHub Service
@@ -69,7 +70,6 @@ public class GitHubService implements ComponentInfoFiller
     private static final String PROPERTY_GITHUB_ORGANIZATIONS = "lutecetools.github.organization";
     private static final String DSKEY_PARENT_POM_VERSION = "lutecetools.site_property.globalPom.version";
 
-    private static GitHubService _singleton;
     private static String _strParentPomVersion;
     private static Map<String, GHRepository> _mapRepositories;
 
@@ -164,8 +164,8 @@ public class GitHubService implements ComponentInfoFiller
                         sbLogs.append( "\n*** ERROR *** Retreiving Github pull requests for component " ).append( component.getArtifactId( ) ).append( " : " )
                                 .append( e.getMessage( ) );
                     }
-                    setGitHubStatus( component );
-                    setGitHubErrors( component );
+                    fillGitHubStatus( component );
+                    fillGitHubErrors( component );
                 }
             }
         }
@@ -182,7 +182,7 @@ public class GitHubService implements ComponentInfoFiller
 
         String [ ] organizations = strOrganizations.split( "," );
 
-        Map<String, GHRepository> mapRepositories = new HashMap<String, GHRepository>( );
+        Map<String, GHRepository> mapRepositories = new ConcurrentHashMap<String, GHRepository>( );
 
         for ( String strOrganization : organizations )
         {
@@ -203,6 +203,11 @@ public class GitHubService implements ComponentInfoFiller
         return mapRepositories;
     }
 
+    /**
+     * Gets a GitHub object to request repositories
+     * @return GitHub object
+     * @throws IOException if an exception occurs
+     */
     private static GitHub getGitHub( ) throws IOException
     {
         GitHub github;
@@ -233,10 +238,9 @@ public class GitHubService implements ComponentInfoFiller
     /**
      * Returns GitHub errors
      *
-     * @param component
-     *            The components
+     * @param component The component
      */
-    private void setGitHubErrors( Component component )
+    private void fillGitHubErrors( Component component )
     {
         StringBuilder sbErrors = new StringBuilder( "" );
 
@@ -254,12 +258,12 @@ public class GitHubService implements ComponentInfoFiller
 
             if ( !_strParentPomVersion.equals( component.getParentPomVersion( ) ) )
             {
-                sbErrors.append( "Bad parent POM in release POM. should be global-pom version " ).append( _strParentPomVersion ).append( "\n" );
+                sbErrors.append( "Bad parent POM in release POM. should be global-pom version " ).append( _strParentPomVersion ).append( '\n' );
             }
 
             if ( !_strParentPomVersion.equals( component.getSnapshotParentPomVersion( ) ) )
             {
-                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom version " ).append( _strParentPomVersion ).append( "\n" );
+                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom version " ).append( _strParentPomVersion ).append( '\n' );
             }
 
             if ( ( component.getBranchesList( ) != null ) && ( !component.getBranchesList( ).contains( "develop" ) ) )
@@ -274,10 +278,9 @@ public class GitHubService implements ComponentInfoFiller
     /**
      * Calculate GitHub status
      *
-     * @param component
-     *            The component
+     * @param component  The component
      */
-    private void setGitHubStatus( Component component )
+    private void fillGitHubStatus( Component component )
     {
         int nStatus = 0;
 

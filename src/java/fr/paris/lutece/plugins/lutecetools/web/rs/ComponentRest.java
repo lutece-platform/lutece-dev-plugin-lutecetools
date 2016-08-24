@@ -180,7 +180,6 @@ public class ComponentRest
     public String getComponentXml( String strArtifactId )
     {
         StringBuffer sbXML = new StringBuffer( );
-        StringBuilder sbLogs = new StringBuilder( );
 
         try
         {

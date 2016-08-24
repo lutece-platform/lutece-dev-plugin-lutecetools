@@ -46,7 +46,6 @@ public class ComponentsInfos
     private int _nComponentCount;
     private int _nComponentAvailable;
     private List<Component> _listComponents;
-    private boolean _bComplete;
 
     /**
      * @return the nComponentCount

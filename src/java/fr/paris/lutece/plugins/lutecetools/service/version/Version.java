@@ -112,9 +112,9 @@ public class Version implements Comparable
     }
 
     @Override
-    public int compareTo( Object o )
+    public int compareTo( Object object )
     {
-        Version version = (Version) o;
+        Version version = (Version) object;
         int nDiff = _nMajor - version.getMajor( );
         if ( nDiff != 0 )
         {
@@ -131,13 +131,13 @@ public class Version implements Comparable
 
     public String getVersion( )
     {
-        StringBuilder sb = new StringBuilder( );
-        sb.append( _nMajor ).append( "." ).append( _nMinor ).append( "." ).append( _nPatch );
+        StringBuilder sbVersion = new StringBuilder( );
+        sbVersion.append( _nMajor ).append( '.' ).append( _nMinor ).append( '.' ).append( _nPatch );
         if ( _strQualifier != null )
         {
-            sb.append( "-" ).append( _strQualifier );
+            sbVersion.append( '-' ).append( _strQualifier );
         }
-        return sb.toString( );
+        return sbVersion.toString( );
     }
 
     public static Version parse( String strSource ) throws VersionParsingException
@@ -149,7 +149,7 @@ public class Version implements Comparable
             String strCurrent = strSource.trim( );
 
             // Search for qualifier
-            int nPos = strCurrent.indexOf( "-" );
+            int nPos = strCurrent.indexOf( '-' );
             if ( nPos != -1 )
             {
                 version.setQualifier( strCurrent.substring( nPos + 1 ) );
@@ -157,14 +157,14 @@ public class Version implements Comparable
             }
 
             // Search for major digits
-            nPos = strCurrent.indexOf( "." );
+            nPos = strCurrent.indexOf( '.' );
 
             String strMajor = strCurrent.substring( 0, nPos );
             version.setMajor( Integer.parseInt( strMajor ) );
 
             // Search for minor digits
             strCurrent = strCurrent.substring( nPos + 1 );
-            nPos = strCurrent.indexOf( "." );
+            nPos = strCurrent.indexOf( '.' );
 
             if ( nPos != -1 )
             {
