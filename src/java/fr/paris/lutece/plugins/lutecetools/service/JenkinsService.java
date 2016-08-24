@@ -1,3 +1,37 @@
+/*
+ * Copyright (c) 2002-2016, Mairie de Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
+
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import java.io.IOException;
@@ -39,8 +73,9 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
-public class JenkinsService
+public class JenkinsService implements ComponentInfoFiller
 {
+    private static final String SERVICE_NAME = "Jenkins Info filler service registered";
     // URL
     private static final String PROPERTY_JENKINS_BASE_URL = "lutecetools.jenkins.base.url";
     private static final String PROPERTY_JENKINS_CREDENTIALS_USER = "lutecetools.jenkins.user";
@@ -50,29 +85,29 @@ public class JenkinsService
     private static final String USER_JENKINS = AppPropertiesService.getProperty( PROPERTY_JENKINS_CREDENTIALS_USER );
     private static final String PWD_JENKINS = AppPropertiesService.getProperty( PROPERTY_JENKINS_CREDENTIALS_PWD );
 
-    private static JenkinsService _singleton;
     private Map<String, BuildInfo> _mapScmInfoToBuildInfo;
     private Map<String, BuildInfo> _mapArtefactIdToBuildInfo;
 
     /**
-     * Private constructor
+     * {@inheritDoc }
+     * 
+     * @return
      */
-    private JenkinsService( )
+    @Override
+    public String getName( )
     {
+        return SERVICE_NAME;
     }
 
     /**
-     * Returns the unique instance
-     *
-     * @return the unique instance
+     * {@inheritDoc }
      */
-    public static synchronized JenkinsService instance( )
+    @Override
+    public void fill( Component component, StringBuilder sbLogs )
     {
-        if ( _singleton == null )
-        {
-            _singleton = new JenkinsService( );
-        }
-        return _singleton;
+        fillJenkinsStatus( component );
+        fillJenkinsJobBuildUrl( component );
+        fillJenkinsJobBadgeIconUrl( component );
     }
 
     private synchronized Map<String, BuildInfo> getMapScmInfoToBuildInfo( )
@@ -82,7 +117,7 @@ public class JenkinsService
 
     private synchronized void setMapScmInfoJobName( Map<String, BuildInfo> mapScmInfoToBuildInfo )
     {
-        this._mapScmInfoToBuildInfo = mapScmInfoToBuildInfo;
+        _mapScmInfoToBuildInfo = mapScmInfoToBuildInfo;
     }
 
     private synchronized Map<String, BuildInfo> getMapArtefactIdToBuildInfo( )
@@ -92,67 +127,71 @@ public class JenkinsService
 
     private synchronized void setMapArtefactIdToBuildInfo( Map<String, BuildInfo> mapArtefactIdToBuildInfo )
     {
-        this._mapArtefactIdToBuildInfo = mapArtefactIdToBuildInfo;
+        _mapArtefactIdToBuildInfo = mapArtefactIdToBuildInfo;
     }
 
     /**
-	 * 
-	 */
+     * Update the cache
+     */
     public void updateCache( )
     {
         buildMapScmInfoJobName( );
     }
 
     /**
-	 *
-	 */
-    public String getJenkinsStatus( Component component )
+     * 
+     * @param component
+     *            The component
+     */
+    private void fillJenkinsStatus( Component component )
     {
-        String res = "?";
+        String strStatus = "?";
         BuildInfo buildInfo = getBuildInfo( component );
         if ( buildInfo != null )
         {
-            res = buildInfo._strStatus;
+            strStatus = buildInfo._strStatus;
         }
-        return res;
+        component.setJenkinsStatus( strStatus );
     }
 
     /**
-	 *
-	 */
-    public String getJenkinsJobBuildUrl( Component component )
+     *
+     * @param component
+     *            The component
+     */
+    private void fillJenkinsJobBuildUrl( Component component )
     {
-        String res = "?";
+        String strUrl = "?";
         BuildInfo buildInfo = getBuildInfo( component );
         if ( buildInfo != null )
         {
-            res = buildInfo._strUrl;
+            strUrl = buildInfo._strUrl;
         }
-        return res;
+        component.setJenkinsJobBuildUrl( strUrl );
     }
 
     /**
      * 
      * @param component
-     * @return
+     *            The component
      */
-    public String getJenkinsJobBadgeIconUrl( Component component )
+    private void fillJenkinsJobBadgeIconUrl( Component component )
     {
-        String res = "?";
+        String strIconUrl = "?";
         final String URL_BADGE_SERVICE_REST = RestConstants.BASE_PATH + Constants.PATH_PLUGIN + Constants.PATH_JENKINS + Constants.PATH_JENKINS_BADGE;
         BuildInfo buildInfo = getBuildInfo( component );
         if ( buildInfo != null )
         {
-            res = buildInfo._strUrl;
+            strIconUrl = buildInfo._strUrl;
             String baseUrl = AppPathService.getBaseUrl( );
             if ( baseUrl.endsWith( "/" ) )
             {
                 baseUrl = baseUrl.substring( 0, baseUrl.length( ) - 1 );
             }
             String urlJenkinsBadgeIcon = URL_JENKINS_BASE + "job/" + buildInfo._jobName + "/badge/icon";
-            res = baseUrl + URL_BADGE_SERVICE_REST + "?url=" + urlJenkinsBadgeIcon;
+            strIconUrl = baseUrl + URL_BADGE_SERVICE_REST + "?url=" + urlJenkinsBadgeIcon;
         }
-        return res;
+        component.setJenkinsJobBadgeIconUrl( strIconUrl );
     }
 
     /**

@@ -4,9 +4,16 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" >
 
+    <bean id="lutecetools.filler.gitHub" class="fr.paris.lutece.plugins.lutecetools.service.GitHubService" />
+    <bean id="lutecetools.filler.jira" class="fr.paris.lutece.plugins.lutecetools.service.JiraService" />
+    <bean id="lutecetools.filler.sonar" class="fr.paris.lutece.plugins.lutecetools.service.SonarService" />
+    <bean id="lutecetools.filler.jenkins" class="fr.paris.lutece.plugins.lutecetools.service.JenkinsService" />
+    
     <bean id="lutecetools.componentRest"  class="fr.paris.lutece.plugins.lutecetools.web.rs.ComponentRest" />
     <bean id="lutecetools.statsRest"  class="fr.paris.lutece.plugins.lutecetools.web.rs.StatsRest" />
-    <bean id="lutecetools.jenkinsRest"  class="fr.paris.lutece.plugins.lutecetools.web.rs.JenkinsRest" />
+    <bean id="lutecetools.jenkinsRest"  class="fr.paris.lutece.plugins.lutecetools.web.rs.JenkinsRest" >
+        <property name="jenkinsService" ref="lutecetools.filler.jenkins" />
+    </bean>
     <bean id="lutecetools.lutecetoolsAsynchronousUploadHandler" class="fr.paris.lutece.plugins.lutecetools.service.LutecetoolsAsynchronousUploadHandler"/>
     
     <bean id="lutecetools.sitePropertiesGroup" class="fr.paris.lutece.portal.service.site.properties.SitePropertiesGroup" >

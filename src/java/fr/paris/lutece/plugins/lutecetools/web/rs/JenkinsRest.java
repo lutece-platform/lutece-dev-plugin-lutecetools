@@ -53,14 +53,26 @@ import javax.ws.rs.core.Response;
 @Path( RestConstants.BASE_PATH + Constants.PATH_PLUGIN + Constants.PATH_JENKINS )
 public class JenkinsRest
 {
+    private static JenkinsService _jenkinsService;
+
+    /**
+     * Set the Jenkins service
+     * 
+     * @param jenkinsService
+     *            The service
+     */
+    public void setJenkinsService( JenkinsService jenkinsService )
+    {
+        _jenkinsService = jenkinsService;
+    }
+
     @GET
     @Path( Constants.PATH_JENKINS_BADGE )
     @Produces( "image/svg+xml" )
     public Response getJenkinsBadge( @HeaderParam( HttpHeaders.ACCEPT ) String accept, @QueryParam( Constants.PARAMETER_URL ) String url ) throws Exception
     {
-        HttpEntity entity = null;
-        HttpResponse response = JenkinsService.instance( ).performsGetJenkinsUrl( url, false );
-        entity = response.getEntity( );
+        HttpResponse response = _jenkinsService.performsGetJenkinsUrl( url, false );
+        HttpEntity entity = response.getEntity( );
 
         return Response.ok( entity.getContent( ), "image/svg+xml" ).build( );
     }

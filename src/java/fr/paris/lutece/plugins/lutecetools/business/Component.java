@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2015, Mairie de Paris
+ * Copyright (c) 2002-2016, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,10 +33,6 @@
  */
 package fr.paris.lutece.plugins.lutecetools.business;
 
-import fr.paris.lutece.plugins.lutecetools.service.GitHubService;
-import fr.paris.lutece.plugins.lutecetools.service.JenkinsService;
-import fr.paris.lutece.plugins.lutecetools.service.JiraService;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.List;
@@ -46,8 +42,6 @@ import java.util.List;
  */
 public class Component extends AbstractComponent implements Comparable
 {
-    public static final int JIRAKEY_ERROR_MISSING = 1;
-    public static final int JIRAKEY_ERROR_INVALID = 2;
     private String _strCoreVersion;
     private String _strParentPomVersion;
     private String _strSnapshotVersion;
@@ -72,6 +66,11 @@ public class Component extends AbstractComponent implements Comparable
     private int _nJiraIssuesCount;
     private int _nJiraUnresolvedIssuesCount;
     private int _nJiraKeyError;
+    private int _nJiraStatus;
+    private String _strJiraErrors;
+    private String _strJenkinsJobBuildUrl;
+    private String _strJenkinsJobBadgeIconUrl;
+    private String _strJenkinsStatus;
 
     /**
      * Returns the CoreVersion
@@ -405,13 +404,15 @@ public class Component extends AbstractComponent implements Comparable
 
     /**
      * Set status
-     * @param nStatus  The status
+     * 
+     * @param nStatus
+     *            The status
      */
     public void setGitHubStatus( int nStatus )
     {
         _nGitHubStatus = nStatus;
     }
-    
+
     /**
      * Set Errors
      * 
@@ -537,48 +538,65 @@ public class Component extends AbstractComponent implements Comparable
     }
 
     /**
-     * @return the Jira Status
+     * Set status
+     * 
+     * @param nStatus
+     *            the status
      */
-    @JsonIgnore
-    public int getJiraStatus( )
+    public void setJiraStatus( int nStatus )
     {
-        return JiraService.instance( ).getJiraStatus( this );
+        _nJiraStatus = nStatus;
     }
 
     /**
      * @return the Jira Status
      */
-    @JsonIgnore
+    public int getJiraStatus( )
+    {
+        return _nJiraStatus;
+    }
+
+    /**
+     * Set errors
+     * 
+     * @param strErrors
+     *            the errors
+     */
+    public void setJiraErrors( String strErrors )
+    {
+        _strJiraErrors = strErrors;
+    }
+
+    /**
+     * @return the Jira Status
+     */
     public String getJiraErrors( )
     {
-        return JiraService.instance( ).getJiraErrors( this );
+        return _strJiraErrors;
     }
 
     /**
      * @return the Jenkins Status
      */
-    @JsonIgnore
     public String getJenkinsStatus( )
     {
-        return JenkinsService.instance( ).getJenkinsStatus( this );
+        return _strJenkinsStatus;
     }
 
     /**
      * @return the Jenkins job build url
      */
-    @JsonIgnore
     public String getJenkinsJobBuildUrl( )
     {
-        return JenkinsService.instance( ).getJenkinsJobBuildUrl( this );
+        return _strJenkinsJobBuildUrl;
     }
 
     /**
      * @return the Jenkins job badge icon url
      */
-    @JsonIgnore
     public String getJenkinsJobBadgeIconUrl( )
     {
-        return JenkinsService.instance( ).getJenkinsJobBadgeIconUrl( this );
+        return _strJenkinsJobBadgeIconUrl;
     }
 
     /**
@@ -631,5 +649,38 @@ public class Component extends AbstractComponent implements Comparable
         }
 
         return sb.toString( );
+    }
+
+    /**
+     * Sets the status
+     * 
+     * @param strJenkinsStatus
+     *            The status
+     */
+    public void setJenkinsStatus( String strJenkinsStatus )
+    {
+        _strJenkinsStatus = strJenkinsStatus;
+    }
+
+    /**
+     * Sets the build job URL
+     * 
+     * @param strJenkinsJobBuildUrl
+     *            the build job URL
+     */
+    public void setJenkinsJobBuildUrl( String strJenkinsJobBuildUrl )
+    {
+        _strJenkinsJobBuildUrl = strJenkinsJobBuildUrl;
+    }
+
+    /**
+     * Sets the badge icon URL
+     * 
+     * @param strJenkinsJobBadgeIconUrl
+     *            the badge icon URL
+     */
+    public void setJenkinsJobBadgeIconUrl( String strJenkinsJobBadgeIconUrl )
+    {
+        _strJenkinsJobBadgeIconUrl = strJenkinsJobBadgeIconUrl;
     }
 }

@@ -31,47 +31,24 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.lutecetools.service.version;
 
-import org.junit.Test;
+package fr.paris.lutece.plugins.lutecetools.service;
 
-import fr.paris.lutece.test.LuteceTestCase;
+import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.portal.service.util.LuteceService;
 
 /**
- *
- * @author pierre
+ * ComponentInfoFiller
  */
-public class VersionTest extends LuteceTestCase
+public interface ComponentInfoFiller extends LuteceService
 {
-
     /**
-     * Test of parse method, of class Version.
+     * Fill component information
      * 
-     * @throws fr.paris.lutece.plugins.lutecetools.service.version.VersionParsingException
+     * @param component
+     *            The component
+     * @param sbLogs
+     *            Logs
      */
-    @Test
-    public void testParse( ) throws VersionParsingException
-    {
-        System.out.println( "parse" );
-        String strSource = "12.10.23";
-        Version result = Version.parse( strSource );
-        assertEquals( strSource, result.getVersion( ) );
-        System.out.println( result.getVersion( ) );
-
-        strSource = "12.10";
-        result = Version.parse( strSource );
-        assertEquals( "12.10.0", result.getVersion( ) );
-        System.out.println( result.getVersion( ) );
-
-        strSource = "12.10.23-SNAPSHOT";
-        result = Version.parse( strSource );
-        assertEquals( strSource, result.getVersion( ) );
-        System.out.println( result.getVersion( ) );
-
-        strSource = "12.10-SNAPSHOT";
-        result = Version.parse( strSource );
-        assertEquals( "12.10.0-SNAPSHOT", result.getVersion( ) );
-        System.out.println( result.getVersion( ) );
-    }
-
+    void fill( Component component, StringBuilder sbLogs );
 }

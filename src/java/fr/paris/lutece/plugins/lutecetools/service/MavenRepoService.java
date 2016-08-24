@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2015, Mairie de Paris
+ * Copyright (c) 2002-2016, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.business.Dependency;
 import fr.paris.lutece.plugins.lutecetools.service.version.VersionUtils;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
@@ -51,9 +52,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -98,6 +97,7 @@ public final class MavenRepoService
 
     private static MavenRepoService _singleton;
     private static StringBuilder _sbLogs = new StringBuilder( );
+    private static List<ComponentInfoFiller> _listComponentFiller = new ArrayList<>( );
 
     /**
      * Private constructor
@@ -116,6 +116,12 @@ public final class MavenRepoService
         if ( _singleton == null )
         {
             _singleton = new MavenRepoService( );
+            _listComponentFiller = SpringContextService.getBeansOfType( ComponentInfoFiller.class );
+            AppLogService.info( "Lutecetools : registering info fillers" );
+            for ( ComponentInfoFiller filler : _listComponentFiller )
+            {
+                AppLogService.info( " * " + filler.getName( ) );
+            }
         }
 
         return _singleton;
@@ -303,28 +309,17 @@ public final class MavenRepoService
             component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
         }
 
-        HashMap<String, String> metrics = SonarService.instance( ).getSonarMetrics( strArtifactId );
-        for ( Map.Entry<String, String> entry : metrics.entrySet( ) )
-        {
-            if ( entry.getKey( ).equals( KEY_NCLOC ) )
-            {
-                component.setSonarNbLines( entry.getValue( ) );
-            }
-            else
-                if ( entry.getKey( ).equals( KEY_SQALE_DEBT_RATIO ) )
-                {
-                    component.setSonarRCI( entry.getValue( ) );
-                }
-        }
-
         long t1 = new Date( ).getTime( );
         getPomInfos( component, sbLogs );
 
         long t2 = new Date( ).getTime( );
         sbLogs.append( "\nLutece Tools - Fetching Maven Info for '" ).append( component.getArtifactId( ) ).append( "' - duration : " ).append( t2 - t1 )
                 .append( "ms." );
-        GitHubService.instance( ).setGitHubInfos( component, sbLogs );
-        JiraService.instance( ).setJiraInfos( component, sbLogs );
+
+        for ( ComponentInfoFiller filler : _listComponentFiller )
+        {
+            filler.fill( component, sbLogs );
+        }
 
         return component;
     }

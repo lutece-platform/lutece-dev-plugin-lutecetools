@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2015, Mairie de Paris
+ * Copyright (c) 2002-2016, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,9 +61,9 @@ import org.kohsuke.github.GitHubBuilder;
 /**
  * GitHub Service
  */
-public class GitHubService
+public class GitHubService implements ComponentInfoFiller
 {
-
+    private static final String SERVICE_NAME = "GitHub Info filler service registered";
     private static final String PROPERTY_GITHUB_ACCOUNT_NAME = "lutecetools.github.account.name";
     private static final String PROPERTY_GITHUB_ACCOUNT_TOKEN = "lutecetools.github.account.token";
     private static final String PROPERTY_GITHUB_ORGANIZATIONS = "lutecetools.github.organization";
@@ -73,24 +73,22 @@ public class GitHubService
     private static String _strParentPomVersion;
     private static Map<String, GHRepository> _mapRepositories;
 
-    public static synchronized GitHubService instance( )
-    {
-        if ( _singleton == null )
-        {
-            _singleton = new GitHubService( );
-            init( );
-        }
-
-        return _singleton;
-    }
-
     /**
      * Initialization
      */
-    private static void init( )
+    public GitHubService( )
     {
         updateGitHubRepositoriesList( );
         _strParentPomVersion = DatastoreService.getDataValue( DSKEY_PARENT_POM_VERSION, "3.0.3" );
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public String getName( )
+    {
+        return SERVICE_NAME;
     }
 
     /**
@@ -102,12 +100,10 @@ public class GitHubService
     }
 
     /**
-     * Set GitHub infos to a component
-     *
-     * @param component  The component
-     * @param sbLogs Logs
+     * {@inheritDoc }
      */
-    public void setGitHubInfos( Component component, StringBuilder sbLogs )
+    @Override
+    public void fill( Component component, StringBuilder sbLogs )
     {
         if ( _mapRepositories != null )
         {
@@ -122,10 +118,10 @@ public class GitHubService
                     try
                     {
                         component.setGitHubOwner( repo.getOwner( ).getLogin( ) );
-                        Map<String, GHBranch> mapBraches = repo.getBranches( );
+                        Map<String, GHBranch> mapBranches = repo.getBranches( );
                         List<String> listBranches = new ArrayList<String>( );
 
-                        for ( String strBranch : mapBraches.keySet( ) )
+                        for ( String strBranch : mapBranches.keySet( ) )
                         {
                             listBranches.add( strBranch );
                         }
@@ -170,7 +166,7 @@ public class GitHubService
                     }
                     setGitHubStatus( component );
                     setGitHubErrors( component );
-                 }
+                }
             }
         }
     }
@@ -197,11 +193,11 @@ public class GitHubService
                 GHOrganization organization = github.getOrganization( strOrganization );
                 mapRepositories.putAll( organization.getRepositories( ) );
                 int nSize = organization.getRepositories( ).size( );
-                AppLogService.info( "GitHub Service initialized - " + nSize + " repositories found for organization " + strOrganization );
+                AppLogService.info( "LuteceTools : GitHub Service initialized - " + nSize + " repositories found for organization " + strOrganization );
             }
             catch( IOException ex )
             {
-                AppLogService.error( "Unable to access GitHub repositories", ex );
+                AppLogService.error( "LuteceTools : Unable to access GitHub repositories", ex );
             }
         }
         return mapRepositories;
@@ -215,21 +211,21 @@ public class GitHubService
         String strToken = AppPropertiesService.getProperty( PROPERTY_GITHUB_ACCOUNT_TOKEN );
         String strProxyHost = AppPropertiesService.getProperty( "httpAccess.proxyHost" );
         int nProxyPort = AppPropertiesService.getPropertyInt( "httpAccess.proxyPort", 80 );
-        if( ! StringUtils.isEmpty( strProxyHost ) )
+        if ( !StringUtils.isEmpty( strProxyHost ) )
         {
-            GitHubBuilder builder = new GitHubBuilder();
+            GitHubBuilder builder = new GitHubBuilder( );
             SocketAddress address = new InetSocketAddress( strProxyHost, nProxyPort );
             Proxy proxy = new Proxy( Proxy.Type.HTTP, address );
             builder.withProxy( proxy );
             builder.withOAuthToken( strToken, strAccount );
-            github = builder.build();
-            AppLogService.info( "LuteceTools : Using httpaccess.properties defined proxy to connect to GitHub.");
+            github = builder.build( );
+            AppLogService.info( "LuteceTools : Using httpaccess.properties defined proxy to connect to GitHub." );
         }
         else
         {
             github = GitHub.connect( strAccount, strToken );
         }
-        
+
         return github;
 
     }
@@ -240,7 +236,7 @@ public class GitHubService
      * @param component
      *            The components
      */
-    public void setGitHubErrors( Component component )
+    private void setGitHubErrors( Component component )
     {
         StringBuilder sbErrors = new StringBuilder( "" );
 
@@ -258,12 +254,12 @@ public class GitHubService
 
             if ( !_strParentPomVersion.equals( component.getParentPomVersion( ) ) )
             {
-                sbErrors.append( "Bad parent POM in release POM. should be global-pom version " ).append( _strParentPomVersion ).append("\n");
+                sbErrors.append( "Bad parent POM in release POM. should be global-pom version " ).append( _strParentPomVersion ).append( "\n" );
             }
 
             if ( !_strParentPomVersion.equals( component.getSnapshotParentPomVersion( ) ) )
             {
-                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom version " ).append( _strParentPomVersion ).append("\n");
+                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom version " ).append( _strParentPomVersion ).append( "\n" );
             }
 
             if ( ( component.getBranchesList( ) != null ) && ( !component.getBranchesList( ).contains( "develop" ) ) )
@@ -281,7 +277,7 @@ public class GitHubService
      * @param component
      *            The component
      */
-    public void setGitHubStatus( Component component )
+    private void setGitHubStatus( Component component )
     {
         int nStatus = 0;
 

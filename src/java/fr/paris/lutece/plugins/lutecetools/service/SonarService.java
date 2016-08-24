@@ -1,21 +1,58 @@
-package fr.paris.lutece.plugins.lutecetools.service;
+/*
+ * Copyright (c) 2002-2016, Mairie de Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
 
-import java.util.HashMap;
+package fr.paris.lutece.plugins.lutecetools.service;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * Get sonar metrics from json data
  */
-public class SonarService
+public class SonarService implements ComponentInfoFiller
 {
+    private static final String SERVICE_NAME = "Sonar Info filler service registered";
     // URL
     private static final String PROPERTY_SONAR_JSON_URL = "lutecetools.sonar.json.url";
     private static final String URL_SONAR_JSON = AppPropertiesService.getProperty( PROPERTY_SONAR_JSON_URL );
@@ -37,29 +74,37 @@ public class SonarService
     private static final String KEY_NCLOC = "ncloc";
     private static final String KEY_SQALE_DEBT_RATIO = "sqale_debt_ratio";
 
-    private static SonarService _singleton;
     private static HttpAccess httpAccess = new HttpAccess( );
 
     /**
-     * Private constructor
+     * {@inheritDoc }
      */
-    private SonarService( )
+    @Override
+    public String getName( )
     {
+        return SERVICE_NAME;
     }
 
     /**
-     * Returns the unique instance
-     *
-     * @return the unique instance
+     * {@inheritDoc }
      */
-    public static synchronized SonarService instance( )
+    @Override
+    public void fill( Component component, StringBuilder sbLogs )
     {
-        if ( _singleton == null )
+        HashMap<String, String> metrics = getSonarMetrics( component.getArtifactId( ) );
+        for ( Map.Entry<String, String> entry : metrics.entrySet( ) )
         {
-            _singleton = new SonarService( );
+            if ( entry.getKey( ).equals( KEY_NCLOC ) )
+            {
+                component.setSonarNbLines( entry.getValue( ) );
+            }
+            else
+                if ( entry.getKey( ).equals( KEY_SQALE_DEBT_RATIO ) )
+                {
+                    component.setSonarRCI( entry.getValue( ) );
+                }
         }
 
-        return _singleton;
     }
 
     /**
@@ -111,4 +156,5 @@ public class SonarService
 
         return metrics;
     }
+
 }

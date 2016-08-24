@@ -250,17 +250,17 @@
                             <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}">
                             <#if component.jiraStatus == 0 >
                                 <span class="hidden">1</span>
-                                <img src="images/skin/plugins/lutecetools/jira-red.png" title="${component.jiraErrors}" alt="Jira status RED" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/jira-red.png" title="${component.jiraErrors!''}" alt="Jira status RED" width="24" height="24">
                             	<#assign jiraDanger = jiraDanger + 1>
                             </#if>
                             <#if component.jiraStatus == 1 >
                                 <span class="hidden">2</span>
-                                <img src="images/skin/plugins/lutecetools/jira-orange.png" title="${component.jiraErrors}" alt="Jira status ORANGE" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/jira-orange.png" title="${component.jiraErrors!''}" alt="Jira status ORANGE" width="24" height="24">
                             	<#assign jiraWarning = jiraWarning + 1>
                             </#if>
                             <#if component.jiraStatus == 2 >
                                 <span class="hidden">3</span>
-                                <img src="images/skin/plugins/lutecetools/jira-green.png" title="${component.jiraErrors}" alt="Jira status GREEN" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/jira-green.png" title="${component.jiraErrors!''}" alt="Jira status GREEN" width="24" height="24">
                                 <#assign jiraOk = jiraOk + 1>
                             </#if>
                             </a>

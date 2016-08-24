@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2015, Mairie de Paris
+ * Copyright (c) 2002-2016, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.IOException;
 
 import java.util.Date;
+import org.codehaus.jackson.map.SerializationConfig.Feature;
 
 /**
  * ComponentService
@@ -124,6 +125,7 @@ public class ComponentService
      */
     private static String getAsJSON( Component component ) throws IOException
     {
+        _mapper.enable( Feature.INDENT_OUTPUT );
         return _mapper.writeValueAsString( component );
     }
 

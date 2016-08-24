@@ -43,47 +43,57 @@ import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import java.io.IOException;
 import java.net.URI;
+import org.apache.commons.lang.StringUtils;
 
 /**
- *
- * @author pierre
+ * JIRA Service name
  */
-public class JiraService
+public class JiraService implements ComponentInfoFiller
 {
     private static final String URL_JIRA_SERVER = "http://dev.lutece.paris.fr/jira/";
     private static final String URL_API_VERSION = URL_JIRA_SERVER + "rest/api/2/version/";
-    private static JiraService _singleton;
+    private static final String SERVICE_NAME = "JIRA Info filler service registered";
+    private static final int JIRAKEY_ERROR_MISSING = 1;
+    private static final int JIRAKEY_ERROR_INVALID = 2;
+
     private static AsynchronousJiraRestClientFactory _factory;
     private static AnonymousAuthenticationHandler _auth;
 
-    public static synchronized JiraService instance( )
-    {
-        if ( _singleton == null )
-        {
-            _singleton = new JiraService( );
-            init( );
-        }
-
-        return _singleton;
-    }
-
-    private static void init( )
+    /**
+     * Constructor
+     */
+    public JiraService( )
     {
         _factory = new AsynchronousJiraRestClientFactory( );
         _auth = new AnonymousAuthenticationHandler( );
+
+        String strProxyHost = AppPropertiesService.getProperty( "httpAccess.proxyHost" );
+        String strProxyPort = AppPropertiesService.getProperty( "httpAccess.proxyPort" );
+        if ( !StringUtils.isEmpty( strProxyHost ) )
+        {
+            System.getProperties( ).put( "https.proxyHost", strProxyHost );
+            System.getProperties( ).put( "https.proxyPort", strProxyPort );
+            AppLogService.info( "LuteceTools : Using httpaccess.properties defined proxy to connect to JIRA." );
+        }
     }
 
     /**
-     * Set JIRA infos for a given component
-     * 
-     * @param component
-     *            The component
-     * @param sbLogs
-     *            The logs
+     * {@inheritDoc }
      */
-    public void setJiraInfos( Component component, StringBuilder sbLogs )
+    @Override
+    public String getName( )
+    {
+        return SERVICE_NAME;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void fill( Component component, StringBuilder sbLogs )
     {
         JiraRestClient client = null;
         String strJiraKey = component.getJiraKey( );
@@ -122,17 +132,21 @@ public class JiraService
                     component.setJiraUnresolvedIssuesCount( nUnresolvedIssues );
                     VersionRelatedIssuesCount vRelatedIssues = clientVersion.getVersionRelatedIssuesCount( uriVersion ).claim( );
                     component.setJiraIssuesCount( vRelatedIssues.getNumFixedIssues( ) );
-                    if( AppLogService.isDebugEnabled() )
+                    if ( AppLogService.isDebugEnabled( ) )
                     {
-                        StringBuilder sbDebug = new StringBuilder();
-                        sbDebug.append( "LuteceTools : JiraService - Project " + strJiraKey + " AffectedIssues : " + vRelatedIssues.getNumAffectedIssues() + " FixedIssues : " + vRelatedIssues.getNumFixedIssues() + " Unresolved : " + nUnresolvedIssues );
-                        AppLogService.debug(  sbDebug.toString() );
+                        StringBuilder sbDebug = new StringBuilder( );
+                        sbDebug.append( "LuteceTools : JiraService - Project " ).append( strJiraKey ).append( " AffectedIssues : " )
+                                .append( vRelatedIssues.getNumAffectedIssues( ) ).append( " FixedIssues : " ).append( vRelatedIssues.getNumFixedIssues( ) )
+                                .append( " Unresolved : " ).append( nUnresolvedIssues );
+                        AppLogService.debug( sbDebug.toString( ) );
                     }
                 }
+                component.setJiraStatus( getJiraStatus( component ) );
+                component.setJiraErrors( getJiraErrors( component ) );
             }
             catch( RestClientException ex )
             {
-                component.setJiraKeyError( Component.JIRAKEY_ERROR_INVALID );
+                component.setJiraKeyError( JIRAKEY_ERROR_INVALID );
                 sbLogs.append( "\n*** ERROR *** Invalid Jira Key '" ).append( strJiraKey ).append( " for component " ).append( component.getArtifactId( ) );
             }
 
@@ -158,7 +172,7 @@ public class JiraService
         }
         else
         {
-            component.setJiraKeyError( Component.JIRAKEY_ERROR_MISSING );
+            component.setJiraKeyError( JIRAKEY_ERROR_MISSING );
             sbLogs.append( "\n*** ERROR *** Error no Jira key defined for component " ).append( component.getArtifactId( ) );
         }
 
@@ -188,9 +202,9 @@ public class JiraService
         {
             sbErrors.append( "JIRA key is missing in the pom.xml. \n" );
         }
-        if ( component.getJiraKeyError( ) == Component.JIRAKEY_ERROR_INVALID )
+        if ( component.getJiraKeyError( ) == JIRAKEY_ERROR_INVALID )
         {
-            sbErrors.append( "JIRA key '" + component.getJiraKey( ) + "' is invalid. \n" );
+            sbErrors.append( "JIRA key '" ).append( component.getJiraKey( ) ).append( "' is invalid. \n" );
         }
 
         return sbErrors.toString( );
