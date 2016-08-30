@@ -35,10 +35,9 @@ package fr.paris.lutece.plugins.lutecetools.web.rs;
 
 import fr.paris.lutece.plugins.lutecetools.service.JenkinsService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
-import java.io.IOException;
+import fr.paris.lutece.util.httpaccess.HttpAccess;
+import fr.paris.lutece.util.httpaccess.HttpAccessException;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -70,18 +69,18 @@ public class JenkinsRest
     /**
      * 
      * @param accept
-     * @param url
+     * @param strUrl
      * @return
-     * @throws IOException 
+     * @throws HttpAccessException 
      */
     @GET
     @Path( Constants.PATH_JENKINS_BADGE )
     @Produces( "image/svg+xml" )
-    public Response getJenkinsBadge( @HeaderParam( HttpHeaders.ACCEPT ) String accept, @QueryParam( Constants.PARAMETER_URL ) String url ) throws IOException 
+    public Response getJenkinsBadge( @HeaderParam( HttpHeaders.ACCEPT ) String accept, @QueryParam( Constants.PARAMETER_URL ) String strUrl ) throws HttpAccessException 
     {
-        HttpResponse response = _jenkinsService.performsGetJenkinsUrl( url, false );
-        HttpEntity entity = response.getEntity( );
+        HttpAccess httpAccess = new HttpAccess();
+        String strContent = httpAccess.doGet( strUrl, _jenkinsService.getJenkinsAuthenticator() , null );
 
-        return Response.ok( entity.getContent( ), "image/svg+xml" ).build( );
+        return Response.ok( strContent , "image/svg+xml" ).build( );
     }
 }
