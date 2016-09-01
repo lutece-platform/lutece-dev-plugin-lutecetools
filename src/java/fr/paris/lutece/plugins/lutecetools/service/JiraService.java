@@ -72,10 +72,17 @@ public class JiraService implements ComponentInfoFiller
 
         String strProxyHost = AppPropertiesService.getProperty( "httpAccess.proxyHost" );
         String strProxyPort = AppPropertiesService.getProperty( "httpAccess.proxyPort" );
+        String strProxyUserName = AppPropertiesService.getProperty( "httpAccess.proxyUserName" );
+        String strProxyPassword = AppPropertiesService.getProperty( "httpAccess.proxyPassword" );
+        
+        
         if ( !StringUtils.isEmpty( strProxyHost ) )
         {
             System.getProperties( ).put( "https.proxyHost", strProxyHost );
             System.getProperties( ).put( "https.proxyPort", strProxyPort );
+            System.getProperties( ).put( "https.proxyUser", strProxyUserName );
+            System.getProperties( ).put( "https.proxyPassword", strProxyPassword );
+            System.getProperties( ).put( "https.proxySet", "true");
             AppLogService.info( "LuteceTools : Using httpaccess.properties defined proxy to connect to JIRA." );
         }
     }
