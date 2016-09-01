@@ -43,18 +43,16 @@ import fr.paris.lutece.util.signrequest.RequestAuthenticator;
  */
 public class JenkinsService implements ComponentInfoFiller
 {
+    public static final String DEFAULT_BADGE_URL = "images/skin/plugins/lutecetools/job-not-found.svg";
+    
     private static final String SERVICE_NAME = "Jenkins Info filler service registered";
     private static final String PROPERTY_JENKINS_BADGE_URL = "lutecetools.jenkins.badge.url";
     private static final String PROPERTY_JENKINS_CREDENTIALS_USER = "lutecetools.jenkins.user";
     private static final String PROPERTY_JENKINS_CREDENTIALS_PWD = "lutecetools.jenkins.pwd";
-    private static final String JENKINS_BADGE_URL = AppPropertiesService.getProperty( PROPERTY_JENKINS_BADGE_URL );
-    private static final String USER_JENKINS = AppPropertiesService.getProperty( PROPERTY_JENKINS_CREDENTIALS_USER );
-    private static final String PWD_JENKINS = AppPropertiesService.getProperty( PROPERTY_JENKINS_CREDENTIALS_PWD );
     private static final String PREFIX_LUTECE_PLATFORM = "https://github.com/lutece-platform/lutece-";
     private static final String PREFIX_LUTECE_SECTEUR_PUBLIC = "https://github.com/lutece-secteur-public/";
     private static final String SUFFIX_GIT = ".git";
     private static final String SUFFIX_DEPLOY_JOB = "-deploy";
-    private static final String DEFAULT_BADGE_URL = "images/skin/plugins/lutecetools/build-not-found.svg";
 
     /**
      * {@inheritDoc }
@@ -75,7 +73,13 @@ public class JenkinsService implements ComponentInfoFiller
         if( strScmInfos != null )
         {
             String strJobName = getJobName( strScmInfos );
-            String strBadgeUrl = ( strJobName != null ) ? JENKINS_BADGE_URL + strJobName : DEFAULT_BADGE_URL;
+            String strJenkinsBadgeUrl = AppPropertiesService.getProperty( PROPERTY_JENKINS_BADGE_URL );
+            String strBadgeUrl = DEFAULT_BADGE_URL;
+            if( strJobName != null )
+            {
+                strBadgeUrl = strJenkinsBadgeUrl + strJobName;
+            }
+            component.setJenkinsStatus( String.valueOf( strJobName != null ));
             component.setJenkinsJobBadgeIconUrl( strBadgeUrl );
         }
     }
@@ -86,7 +90,9 @@ public class JenkinsService implements ComponentInfoFiller
      */
     public RequestAuthenticator getJenkinsAuthenticator()
     {
-        return new BasicAuthorizationAuthenticator( USER_JENKINS, PWD_JENKINS );
+        String strUser = AppPropertiesService.getProperty( PROPERTY_JENKINS_CREDENTIALS_USER );
+        String strPassword = AppPropertiesService.getProperty( PROPERTY_JENKINS_CREDENTIALS_PWD );
+        return new BasicAuthorizationAuthenticator( strUser, strPassword );
     }
 
     /**
@@ -96,7 +102,16 @@ public class JenkinsService implements ComponentInfoFiller
      */
     private String getJobName( String strScmInfos )
     {
-        String strJobName = null;
+        if( strScmInfos == null )
+        {
+            return null;
+        }
+        if( strScmInfos.contains( "lutece-core" ))
+        {
+            return "lutece-core-deploy";
+        }
+        
+        String strJobName;
         if( strScmInfos.startsWith( PREFIX_LUTECE_PLATFORM ))
         {
             strJobName = strScmInfos.substring( PREFIX_LUTECE_PLATFORM.length() );
@@ -105,11 +120,50 @@ public class JenkinsService implements ComponentInfoFiller
         {
             strJobName = strScmInfos.substring( PREFIX_LUTECE_SECTEUR_PUBLIC.length() );
         } 
-        
-        if( (strJobName != null) && strJobName.endsWith( SUFFIX_GIT ))
+        else
         {
-            strJobName = strJobName.substring( 0 , strJobName.length() - SUFFIX_GIT.length() );
+            strJobName = getSvnJobName( strScmInfos );
+        }
+        
+        if( strJobName != null )
+        {
+            if( strJobName.endsWith( SUFFIX_GIT ))
+            {
+                strJobName = strJobName.substring( 0 , strJobName.length() - SUFFIX_GIT.length() );
+            }
             strJobName += SUFFIX_DEPLOY_JOB;
+        }
+        return strJobName;
+    }
+
+    /**
+     * Gets Job name from a SVN SCM URL
+     * @param strScmInfos The SCM infos
+     * @return The JobName
+     */
+    private String getSvnJobName( String strScmInfos )
+    {
+        String strJobName = null;
+        
+        if( strScmInfos.endsWith( "/" ))
+        {
+            strScmInfos = strScmInfos.substring( 0 , strScmInfos.length() - 1 );
+        }
+        int nPos = strScmInfos.lastIndexOf( '/' );
+        if( nPos > 0 )
+        {
+            strJobName = strScmInfos.substring( nPos + 1 );
+            String strPath = strScmInfos.substring( 0 , nPos );
+            if( nPos > 0 )
+            {
+                nPos = strPath.lastIndexOf( '/' );
+                String strCategory = strPath.substring( nPos + 1 );
+                if( strCategory.equals( "trunk") )
+                {
+                    strCategory = "application";
+                }
+                strJobName = strCategory + "-" + strJobName;
+            }
         }
         return strJobName;
     }

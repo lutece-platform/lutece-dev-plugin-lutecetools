@@ -35,20 +35,20 @@ package fr.paris.lutece.plugins.lutecetools.web.rs;
 
 import fr.paris.lutece.plugins.lutecetools.service.JenkinsService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
+import java.net.URI;
 
 
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 /**
- * Page resource
+ * JenkinsRest
  */
 @Path( RestConstants.BASE_PATH + Constants.PATH_PLUGIN + Constants.PATH_JENKINS )
 public class JenkinsRest
@@ -67,20 +67,27 @@ public class JenkinsRest
     }
 
     /**
-     * 
-     * @param accept
-     * @param strUrl
-     * @return
-     * @throws HttpAccessException 
+     * Returns Jenkins Badge URL
+     * @param strUrl The Jenkins Job URL
+     * @return The badge URL
      */
     @GET
     @Path( Constants.PATH_JENKINS_BADGE )
     @Produces( "image/svg+xml" )
-    public Response getJenkinsBadge( @HeaderParam( HttpHeaders.ACCEPT ) String accept, @QueryParam( Constants.PARAMETER_URL ) String strUrl ) throws HttpAccessException 
+    public Response getJenkinsBadge( @QueryParam( Constants.PARAMETER_URL ) String strUrl ) 
     {
-        HttpAccess httpAccess = new HttpAccess();
-        String strContent = httpAccess.doGet( strUrl, _jenkinsService.getJenkinsAuthenticator() , null );
+        try
+        {
+            HttpAccess httpAccess = new HttpAccess();
+            String strContent = httpAccess.doGet( strUrl, _jenkinsService.getJenkinsAuthenticator() , null );
+            return Response.ok( strContent , "image/svg+xml" ).build( );
+        }
+        catch( HttpAccessException ex )
+        {
+            AppLogService.error( "LuteceTools : Bad Jenkins Job URL : " + strUrl );
+            String strRedirectURI = JenkinsService.DEFAULT_BADGE_URL;
+            return Response.temporaryRedirect( URI.create( strRedirectURI )).build();
+        }
 
-        return Response.ok( strContent , "image/svg+xml" ).build( );
     }
 }
