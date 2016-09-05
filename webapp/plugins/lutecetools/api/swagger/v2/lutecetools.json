@@ -2,7 +2,8 @@
     "swagger": "2.0",
     "info": {
         "version": "1.0.0",
-        "title": "Lutece Tools API"
+        "title": "Lutece Tools API",
+        "description": "Set of tools for Lutece integrators"
     },
     "host": "${host}:${port}",
     "basePath": "${context}/rest/lutecetools",
@@ -54,6 +55,12 @@
                         "description": "Successful response",
                         "schema": {
                             "$ref": "#/definitions/Stats"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     }
                 }
@@ -124,6 +131,18 @@
                 "readmeOK": {
                     "type": "integer",
                     "description": "The number of components with a valid GitHub Readme file."
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         }
