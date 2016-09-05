@@ -7,17 +7,31 @@
     },
     "host": "${host}:${port}",
     "basePath": "${context}/rest/lutecetools",
+
     "produces": [
         "application/json",
         "application/xml"
     ],
-"schemes": [
+    "schemes": [
         "http",
         "https"
+    ],
+    "tags": [
+        {
+            "name": "component",
+            "description": "Information about components"
+        },
+        {
+            "name": "quality",
+            "description": "Stats about quality"
+        }
     ],
     "paths": {
         "/component/{artifact_id}": {
             "get": {
+                "tags": [
+                    "component"
+                ],
                 "summary": "Get information about a component",
                 "description": "Get information about a component.",
                 "parameters": [
@@ -48,6 +62,9 @@
         },
         "/stats": {
             "get": {
+                "tags": [
+                    "quality"
+                ],
                 "summary": "Get general stats about the components repository",
                 "description": "Get general stats about the components repository",
                 "responses": {
