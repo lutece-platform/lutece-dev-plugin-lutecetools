@@ -1,0 +1,114 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Lutece Tools API
+  description: Set of tools for Lutece integrators
+host: '${host}:${port}'
+basePath: '${context}/rest/lutecetools'
+produces:
+  - application/json
+  - application/xml
+schemes:
+  - http
+  - https
+tags:
+  - name: component
+    description: Information about components
+  - name: quality
+    description: Stats about quality
+paths:
+  '/component/{artifact_id}':
+    get:
+      tags:
+        - component
+      summary: Get information about a component
+      description: Get information about a component.
+      parameters:
+        - name: artifact_id
+          in: path
+          description: Component artifact id. ex - plugin-document
+          required: true
+          type: string
+        - name: format
+          in: query
+          description: output format xml or json
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Component'
+  /stats:
+    get:
+      tags:
+        - quality
+      summary: Get general stats about the components repository
+      description: Get general stats about the components repository
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Stats'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Component:
+    type: object
+    properties:
+      artifact_id:
+        type: string
+        description: The artifact name of the component into the Maven repository.
+      version:
+        type: string
+        description: The version of the component
+      core_version:
+        type: string
+        description: The core version dependency.
+      parent_pom_version:
+        type: string
+        description: The version of the parent pom.
+      snapshot_version:
+        type: string
+        description: The current snapshot version.
+      snapshot_core_version:
+        type: string
+        description: The version of the core in the snapshot pom file.
+      snapshot_parent_pom_version:
+        type: string
+        description: The version of the parent pom in the snapshot pom file.
+      sonar_nb_lines:
+        type: string
+        description: The number of lines of code provided by Sonar.
+      sonar_rci:
+        type: string
+        description: The Rules Compliance Indice provided by Sonar.
+  Stats:
+    type: object
+    properties:
+      mavenCount:
+        type: integer
+        description: The number of components in the Maven repository
+      githubCount:
+        type: integer
+        description: The number of components in GitHub repositories
+      githubOK:
+        type: integer
+        description: The number of components with a valid GitHub configuration.
+      jiraOK:
+        type: integer
+        description: The number of components with a valid Jira configuration.
+      readmeOK:
+        type: integer
+        description: The number of components with a valid GitHub Readme file.
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+
