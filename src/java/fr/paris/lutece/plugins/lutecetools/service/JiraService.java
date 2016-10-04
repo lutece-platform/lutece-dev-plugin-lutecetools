@@ -67,8 +67,6 @@ public class JiraService implements ComponentInfoFiller
      */
     public JiraService( )
     {
-        _factory = new AsynchronousJiraRestClientFactory( );
-        _auth = new AnonymousAuthenticationHandler( );
 
         String strProxyHost = AppPropertiesService.getProperty( "httpAccess.proxyHost" );
         String strProxyPort = AppPropertiesService.getProperty( "httpAccess.proxyPort" );
@@ -85,6 +83,10 @@ public class JiraService implements ComponentInfoFiller
             System.getProperties( ).put( "https.proxySet", "true");
             AppLogService.info( "LuteceTools : Using httpaccess.properties defined proxy to connect to JIRA." );
         }
+        
+        _factory = new AsynchronousJiraRestClientFactory( );
+        _auth = new AnonymousAuthenticationHandler( );
+        
     }
 
     /**
