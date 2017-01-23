@@ -71,6 +71,10 @@ public class ComponentRest
     private static final String KEY_SNAPSHOT_PARENT_POM_VERSION = "snapshot_parent_pom_version";
     private static final String KEY_SONAR_NB_LINES = "sonar_nb_lines";
     private static final String KEY_SONAR_RCI = "sonar_rci";
+    private static final String KEY_JIRA_CODE = "jira_code";
+    private static final String KEY_JIRA_ROADMAP_URL = "jira_roadmap_url";
+    private static final String KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES = "jira_current_version_closed_issues";
+    private static final String KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES = "jira_current_version_opened_issues";
 
     @GET
     @Path( Constants.PATH_ALL )
@@ -257,6 +261,10 @@ public class ComponentRest
         XmlUtil.addElement( sbXML, KEY_SNAPSHOT_PARENT_POM_VERSION, component.getSnapshotParentPomVersion( ) );
         XmlUtil.addElement( sbXML, KEY_SONAR_NB_LINES, component.getSonarNbLines( ) );
         XmlUtil.addElement( sbXML, KEY_SONAR_RCI, component.getSonarRCI( ) );
+        XmlUtil.addElement( sbXML, KEY_JIRA_CODE, component.getJiraKey(  ) );
+        XmlUtil.addElement( sbXML, KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.getJiraKey(  ) + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
+        XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, component.getJiraIssuesCount(  ) - component.getJiraUnresolvedIssuesCount(  ) );
+        XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getJiraUnresolvedIssuesCount(  ) );
         XmlUtil.endElement( sbXML, KEY_COMPONENT );
     }
 
@@ -280,6 +288,10 @@ public class ComponentRest
         jsonComponent.accumulate( KEY_SNAPSHOT_PARENT_POM_VERSION, component.getSnapshotParentPomVersion( ) );
         jsonComponent.accumulate( KEY_SONAR_NB_LINES, component.getSonarNbLines( ) );
         jsonComponent.accumulate( KEY_SONAR_RCI, component.getSonarRCI( ) );
+        jsonComponent.accumulate( KEY_JIRA_CODE, component.getJiraKey(  ) );
+        jsonComponent.accumulate( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.getJiraKey(  ) + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
+        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, component.getJiraIssuesCount(  ) - component.getJiraUnresolvedIssuesCount(  ) );
+        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getJiraUnresolvedIssuesCount(  ) );
         json.accumulate( KEY_COMPONENT, jsonComponent );
     }
 }
