@@ -48,10 +48,16 @@ public class SaxPomHandler extends DefaultHandler
     private static final String TAG_JIRA = "jiraProjectName";
     private static final String TAG_SCM = "scm";
     private static final String TAG_URL = "url";
+    private static final String TAG_CONNECTION = "connection";
+    private static final String TAG_DEVELOPPER_CONNECTION = "developerConnection";
     private String _strParentPomVersion;
     private String _strCoreVersion;
     private String _strJiraKey;
     private StringBuffer _sbScmUrl = new StringBuffer( );
+    private StringBuffer _sbScmConnection = new StringBuffer( );
+    private StringBuffer _sbScmDeveloperConnection = new StringBuffer( );
+    
+    
     private boolean _bPomParent;
     private boolean _bVersion;
     private boolean _bArtifactId;
@@ -59,6 +65,10 @@ public class SaxPomHandler extends DefaultHandler
     private boolean _bJira;
     private boolean _bSCM;
     private boolean _bURL;
+    private boolean _bConnection;
+    private boolean _bDevelopperConnection;
+    
+    
 
     /**
      * Returns Parent Pom version
@@ -99,6 +109,27 @@ public class SaxPomHandler extends DefaultHandler
     {
         return _sbScmUrl.toString( );
     }
+    
+    /**
+     * Returns the SCM Connection
+     * 
+     * @return The SCM Connection
+     */
+    public String getScmConnection( )
+    {
+        return _sbScmConnection.toString( );
+    }
+    
+    /**
+     * Returns the SCM Developer Connection
+     * 
+     * @return the SCM Developer Connection
+     */
+    public String getScmDeveloperConnection( )
+    {
+        return _sbScmDeveloperConnection.toString( );
+    }
+
 
     /**
      * {@inheritDoc }
@@ -135,6 +166,16 @@ public class SaxPomHandler extends DefaultHandler
                             {
                                 _bURL = true;
                             }
+                            else
+                                if ( qName.equalsIgnoreCase( TAG_CONNECTION ) )
+                                {
+                                    _bConnection = true;
+                                }
+                                else
+                                    if ( qName.equalsIgnoreCase( TAG_DEVELOPPER_CONNECTION ) )
+                                    {
+                                        _bDevelopperConnection = true;
+                                    }
     }
 
     /**
@@ -172,6 +213,16 @@ public class SaxPomHandler extends DefaultHandler
                             {
                                 _bURL = false;
                             }
+                            else
+                                if ( qName.equalsIgnoreCase( TAG_CONNECTION ) )
+                                {
+                                    _bConnection = false;
+                                }
+                                else
+                                    if ( qName.equalsIgnoreCase( TAG_DEVELOPPER_CONNECTION ) )
+                                    {
+                                        _bDevelopperConnection = false;
+                                    }
     }
 
     /**
@@ -205,5 +256,15 @@ public class SaxPomHandler extends DefaultHandler
                         {
                             _sbScmUrl.append( new String( ch, start, length ) );
                         }
+                        else
+                            if ( _bSCM && _bConnection )
+                            {
+                                _sbScmConnection.append( new String( ch, start, length ) );
+                            }
+                            else
+                                if ( _bSCM && _bDevelopperConnection )
+                                {
+                                    _sbScmDeveloperConnection.append( new String( ch, start, length ) );
+                                }
     }
 }

@@ -387,7 +387,7 @@ public final class MavenRepoService
             {
                 component.setSnapshotParentPomVersion( handler.getParentPomVersion( ) );
                 component.setSnapshotCoreVersion( handler.getCoreVersion( ) );
-                component.setSnapshotScmUrl( handler.getScmUrl( ) );
+                component.setSnapshotScmUrl( handler.getScmUrl( ) );               
             }
             else
             {
@@ -395,7 +395,8 @@ public final class MavenRepoService
                 component.setCoreVersion( handler.getCoreVersion( ) );
                 component.setScmUrl( handler.getScmUrl( ) );
             }
-
+            component.setScmConnection( handler.getScmConnection( ));
+            component.setScmDeveloperConnection( handler.getScmConnection( ));
             component.setJiraKey( handler.getJiraKey( ) );
         }
         catch( IOException e )

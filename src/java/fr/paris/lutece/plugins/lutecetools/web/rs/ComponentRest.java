@@ -77,6 +77,10 @@ public class ComponentRest
     private static final String KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES = "jira_current_version_opened_issues";
     private static final String KEY_SCM_URL = "scm_url";
     private static final String KEY_SCM_SNAPSHOT_URL = "scm_snapshot_url";
+    private static final String KEY_SCM_CONNECTION = "scm_connection";
+    private static final String KEY_SCM_DEVELOPER_CONNECTION = "scm_developer_connection";
+    
+    
     
     @GET
     @Path( Constants.PATH_ALL )
@@ -269,6 +273,8 @@ public class ComponentRest
         XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getJiraUnresolvedIssuesCount(  ) );
         XmlUtil.addElement( sbXML, KEY_SCM_URL, component.getScmUrl( ) );
         XmlUtil.addElement( sbXML, KEY_SCM_SNAPSHOT_URL, component.getSnapshotScmUrl( ) );
+        XmlUtil.addElement( sbXML, KEY_SCM_CONNECTION, component.getScmConnection( ) );
+        XmlUtil.addElement( sbXML, KEY_SCM_DEVELOPER_CONNECTION, component.getScmDeveloperConnection( ) );
         
         XmlUtil.endElement( sbXML, KEY_COMPONENT );
     }
@@ -299,7 +305,8 @@ public class ComponentRest
         jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getJiraUnresolvedIssuesCount(  ) );
         jsonComponent.accumulate( KEY_SCM_URL, component.getScmUrl( ) );
         jsonComponent.accumulate( KEY_SCM_SNAPSHOT_URL, component.getSnapshotScmUrl( ) );
-      
+        jsonComponent.accumulate( KEY_SCM_CONNECTION, component.getScmConnection( ) );
+        jsonComponent.accumulate( KEY_SCM_DEVELOPER_CONNECTION, component.getScmDeveloperConnection( ) );
         
         
         json.accumulate( KEY_COMPONENT, jsonComponent );

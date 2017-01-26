@@ -51,6 +51,8 @@ public class Component extends AbstractComponent implements Comparable
     private String _strSonarRCI;
     private String _strJiraKey;
     private String _strScmUrl;
+    private String _strScmConnection;
+    private String _strScmDeveloperConnection;
     private String _strSnapshotScmUrl;
     private boolean _bGitHubRepo;
     private String _strGitHubOwner;
@@ -682,5 +684,38 @@ public class Component extends AbstractComponent implements Comparable
     public void setJenkinsJobBadgeIconUrl( String strJenkinsJobBadgeIconUrl )
     {
         _strJenkinsJobBadgeIconUrl = strJenkinsJobBadgeIconUrl;
+    }
+
+    /**
+     * 
+     * @return scm connection url
+     */
+    public String getScmConnection( )
+    {
+        return _strScmConnection;
+    }
+    /**
+     * 
+     * @param _strScmConnection scm connection url
+     */
+    public void setScmConnection( String _strScmConnection )
+    {
+        this._strScmConnection = _strScmConnection;
+    }
+    /**
+     * 
+     * @return scm developer connection url
+     */
+    public String getScmDeveloperConnection( )
+    {
+        return _strScmDeveloperConnection;
+    }
+    /**
+     * 
+     * @param _strScmDeveloperConnection scm developer connection url
+     */
+    public void setScmDeveloperConnection( String _strScmDeveloperConnection )
+    {
+        this._strScmDeveloperConnection = _strScmDeveloperConnection;
     }
 }
