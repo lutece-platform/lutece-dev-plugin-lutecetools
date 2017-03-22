@@ -257,7 +257,21 @@ public final class MavenRepoService
      */
     public static Component getComponent( String strArtifactId, boolean bFetch )
     {
-        Component component = ComponentService.load( strArtifactId );
+        return getComponent( strArtifactId, bFetch, false );
+    }
+    
+    /**
+     * Gets a component using cache feature
+     *
+     * @param strArtifactId
+     *            The component name
+     * @param bFetch
+     * @param bForceReload
+     * @return The component
+     */
+    public static Component getComponent( String strArtifactId, boolean bFetch ,boolean bForceReload)
+    {
+        Component component = bForceReload?null:ComponentService.load( strArtifactId );
 
         if ( component == null )
         {
@@ -335,19 +349,22 @@ public final class MavenRepoService
     {
         StringBuilder sbPomUrl;
 
-        if ( component.getArtifactId( ).equals( TAG_LUTECE_CORE ) )
+        if(!RELEASE_NOT_FOUND.equals(component.getVersion( )))
         {
-            sbPomUrl = new StringBuilder( URL_CORE );
-            sbPomUrl.append( component.getVersion( ) ).append( '/' );
+            if ( component.getArtifactId( ).equals( TAG_LUTECE_CORE ) )
+            {
+                sbPomUrl = new StringBuilder( URL_CORE );
+                sbPomUrl.append( component.getVersion( ) ).append( '/' );
+            }
+            else
+            {
+                sbPomUrl = new StringBuilder( URL_PLUGINS );
+                sbPomUrl.append( component.getArtifactId( ) ).append( '/' ).append( component.getVersion( ) ).append( '/' );
+            }
+            
+            sbPomUrl.append( component.getArtifactId( ) ).append( '-' ).append( component.getVersion( ) ).append( ".pom" );
+            getPomInfos( component, sbPomUrl.toString( ), false, sbLogs );
         }
-        else
-        {
-            sbPomUrl = new StringBuilder( URL_PLUGINS );
-            sbPomUrl.append( component.getArtifactId( ) ).append( '/' ).append( component.getVersion( ) ).append( '/' );
-        }
-        sbPomUrl.append( component.getArtifactId( ) ).append( '-' ).append( component.getVersion( ) ).append( ".pom" );
-        getPomInfos( component, sbPomUrl.toString( ), false, sbLogs );
-
         String strSnapshotPomUrl = getSnapshotPomUrl( component, sbLogs );
 
         if ( strSnapshotPomUrl != null )

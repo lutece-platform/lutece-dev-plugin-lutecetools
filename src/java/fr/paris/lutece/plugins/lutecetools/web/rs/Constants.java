@@ -43,6 +43,8 @@ public final class Constants
     public static final String PATH_ID = "id";
     public static final String PATH_ALL = "s";
     public static final String PARAMETER_FORMAT = "format";
+    public static final String PARAMETER_CACHE = "cache";
+    
     public static final String PARAMETER_URL = "url";
     public static final String MEDIA_TYPE_JSON = "json";
     public static final String MEDIA_TYPE_XML = "xml";

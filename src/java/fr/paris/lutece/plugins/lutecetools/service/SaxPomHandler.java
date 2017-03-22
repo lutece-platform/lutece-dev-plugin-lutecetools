@@ -56,8 +56,7 @@ public class SaxPomHandler extends DefaultHandler
     private StringBuffer _sbScmUrl = new StringBuffer( );
     private StringBuffer _sbScmConnection = new StringBuffer( );
     private StringBuffer _sbScmDeveloperConnection = new StringBuffer( );
-    
-    
+
     private boolean _bPomParent;
     private boolean _bVersion;
     private boolean _bArtifactId;
@@ -67,8 +66,6 @@ public class SaxPomHandler extends DefaultHandler
     private boolean _bURL;
     private boolean _bConnection;
     private boolean _bDevelopperConnection;
-    
-    
 
     /**
      * Returns Parent Pom version
@@ -109,7 +106,7 @@ public class SaxPomHandler extends DefaultHandler
     {
         return _sbScmUrl.toString( );
     }
-    
+
     /**
      * Returns the SCM Connection
      * 
@@ -119,7 +116,7 @@ public class SaxPomHandler extends DefaultHandler
     {
         return _sbScmConnection.toString( );
     }
-    
+
     /**
      * Returns the SCM Developer Connection
      * 
@@ -129,7 +126,6 @@ public class SaxPomHandler extends DefaultHandler
     {
         return _sbScmDeveloperConnection.toString( );
     }
-
 
     /**
      * {@inheritDoc }

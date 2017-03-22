@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.lutecetools.web.rs;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.plugins.lutecetools.service.ComponentService;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
 import fr.paris.lutece.plugins.rest.util.json.JSONUtil;
@@ -45,6 +46,7 @@ import net.sf.json.JSONObject;
 
 import java.io.IOException;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -161,19 +163,19 @@ public class ComponentRest
     @GET
     @Path( "/{" + Constants.PATH_ID + "}" )
     public Response getComponent( @PathParam( Constants.PATH_ID ) String strArtifactId, @HeaderParam( HttpHeaders.ACCEPT ) String accept,
-            @QueryParam( Constants.PARAMETER_FORMAT ) String format ) throws IOException
+            @QueryParam( Constants.PARAMETER_FORMAT ) String format, @QueryParam( Constants.PARAMETER_CACHE) Boolean bCache) throws IOException
     {
         String entity;
         String mediaType;
 
         if ( ( ( accept != null ) && accept.contains( MediaType.APPLICATION_JSON ) ) || ( ( format != null ) && format.equals( Constants.MEDIA_TYPE_JSON ) ) )
         {
-            entity = getComponentJson( strArtifactId );
+            entity = getComponentJson( strArtifactId,bCache!=null?bCache:true);
             mediaType = MediaType.APPLICATION_JSON;
         }
         else
         {
-            entity = getComponentXml( strArtifactId );
+            entity = getComponentXml( strArtifactId,bCache!=null?bCache:true );
             mediaType = MediaType.APPLICATION_XML;
         }
 
@@ -187,13 +189,13 @@ public class ComponentRest
      *            The artifact ID
      * @return The XML output
      */
-    public String getComponentXml( String strArtifactId )
+    public String getComponentXml( String strArtifactId,boolean bCache)
     {
         StringBuffer sbXML = new StringBuffer( );
 
         try
         {
-            Component component = MavenRepoService.getComponent( strArtifactId, true );
+            Component component = MavenRepoService.getComponent( strArtifactId, true,!bCache );
 
             if ( component != null )
             {
@@ -220,14 +222,15 @@ public class ComponentRest
      *            The artifact ID
      * @return The JSON output
      */
-    public String getComponentJson( String strArtifactId )
+    public String getComponentJson( String strArtifactId ,boolean bCache)
     {
         JSONObject json = new JSONObject( );
         String strJson = "";
 
         try
         {
-            Component component = MavenRepoService.getComponent( strArtifactId, true );
+          
+            Component component = MavenRepoService.getComponent( strArtifactId, true,!bCache );
 
             if ( component != null )
             {
