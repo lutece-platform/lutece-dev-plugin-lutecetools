@@ -156,6 +156,8 @@ public class ComponentRest
      *            The Accept header parameter
      * @param format
      *            The format
+     * @param bCache false if the component informations must be recalculated
+     * @param strType the compoent type(lutece-plugin,lutece-site,...)           
      * @return The response
      * @throws IOException
      *             if an error occurs
@@ -163,19 +165,19 @@ public class ComponentRest
     @GET
     @Path( "/{" + Constants.PATH_ID + "}" )
     public Response getComponent( @PathParam( Constants.PATH_ID ) String strArtifactId, @HeaderParam( HttpHeaders.ACCEPT ) String accept,
-            @QueryParam( Constants.PARAMETER_FORMAT ) String format, @QueryParam( Constants.PARAMETER_CACHE) Boolean bCache) throws IOException
+            @QueryParam( Constants.PARAMETER_FORMAT ) String format, @QueryParam( Constants.PARAMETER_CACHE) Boolean bCache, @QueryParam( Constants.PARAMETER_TYPE) String strType) throws IOException
     {
         String entity;
         String mediaType;
 
         if ( ( ( accept != null ) && accept.contains( MediaType.APPLICATION_JSON ) ) || ( ( format != null ) && format.equals( Constants.MEDIA_TYPE_JSON ) ) )
         {
-            entity = getComponentJson( strArtifactId,bCache!=null?bCache:true);
+            entity = getComponentJson( strArtifactId,bCache!=null?bCache:true,strType);
             mediaType = MediaType.APPLICATION_JSON;
         }
         else
         {
-            entity = getComponentXml( strArtifactId,bCache!=null?bCache:true );
+            entity = getComponentXml( strArtifactId,bCache!=null?bCache:true,strType );
             mediaType = MediaType.APPLICATION_XML;
         }
 
@@ -187,15 +189,17 @@ public class ComponentRest
      * 
      * @param strArtifactId
      *            The artifact ID
+     * @param bCache false if the component informations must be recalculated
+     * @param strType the compoent type(lutece-plugin,lutece-site,...) 
      * @return The XML output
      */
-    public String getComponentXml( String strArtifactId,boolean bCache)
+    public String getComponentXml( String strArtifactId,boolean bCache,String strType)
     {
         StringBuffer sbXML = new StringBuffer( );
 
         try
         {
-            Component component = MavenRepoService.getComponent( strArtifactId, true,!bCache );
+            Component component = MavenRepoService.getComponent( strArtifactId, true,!bCache,strType );
 
             if ( component != null )
             {
@@ -220,9 +224,11 @@ public class ComponentRest
      * 
      * @param strArtifactId
      *            The artifact ID
+     * @param bCache false if the component informations must be recalculated
+     * @param strType the compoent type(lutece-plugin,lutece-site,...) 
      * @return The JSON output
      */
-    public String getComponentJson( String strArtifactId ,boolean bCache)
+    public String getComponentJson( String strArtifactId ,boolean bCache,String strType)
     {
         JSONObject json = new JSONObject( );
         String strJson = "";
@@ -230,7 +236,7 @@ public class ComponentRest
         try
         {
           
-            Component component = MavenRepoService.getComponent( strArtifactId, true,!bCache );
+            Component component = MavenRepoService.getComponent( strArtifactId, true,!bCache,strType);
 
             if ( component != null )
             {

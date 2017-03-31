@@ -44,8 +44,18 @@ public final class Constants
     public static final String PATH_ALL = "s";
     public static final String PARAMETER_FORMAT = "format";
     public static final String PARAMETER_CACHE = "cache";
-    
+    public static final String PARAMETER_TYPE = "type";
     public static final String PARAMETER_URL = "url";
     public static final String MEDIA_TYPE_JSON = "json";
     public static final String MEDIA_TYPE_XML = "xml";
+    public static final String DEPENDENCY_TYPE_LUTECE_PLUGIN = "lutece-plugin";
+    public static final String DEPENDENCY_TYPE_LUTECE_SITE = "lutece-site";
+    public static final String DEPENDENCY_TYPE_LUTECE_CORE = "lutece-core";
+    public static final String MAVEN_REPO_LUTECE_PLUGIN = "lutece-plugin";
+    public static final String MAVEN_REPO_LUTECE_SITE= "lutece-site";
+    public static final String MAVEN_REPO_LUTECE_CORE = "lutece-core";
+    
+    
+    
+    
 }
