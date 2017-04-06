@@ -32,10 +32,10 @@
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-primary btn-xs" type="submit" title="Refresh" name="action_refresh">
-                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                        <span class="fa fa-refresh" aria-hidden="true"></span>
                     </button>
                     <button class="btn btn-danger btn-xs" type="submit" title="Clear cache" name="action_clearCache" >
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        <span class="fa fa-trash" aria-hidden="true"></span>
                     </button>
                 </div>
             </div>
@@ -231,13 +231,13 @@
                                 <a href="http://dev.lutece.paris.fr/sonar/overview?id=fr.paris.lutece.plugins%3A${component.artifactId}">
                                 <#assign nb = "${component.sonarRCI}"?replace("%", "")?number>
                                 <#if nb gte "${rci_color_success}"?number>
-                                        <span class="glyphicon glyphicon-ok-sign" style="color:#00b300;font-size:2em;"></span>
+                                        <span class="fa fa-check-circle" style="color:#00b300;font-size:2em;"></span>
                                         <#assign RCIOk = RCIOk + 1>
                                 <#elseif nb gte "${rci_color_warning}"?number && nb lt "${rci_color_success}"?number>
-                                        <span class="glyphicon glyphicon-exclamation-sign" style="color:orange;font-size:2em;"></span>
+                                        <span class="fa fa-exclamation-circle" style="color:orange;font-size:2em;"></span>
                                         <#assign RCIWarning = RCIWarning + 1>
                                 <#else>
-                                        <span class="glyphicon glyphicon-remove-sign" style="color:red;font-size:2em;"></span>
+                                        <span class="fa fa-exclamation-triangle" style="color:red;font-size:2em;"></span>
                                         <#assign RCIDanger = RCIDanger + 1>
                                 </#if>
                                 </a>
@@ -301,7 +301,7 @@
                             <a href="http://dev.lutece.paris.fr/plugins/${component.artifactId}/index.html" title="English" class="btn btn-default btn-xs">en</a>
                             <a href="http://dev.lutece.paris.fr/plugins/${component.artifactId}/fr/index.html" title="French" class="btn btn-default btn-xs">&nbsp;fr&nbsp;</a>
                             <a href="http://dev.lutece.paris.fr/maven_repository/fr/paris/lutece/plugins/${component.artifactId}" title="Maven repository" class="btn btn-default btn-xs">
-                                <span class="glyphicon glyphicon-folder-open"></span>
+                                <span class="fa fa-folder-open"></span>
                             </a>
                         </td>
                     </tr>
@@ -330,11 +330,11 @@
                             <span class="badge"> ${readmeDanger} </span> &nbsp;
                         </div>
                         <div class="col-md-3">
-                            <span class="glyphicon glyphicon-ok-sign" style="color:#00b300;font-size:1.1em;"></span>
+                            <span class="fa fa-check-circle" style="color:#00b300;font-size:1.1em;"></span>
                             <span class="badge"> ${RCIOk} </span> &nbsp;
-                            <span class="glyphicon glyphicon-exclamation-sign" style="color:orange;"></span>
+                            <span class="fa fa-exclamation-circle" style="color:orange;"></span>
                             <span class="badge"> ${RCIWarning} </span> &nbsp;
-                            <span class="glyphicon glyphicon-remove-sign" style="color:red;"></span>
+                            <span class="fa fa-exclamation-triangle" style="color:red;"></span>
                             <span class="badge"> ${RCIDanger} </span> &nbsp;
                         </div>
                     </div>
