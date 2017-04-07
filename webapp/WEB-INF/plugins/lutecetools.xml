@@ -31,6 +31,7 @@
         <javascript-file>lutecetools/Chart.js</javascript-file>
         <javascript-file>lutecetools/custom.js</javascript-file>
         <javascript-file>lutecetools/jquery-ui.js</javascript-file>
+        <javascript-file>lutecetools/prettify/run_prettify.js?skin=desert</javascript-file>
     </javascript-files>
 
      <!-- XPages parameters -->
@@ -50,6 +51,10 @@
         <application>
             <application-id>pomupdate</application-id>
             <application-class>fr.paris.lutece.plugins.lutecetools.web.PomUpdateApp</application-class>
+        </application>
+        <application>
+            <application-id>createsitepom</application-id>
+            <application-class>fr.paris.lutece.plugins.lutecetools.web.CreateSitePomApp</application-class>
         </application>
     </applications>
 
