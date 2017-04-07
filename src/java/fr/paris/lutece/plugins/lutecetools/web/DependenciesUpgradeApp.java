@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 public class DependenciesUpgradeApp extends MVCApplication
 {
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/dependenciesupgrade.html";
-    private static final String MARK_INPUT = "input";
+    private static final String MARK_INPUT = "inputsource";
     private static final String MARK_OUTPUT = "output";
     private static final String PARAMETER_SOURCE = "source";
     private static final String PARAMETER_FORMAT = "format";
