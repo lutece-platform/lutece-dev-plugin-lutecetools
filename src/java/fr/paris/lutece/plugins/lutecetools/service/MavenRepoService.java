@@ -454,7 +454,7 @@ public final class MavenRepoService
                 component.setScmUrl( handler.getScmUrl( ) );
             }
             component.setScmConnection( handler.getScmConnection( ) );
-            component.setScmDeveloperConnection( handler.getScmConnection( ) );
+            component.setScmDeveloperConnection( handler.getScmDeveloperConnection( ));
             component.setJiraKey( handler.getJiraKey( ) );
         }
         catch( IOException e )
