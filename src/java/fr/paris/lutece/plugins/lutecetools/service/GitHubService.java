@@ -105,72 +105,85 @@ public class GitHubService implements ComponentInfoFiller
     @Override
     public void fill( Component component, StringBuilder sbLogs )
     {
-        if ( _mapRepositories != null )
+        String strRepository = getGitHubRepository( component );
+        if( strRepository != null )
         {
-            for ( String strRepo : _mapRepositories.keySet( ) )
+            component.setGitHubRepo( true );
+
+            GHRepository repo = _mapRepositories.get( strRepository );
+
+            try
             {
-                if ( strRepo.endsWith( component.getArtifactId( ) ) )
+                component.setGitHubOwner( repo.getOwner( ).getLogin( ) );
+                Map<String, GHBranch> mapBranches = repo.getBranches( );
+                List<String> listBranches = new ArrayList<String>( );
+
+                for ( String strBranch : mapBranches.keySet( ) )
                 {
-                    component.setGitHubRepo( true );
+                    listBranches.add( strBranch );
+                }
 
-                    GHRepository repo = _mapRepositories.get( strRepo );
-
-                    try
-                    {
-                        component.setGitHubOwner( repo.getOwner( ).getLogin( ) );
-                        Map<String, GHBranch> mapBranches = repo.getBranches( );
-                        List<String> listBranches = new ArrayList<String>( );
-
-                        for ( String strBranch : mapBranches.keySet( ) )
-                        {
-                            listBranches.add( strBranch );
-                        }
-
-                        component.setBranchesList( listBranches );
-                    }
-                    catch( Exception ex )
-                    {
-                        sbLogs.append( "\n*** ERROR *** Retrieving GitHub infos (branches , readme, ...) for component " ).append( component.getArtifactId( ) )
-                                .append( " : " ).append( ex.getMessage( ) );
-                    }
-                    try
-                    {
-                        repo.getReadme( );
-                        component.setGitHubReadme( true );
-                    }
-                    catch( Exception e )
-                    {
-                        if ( e instanceof FileNotFoundException )
-                        {
-                            component.setGitHubReadme( false );
-                        }
-                    }
-                    try
-                    {
-                        List<GHPullRequest> prs = repo.getPullRequests( GHIssueState.OPEN );
-                        component.setGitHubPullRequests( prs.size( ) );
-                        long oldest = Long.MAX_VALUE;
-                        for ( GHPullRequest pr : prs )
-                        {
-                            if ( pr.getUpdatedAt( ).getTime( ) < oldest )
-                            {
-                                oldest = pr.getUpdatedAt( ).getTime( );
-                            }
-                        }
-                        component.setOldestPullRequest( oldest );
-                    }
-                    catch( IOException e )
-                    {
-                        sbLogs.append( "\n*** ERROR *** Retreiving Github pull requests for component " ).append( component.getArtifactId( ) ).append( " : " )
-                                .append( e.getMessage( ) );
-                    }
-                    fillGitHubStatus( component );
-                    fillGitHubErrors( component );
+                component.setBranchesList( listBranches );
+            }
+            catch( Exception ex )
+            {
+                sbLogs.append( "\n*** ERROR *** Retrieving GitHub infos (branches , readme, ...) for component " ).append( component.getArtifactId( ) )
+                        .append( " : " ).append( ex.getMessage( ) );
+            }
+            try
+            {
+                repo.getReadme( );
+                component.setGitHubReadme( true );
+            }
+            catch( Exception e )
+            {
+                if ( e instanceof FileNotFoundException )
+                {
+                    component.setGitHubReadme( false );
                 }
             }
+            try
+            {
+                List<GHPullRequest> prs = repo.getPullRequests( GHIssueState.OPEN );
+                component.setGitHubPullRequests( prs.size( ) );
+                long oldest = Long.MAX_VALUE;
+                for ( GHPullRequest pr : prs )
+                {
+                    if ( pr.getUpdatedAt( ).getTime( ) < oldest )
+                    {
+                        oldest = pr.getUpdatedAt( ).getTime( );
+                    }
+                }
+                component.setOldestPullRequest( oldest );
+            }
+            catch( IOException e )
+            {
+                sbLogs.append( "\n*** ERROR *** Retreiving Github pull requests for component " ).append( component.getArtifactId( ) ).append( " : " )
+                        .append( e.getMessage( ) );
+            }
+            fillGitHubStatus( component );
+            fillGitHubErrors( component );
         }
     }
 
+    private String getGitHubRepository( Component component )
+    {
+        if ( _mapRepositories != null )
+        {
+            for ( String strRepository : _mapRepositories.keySet( ) )
+            {
+                if ( strRepository.endsWith( component.getArtifactId( ) ) )
+                {
+                    return strRepository;
+                }
+            }
+        }
+        return null;
+        
+    }
+            
+    
+    
     /**
      * Gets all repositories of a given organization
      *
