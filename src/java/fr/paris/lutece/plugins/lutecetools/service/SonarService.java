@@ -31,7 +31,6 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -52,16 +51,20 @@ import java.util.HashMap;
  */
 public class SonarService implements ComponentInfoFiller
 {
+    // Component attributes keys
+    public static final String SONAR_NB_LINES = "sonarNbLines";
+    public static final String SONAR_RCI = "sonarRci";
+
     private static final String SERVICE_NAME = "Sonar Info filler service registered";
     // URL
     private static final String PROPERTY_SONAR_JSON_URL = "lutecetools.sonar.json.url";
-    private static final String URL_SONAR_JSON = AppPropertiesService.getProperty( PROPERTY_SONAR_JSON_URL );
+    private static final String URL_SONAR_JSON = AppPropertiesService.getProperty(PROPERTY_SONAR_JSON_URL);
     private static final String PROPERTY_SONAR_JSON_METRICS = "lutecetools.sonar.json.metrics";
-    private static final String METRICS_SONAR_JSON = AppPropertiesService.getProperty( PROPERTY_SONAR_JSON_METRICS );
+    private static final String METRICS_SONAR_JSON = AppPropertiesService.getProperty(PROPERTY_SONAR_JSON_METRICS);
     private static final String PROPERTY_SONAR_JSON_LC_RESOURCE = "lutecetools.sonar.json.lutececore.resource";
-    private static final String RESOURCE_LC_SONAR_JSON = AppPropertiesService.getProperty( PROPERTY_SONAR_JSON_LC_RESOURCE );
+    private static final String RESOURCE_LC_SONAR_JSON = AppPropertiesService.getProperty(PROPERTY_SONAR_JSON_LC_RESOURCE);
     private static final String PROPERTY_SONAR_JSON_PLUGINS_RESOURCE = "lutecetools.sonar.json.plugins.resource";
-    private static final String RESOURCE_PLUGINS_SONAR_JSON = AppPropertiesService.getProperty( PROPERTY_SONAR_JSON_PLUGINS_RESOURCE );
+    private static final String RESOURCE_PLUGINS_SONAR_JSON = AppPropertiesService.getProperty(PROPERTY_SONAR_JSON_PLUGINS_RESOURCE);
 
     // Tags
     private static final String TAG_LUTECE_CORE = "lutece-core";
@@ -74,13 +77,13 @@ public class SonarService implements ComponentInfoFiller
     private static final String KEY_NCLOC = "ncloc";
     private static final String KEY_SQALE_DEBT_RATIO = "sqale_debt_ratio";
 
-    private static HttpAccess httpAccess = new HttpAccess( );
+    private static HttpAccess httpAccess = new HttpAccess();
 
     /**
      * {@inheritDoc }
      */
     @Override
-    public String getName( )
+    public String getName()
     {
         return SERVICE_NAME;
     }
@@ -89,20 +92,19 @@ public class SonarService implements ComponentInfoFiller
      * {@inheritDoc }
      */
     @Override
-    public void fill( Component component, StringBuilder sbLogs )
+    public void fill(Component component, StringBuilder sbLogs)
     {
-        Map<String, String> metrics = getSonarMetrics( component.getArtifactId( ) );
-        for ( Map.Entry<String, String> entry : metrics.entrySet( ) )
+        Map<String, String> metrics = getSonarMetrics(component.getArtifactId());
+        for (Map.Entry<String, String> entry : metrics.entrySet())
         {
-            if ( entry.getKey( ).equals( KEY_NCLOC ) )
+            if (entry.getKey().equals(KEY_NCLOC))
             {
-                component.setSonarNbLines( entry.getValue( ) );
+                component.set( SONAR_NB_LINES, entry.getValue());
             }
-            else
-                if ( entry.getKey( ).equals( KEY_SQALE_DEBT_RATIO ) )
-                {
-                    component.setSonarRCI( entry.getValue( ) );
-                }
+            else if (entry.getKey().equals(KEY_SQALE_DEBT_RATIO))
+            {
+                component.set( SONAR_RCI, entry.getValue());
+            }
         }
 
     }
@@ -110,48 +112,46 @@ public class SonarService implements ComponentInfoFiller
     /**
      * get metrics from Sonar Webservice
      *
-     * @param strArtifactId
-     *            The ArtifactId
+     * @param strArtifactId The ArtifactId
      * @return The metrics HashMap
      */
-    public Map<String, String> getSonarMetrics( String strArtifactId )
+    public Map<String, String> getSonarMetrics(String strArtifactId)
     {
-        Map<String, String> metrics = new HashMap<>( );
+        Map<String, String> metrics = new HashMap<>();
         StringBuilder sbJSONUrl;
-        sbJSONUrl = new StringBuilder( URL_SONAR_JSON );
-        if ( strArtifactId.equals( TAG_LUTECE_CORE ) )
+        sbJSONUrl = new StringBuilder(URL_SONAR_JSON);
+        if (strArtifactId.equals(TAG_LUTECE_CORE))
         {
-            sbJSONUrl.append( RESOURCE_LC_SONAR_JSON ).append( strArtifactId ).append( METRICS_SONAR_JSON );
+            sbJSONUrl.append(RESOURCE_LC_SONAR_JSON).append(strArtifactId).append(METRICS_SONAR_JSON);
         }
         else
         {
-            sbJSONUrl.append( RESOURCE_PLUGINS_SONAR_JSON ).append( strArtifactId ).append( METRICS_SONAR_JSON );
+            sbJSONUrl.append(RESOURCE_PLUGINS_SONAR_JSON).append(strArtifactId).append(METRICS_SONAR_JSON);
         }
 
         try
         {
-            String strHtml = httpAccess.doGet( sbJSONUrl.toString( ) );
-            JSONObject json = new JSONObject( strHtml.substring( 1, strHtml.lastIndexOf( ']' ) ) );
-            JSONArray msr = json.getJSONArray( KEY_MSR );
+            String strHtml = httpAccess.doGet(sbJSONUrl.toString());
+            JSONObject json = new JSONObject(strHtml.substring(1, strHtml.lastIndexOf(']')));
+            JSONArray msr = json.getJSONArray(KEY_MSR);
 
-            for ( int i = 0; i < msr.length( ); i++ )
+            for (int i = 0; i < msr.length(); i++)
             {
-                JSONObject key = msr.getJSONObject( i );
+                JSONObject key = msr.getJSONObject(i);
 
-                if ( key.getString( KEY_KEY ).equals( KEY_NCLOC ) )
+                if (key.getString(KEY_KEY).equals(KEY_NCLOC))
                 {
-                    metrics.put( KEY_NCLOC, key.getString( KEY_FRMT_VAL ) );
+                    metrics.put(KEY_NCLOC, key.getString(KEY_FRMT_VAL));
                 }
-                else
-                    if ( key.getString( KEY_KEY ).equals( KEY_SQALE_DEBT_RATIO ) )
-                    {
-                        metrics.put( KEY_SQALE_DEBT_RATIO, String.valueOf( 100 - key.getInt( KEY_VAL ) ) + "%" );
-                    }
+                else if (key.getString(KEY_KEY).equals(KEY_SQALE_DEBT_RATIO))
+                {
+                    metrics.put(KEY_SQALE_DEBT_RATIO, String.valueOf(100 - key.getInt(KEY_VAL)) + "%");
+                }
             }
         }
-        catch( HttpAccessException | JSONException e )
+        catch (HttpAccessException | JSONException e)
         {
-            AppLogService.error( e.getMessage( ) );
+            AppLogService.error(e.getMessage());
         }
 
         return metrics;

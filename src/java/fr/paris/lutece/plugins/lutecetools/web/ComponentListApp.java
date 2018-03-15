@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentService;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentsInfos;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
+import fr.paris.lutece.plugins.lutecetools.service.SonarService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -113,9 +114,9 @@ public class ComponentListApp extends MVCApplication
 
         for ( Component c : ciInfos.getListComponents( ) )
         {
-            if ( c.getSonarNbLines( ) != null )
+            if ( c.get( SonarService.SONAR_NB_LINES ) != null )
             {
-                nTotal += Integer.parseInt( c.getSonarNbLines( ).replace( ",", "" ) );
+                nTotal += Integer.parseInt( c.get( SonarService.SONAR_NB_LINES ).replace( ",", "" ) );
             }
             if ( c.getGitHubPullRequests( ) > 0 )
             {

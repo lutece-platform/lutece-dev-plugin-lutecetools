@@ -34,8 +34,9 @@
 package fr.paris.lutece.plugins.lutecetools.web.rs;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
-import fr.paris.lutece.plugins.lutecetools.service.ComponentService;
+import fr.paris.lutece.plugins.lutecetools.service.JiraService;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
+import fr.paris.lutece.plugins.lutecetools.service.SonarService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
 import fr.paris.lutece.plugins.rest.util.json.JSONUtil;
 import fr.paris.lutece.plugins.rest.util.xml.XMLUtil;
@@ -46,7 +47,6 @@ import net.sf.json.JSONObject;
 
 import java.io.IOException;
 
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -269,21 +269,21 @@ public class ComponentRest
         XmlUtil.beginElement( sbXML, KEY_COMPONENT );
         XmlUtil.addElement( sbXML, KEY_ID, component.getArtifactId( ) );
         XmlUtil.addElement( sbXML, KEY_VERSION, component.getVersion( ) );
-        XmlUtil.addElement( sbXML, KEY_CORE_VERSION, component.getCoreVersion( ) );
-        XmlUtil.addElement( sbXML, KEY_PARENT_POM_VERSION, component.getParentPomVersion( ) );
-        XmlUtil.addElement( sbXML, KEY_SNAPSHOT_VERSION, component.getSnapshotVersion( ) );
-        XmlUtil.addElement( sbXML, KEY_SNAPSHOT_CORE_VERSION, component.getSnapshotCoreVersion( ) );
-        XmlUtil.addElement( sbXML, KEY_SNAPSHOT_PARENT_POM_VERSION, component.getSnapshotParentPomVersion( ) );
-        XmlUtil.addElement( sbXML, KEY_SONAR_NB_LINES, component.getSonarNbLines( ) );
-        XmlUtil.addElement( sbXML, KEY_SONAR_RCI, component.getSonarRCI( ) );
-        XmlUtil.addElement( sbXML, KEY_JIRA_CODE, component.getJiraKey(  ) );
-        XmlUtil.addElement( sbXML, KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.getJiraKey(  ) + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
-        XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, component.getJiraIssuesCount(  ) - component.getJiraUnresolvedIssuesCount(  ) );
-        XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getJiraUnresolvedIssuesCount(  ) );
-        XmlUtil.addElement( sbXML, KEY_SCM_URL, component.getScmUrl( ) );
-        XmlUtil.addElement( sbXML, KEY_SCM_SNAPSHOT_URL, component.getSnapshotScmUrl( ) );
-        XmlUtil.addElement( sbXML, KEY_SCM_CONNECTION, component.getScmConnection( ) );
-        XmlUtil.addElement( sbXML, KEY_SCM_DEVELOPER_CONNECTION, component.getScmDeveloperConnection( ) );
+        XmlUtil.addElement( sbXML, KEY_CORE_VERSION, component.get( Component.CORE_VERSION ) );
+        XmlUtil.addElement( sbXML, KEY_PARENT_POM_VERSION, component.get( Component.PARENT_POM_VERSION ) );
+        XmlUtil.addElement( sbXML, KEY_SNAPSHOT_VERSION, component.get( Component.SNAPSHOT_VERSION ) );
+        XmlUtil.addElement( sbXML, KEY_SNAPSHOT_CORE_VERSION, component.get( Component.SNAPSHOT_CORE_VERSION ) );
+        XmlUtil.addElement( sbXML, KEY_SNAPSHOT_PARENT_POM_VERSION, component.get( Component.SNAPSHOT_PARENT_POM_VERSION ) );
+        XmlUtil.addElement( sbXML, KEY_SONAR_NB_LINES, component.get( SonarService.SONAR_NB_LINES ) );
+        XmlUtil.addElement( sbXML, KEY_SONAR_RCI, component.get( SonarService.SONAR_RCI ) );
+        XmlUtil.addElement( sbXML, KEY_JIRA_CODE, component.get( Component.JIRA_KEY ) );
+        XmlUtil.addElement( sbXML, KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.get( Component.JIRA_KEY ) + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
+        XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, component.getInt( JiraService.JIRA_ISSUES_COUNT ) - component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
+        XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
+        XmlUtil.addElement( sbXML, KEY_SCM_URL, component.get( Component.SCM_URL ) );
+        XmlUtil.addElement( sbXML, KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
+        XmlUtil.addElement( sbXML, KEY_SCM_CONNECTION, component.get( Component.SCM_CONNECTION ) );
+        XmlUtil.addElement( sbXML, KEY_SCM_DEVELOPER_CONNECTION, component.get( Component.SCM_DEVELOPER_CONNECTION ) );
         
         XmlUtil.endElement( sbXML, KEY_COMPONENT );
     }
@@ -301,21 +301,21 @@ public class ComponentRest
         JSONObject jsonComponent = new JSONObject( );
         jsonComponent.accumulate( KEY_ID, component.getArtifactId( ) );
         jsonComponent.accumulate( KEY_VERSION, component.getVersion( ) );
-        jsonComponent.accumulate( KEY_CORE_VERSION, component.getCoreVersion( ) );
-        jsonComponent.accumulate( KEY_PARENT_POM_VERSION, component.getParentPomVersion( ) );
-        jsonComponent.accumulate( KEY_SNAPSHOT_VERSION, component.getSnapshotVersion( ) );
-        jsonComponent.accumulate( KEY_SNAPSHOT_CORE_VERSION, component.getSnapshotCoreVersion( ) );
-        jsonComponent.accumulate( KEY_SNAPSHOT_PARENT_POM_VERSION, component.getSnapshotParentPomVersion( ) );
-        jsonComponent.accumulate( KEY_SONAR_NB_LINES, component.getSonarNbLines( ) );
-        jsonComponent.accumulate( KEY_SONAR_RCI, component.getSonarRCI( ) );
-        jsonComponent.accumulate( KEY_JIRA_CODE, component.getJiraKey(  ) );
-        jsonComponent.accumulate( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.getJiraKey(  ) + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
-        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, component.getJiraIssuesCount(  ) - component.getJiraUnresolvedIssuesCount(  ) );
-        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getJiraUnresolvedIssuesCount(  ) );
-        jsonComponent.accumulate( KEY_SCM_URL, component.getScmUrl( ) );
-        jsonComponent.accumulate( KEY_SCM_SNAPSHOT_URL, component.getSnapshotScmUrl( ) );
-        jsonComponent.accumulate( KEY_SCM_CONNECTION, component.getScmConnection( ) );
-        jsonComponent.accumulate( KEY_SCM_DEVELOPER_CONNECTION, component.getScmDeveloperConnection( ) );
+        jsonComponent.accumulate( KEY_CORE_VERSION, component.get( Component.CORE_VERSION ) );
+        jsonComponent.accumulate( KEY_PARENT_POM_VERSION, component.get( Component.PARENT_POM_VERSION ) );
+        jsonComponent.accumulate( KEY_SNAPSHOT_VERSION, component.get( Component.SNAPSHOT_VERSION ) );
+        jsonComponent.accumulate( KEY_SNAPSHOT_CORE_VERSION, component.get( Component.SNAPSHOT_CORE_VERSION ) );
+        jsonComponent.accumulate( KEY_SNAPSHOT_PARENT_POM_VERSION, component.get( Component.SNAPSHOT_PARENT_POM_VERSION ) );
+        jsonComponent.accumulate( KEY_SONAR_NB_LINES, component.get( SonarService.SONAR_NB_LINES ) );
+        jsonComponent.accumulate( KEY_SONAR_RCI, component.get( SonarService.SONAR_RCI ) );
+        jsonComponent.accumulate( KEY_JIRA_CODE, component.get( Component.JIRA_KEY ) );
+        jsonComponent.accumulate( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.get( Component.JIRA_KEY ) + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
+        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, component.getInt( JiraService.JIRA_ISSUES_COUNT ) - component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
+        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
+        jsonComponent.accumulate( KEY_SCM_URL, component.get( Component.SCM_URL ) );
+        jsonComponent.accumulate( KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
+        jsonComponent.accumulate( KEY_SCM_CONNECTION, component.get( Component.SCM_CONNECTION ) );
+        jsonComponent.accumulate( KEY_SCM_DEVELOPER_CONNECTION, component.get( Component.SCM_DEVELOPER_CONNECTION ) );
         
         
         json.accumulate( KEY_COMPONENT, jsonComponent );

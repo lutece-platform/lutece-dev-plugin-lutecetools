@@ -53,6 +53,18 @@ import org.apache.commons.lang.StringUtils;
  */
 public class JiraService implements ComponentInfoFiller
 {
+    public static final String JIRA_STATUS = "jiraStatus";
+    public static final String JIRA_ISSUES_COUNT = "jiraIssuesCount";
+    public static final String JIRA_UNRESOLVED_ISSUES_COUNT = "jiraUnresolvedIssuesCount";
+    public static final String JIRA_FIXED_ISSUES_COUNT = "jiraFixedIssuesCount";
+    
+    private static final String JIRA_LAST_RELEASED_VERSION = "jiraLastReleasedVersion";
+    private static final String JIRA_LAST_UNRELEASED_VERSION = "jiraLastUnreleasedVersion";
+    private static final String JIRA_KEY_ERROR = "jiraKeyError";
+    private static final String JIRA_ERRORS= "jiraErrors";
+
+    
+    
     private static final String URL_JIRA_SERVER = "http://dev.lutece.paris.fr/jira/";
     private static final String URL_API_VERSION = URL_JIRA_SERVER + "rest/api/2/version/";
     private static final String SERVICE_NAME = "JIRA Info filler service registered";
@@ -105,7 +117,7 @@ public class JiraService implements ComponentInfoFiller
     public void fill( Component component, StringBuilder sbLogs )
     {
         JiraRestClient client = null;
-        String strJiraKey = component.getJiraKey( );
+        String strJiraKey = component.get( Component.JIRA_KEY );
 
         if ( strJiraKey != null )
         {
@@ -129,18 +141,19 @@ public class JiraService implements ComponentInfoFiller
                 }
                 if ( versionLastReleased != null )
                 {
-                    component.setJiraLastReleasedVersion( versionLastReleased.getName( ) );
+                    component.set( JIRA_LAST_RELEASED_VERSION , versionLastReleased.getName( ) );
                 }
                 if ( versionLastUnreleased != null )
                 {
-                    component.setJiraLastUnreleasedVersion( versionLastUnreleased.getName( ) );
+                    component.set( JIRA_LAST_UNRELEASED_VERSION , versionLastUnreleased.getName( ) );
                     String strURI = URL_API_VERSION + versionLastUnreleased.getId( );
                     URI uriVersion = new URI( strURI );
                     VersionRestClient clientVersion = client.getVersionRestClient( );
                     int nUnresolvedIssues = clientVersion.getNumUnresolvedIssues( uriVersion ).claim( );
-                    component.setJiraUnresolvedIssuesCount( nUnresolvedIssues );
+                    component.set( JIRA_UNRESOLVED_ISSUES_COUNT , nUnresolvedIssues );
                     VersionRelatedIssuesCount vRelatedIssues = clientVersion.getVersionRelatedIssuesCount( uriVersion ).claim( );
-                    component.setJiraIssuesCount( vRelatedIssues.getNumFixedIssues( ) );
+                    component.set( JIRA_ISSUES_COUNT , vRelatedIssues.getNumFixedIssues( ) );
+                    component.set( JIRA_FIXED_ISSUES_COUNT,  vRelatedIssues.getNumFixedIssues( ) - nUnresolvedIssues );
                     if ( AppLogService.isDebugEnabled( ) )
                     {
                         StringBuilder sbDebug = new StringBuilder( );
@@ -150,12 +163,12 @@ public class JiraService implements ComponentInfoFiller
                         AppLogService.debug( sbDebug.toString( ) );
                     }
                 }
-                component.setJiraStatus( getJiraStatus( component ) );
-                component.setJiraErrors( getJiraErrors( component ) );
+                component.set( JIRA_STATUS , getJiraStatus( component ) );
+                component.set( JIRA_ERRORS , getJiraErrors( component ) );
             }
             catch( RestClientException ex )
             {
-                component.setJiraKeyError( JIRAKEY_ERROR_INVALID );
+                component.set( JIRA_KEY_ERROR , JIRAKEY_ERROR_INVALID );
                 sbLogs.append( "\n*** ERROR *** Invalid Jira Key '" ).append( strJiraKey ).append( " for component " ).append( component.getArtifactId( ) );
             }
 
@@ -181,7 +194,7 @@ public class JiraService implements ComponentInfoFiller
         }
         else
         {
-            component.setJiraKeyError( JIRAKEY_ERROR_MISSING );
+            component.set( JIRA_KEY_ERROR , JIRAKEY_ERROR_MISSING );
             sbLogs.append( "\n*** ERROR *** Error no Jira key defined for component " ).append( component.getArtifactId( ) );
         }
 
@@ -198,22 +211,22 @@ public class JiraService implements ComponentInfoFiller
     {
         StringBuilder sbErrors = new StringBuilder( );
 
-        if ( ( component.getVersion( ) != null ) && !component.getVersion( ).equals( component.getJiraLastReleasedVersion( ) ) )
+        if ( ( component.getVersion( ) != null ) && !component.getVersion( ).equals( component.get( JIRA_LAST_RELEASED_VERSION ) ) )
         {
             sbErrors.append( "Last Jira released version is not matching the last version in maven repository. \n" );
         }
-        if ( ( component.getSnapshotVersion( ) != null ) && ( component.getJiraLastUnreleasedVersion( ) != null )
-                && !component.getSnapshotVersion( ).startsWith( component.getJiraLastUnreleasedVersion( ) ) )
+        if ( ( component.get( Component.SNAPSHOT_VERSION ) != null ) && ( component.get( JIRA_LAST_UNRELEASED_VERSION ) != null )
+                && !component.get( Component.SNAPSHOT_VERSION ).startsWith( component.get( JIRA_LAST_UNRELEASED_VERSION ) ) )
         {
             sbErrors.append( "Current Jira roadmap version is not matching current snapshot version. \n" );
         }
-        if ( component.getJiraKey( ) == null )
+        if ( component.get( Component.JIRA_KEY ) == null )
         {
             sbErrors.append( "JIRA key is missing in the pom.xml. \n" );
         }
-        if ( component.getJiraKeyError( ) == JIRAKEY_ERROR_INVALID )
+        if ( component.getInt( JIRA_KEY_ERROR ) == JIRAKEY_ERROR_INVALID )
         {
-            sbErrors.append( "JIRA key '" ).append( component.getJiraKey( ) ).append( "' is invalid. \n" );
+            sbErrors.append( "JIRA key '" ).append( component.get( Component.JIRA_KEY ) ).append( "' is invalid. \n" );
         }
 
         return sbErrors.toString( );
@@ -230,12 +243,12 @@ public class JiraService implements ComponentInfoFiller
     {
         int nStatus = 0;
 
-        if ( ( component.getVersion( ) != null ) && component.getVersion( ).equals( component.getJiraLastReleasedVersion( ) ) )
+        if ( ( component.getVersion( ) != null ) && component.getVersion( ).equals( component.get( JIRA_LAST_RELEASED_VERSION ) ) )
         {
             nStatus++;
         }
-        if ( ( component.getSnapshotVersion( ) != null ) && ( component.getJiraLastUnreleasedVersion( ) != null )
-                && component.getSnapshotVersion( ).startsWith( component.getJiraLastUnreleasedVersion( ) ) )
+        if ( ( component.get( Component.SNAPSHOT_VERSION ) != null ) && ( component.get( JIRA_LAST_UNRELEASED_VERSION ) != null )
+                && component.get( Component.SNAPSHOT_VERSION ).startsWith( component.get( JIRA_LAST_UNRELEASED_VERSION ) ) )
         {
             nStatus++;
         }

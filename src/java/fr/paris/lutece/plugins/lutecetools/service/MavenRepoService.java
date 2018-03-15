@@ -309,13 +309,13 @@ public final class MavenRepoService
             {
                 component = new Component( );
                 component.setArtifactId( strArtifactId );
-                component.setCoreVersion( NON_AVAILABLE );
-                component.setParentPomVersion( NON_AVAILABLE );
-                component.setScmUrl( NON_AVAILABLE );
-                component.setSnapshotVersion( NON_AVAILABLE );
-                component.setSnapshotCoreVersion( NON_AVAILABLE );
-                component.setSnapshotParentPomVersion( NON_AVAILABLE );
-                component.setJiraKey( NON_AVAILABLE );
+                component.set( Component.CORE_VERSION, NON_AVAILABLE );
+                component.set( Component.PARENT_POM_VERSION , NON_AVAILABLE );
+                component.set( Component.SCM_URL , NON_AVAILABLE );
+                component.set( Component.SNAPSHOT_VERSION , NON_AVAILABLE );
+                component.set( Component.SNAPSHOT_CORE_VERSION , NON_AVAILABLE );
+                component.set( Component.SNAPSHOT_PARENT_POM_VERSION,  NON_AVAILABLE );
+                component.set( Component.JIRA_KEY , NON_AVAILABLE );
                 component.setVersion( NON_AVAILABLE );
                 component.setGitHubRepo( false );
             }
@@ -443,19 +443,19 @@ public final class MavenRepoService
 
             if ( bSnapshot )
             {
-                component.setSnapshotParentPomVersion( handler.getParentPomVersion( ) );
-                component.setSnapshotCoreVersion( handler.getCoreVersion( ) );
-                component.setSnapshotScmUrl( handler.getScmUrl( ) );
+                component.set( Component.SNAPSHOT_PARENT_POM_VERSION , handler.getParentPomVersion( ) );
+                component.set( Component.SNAPSHOT_CORE_VERSION , handler.getCoreVersion( ) );
+                component.set( Component.SNAPSHOT_SCM_URL , handler.getScmUrl( ) );
             }
             else
             {
-                component.setParentPomVersion( handler.getParentPomVersion( ) );
-                component.setCoreVersion( handler.getCoreVersion( ) );
-                component.setScmUrl( handler.getScmUrl( ) );
+                component.set( Component.SNAPSHOT_PARENT_POM_VERSION , handler.getParentPomVersion( ) );
+                component.set( Component.CORE_VERSION, handler.getCoreVersion( ) );
+                component.set( Component.SCM_URL , handler.getScmUrl( ) );
             }
-            component.setScmConnection( handler.getScmConnection( ) );
-            component.setScmDeveloperConnection( handler.getScmDeveloperConnection( ));
-            component.setJiraKey( handler.getJiraKey( ) );
+            component.set( Component.SCM_CONNECTION , handler.getScmConnection( ) );
+            component.set( Component.SCM_DEVELOPER_CONNECTION , handler.getScmDeveloperConnection( ));
+            component.set( Component.JIRA_KEY , handler.getJiraKey( ) );
         }
         catch( IOException e )
         {
@@ -521,7 +521,7 @@ public final class MavenRepoService
             }
 
             String strSnapshotVersion = VersionUtils.getLatestVersion( listVersions );
-            component.setSnapshotVersion( strSnapshotVersion );
+            component.set( Component.SNAPSHOT_VERSION , strSnapshotVersion );
 
             String strLastSnapshotDirUrl = strSnapshotsDirUrl + "/" + strSnapshotVersion;
             strHtml = httpAccess.doGet( strLastSnapshotDirUrl );

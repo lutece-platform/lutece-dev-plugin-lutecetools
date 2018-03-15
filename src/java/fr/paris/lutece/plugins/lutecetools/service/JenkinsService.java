@@ -45,6 +45,10 @@ public class JenkinsService implements ComponentInfoFiller
 {
     public static final String DEFAULT_BADGE_URL = "images/skin/plugins/lutecetools/job-not-found.svg";
     
+    private static final String JENKINS_JOB_BUILD_URL = "jenkinsJobBuildUrl";
+    private static final String JENKINS_JOB_BADGE_ICON_URL = "jenkinsJobBadgeIconUrl";
+    private static final String JENKINS_JOB_STATUS = "jenkinsStatus";
+
     private static final String SERVICE_NAME = "Jenkins Info filler service registered";
     private static final String PROPERTY_JENKINS_BADGE_URL = "lutecetools.jenkins.badge.url";
     private static final String PROPERTY_JENKINS_CREDENTIALS_USER = "lutecetools.jenkins.user";
@@ -69,7 +73,7 @@ public class JenkinsService implements ComponentInfoFiller
     @Override
     public void fill( Component component, StringBuilder sbLogs )
     {
-        String strScmInfos = component.getSnapshotScmUrl();
+        String strScmInfos = component.get( Component.SNAPSHOT_SCM_URL );
         if( strScmInfos != null )
         {
             String strJobName = getJobName( strScmInfos );
@@ -79,8 +83,8 @@ public class JenkinsService implements ComponentInfoFiller
             {
                 strBadgeUrl = strJenkinsBadgeUrl + strJobName;
             }
-            component.setJenkinsStatus( String.valueOf( strJobName != null ));
-            component.setJenkinsJobBadgeIconUrl( strBadgeUrl );
+            component.set( JENKINS_JOB_STATUS , String.valueOf( strJobName != null ));
+            component.set( JENKINS_JOB_BADGE_ICON_URL , strBadgeUrl );
         }
     }
     

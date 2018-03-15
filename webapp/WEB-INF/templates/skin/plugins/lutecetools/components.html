@@ -1,4 +1,5 @@
 <div class="container-fluid">
+
   <div class="row">
     <div class="col-lg-12">
       <div class="well hero">
@@ -145,8 +146,9 @@
                         <td class="small">${component.artifactId}</td>
                         <td>
                             <span class="hidden">${component.gitHubStatus}</span>
-                            <#if component.snapshotScmUrl?contains("git")>
-                                <a href="${component.snapshotScmUrl}">
+                            
+                            <#if component.attributes.snapshotScmUrl?? && component.attributes.snapshotScmUrl?contains("git")>
+                                <a href="${component.attributes.snapshotScmUrl}">
                             </#if>        
 
                             <#if component.gitHubStatus gt 0 && component.gitHubStatus lt 3>
@@ -161,7 +163,7 @@
                                 <img src="images/skin/plugins/lutecetools/github-green.png" title="${component.gitHubErrors!''}" alt="GitHub status GREEN" width="24" height="24">
                                 <#assign githubOk = githubOk + 1>
                             </#if>
-                            <#if component.snapshotScmUrl?contains("git")>
+                            <#if component.attributes.snapshotScmUrl?? && component.attributes.snapshotScmUrl?contains("git")>
                                 </a>
                             </#if>        
                         </td>
@@ -194,38 +196,38 @@
                             </#if>
                         </td>
                         <td class="small">
-                            <#if component.snapshotScmUrl?contains("git")>
-                            <a href="${component.snapshotScmUrl}">
+                            <#if component.attributes.snapshotScmUrl?? && component.attributes.snapshotScmUrl?contains("git")>
+                            <a href="${component.attributes.snapshotScmUrl}">
                                 <img src="images/skin/plugins/lutecetools/github.png" alt="GitHub logo" width="24" height="24">
                             </a>
                             </#if>
-                            <#if component.snapshotScmUrl?contains("svn")>
-                            <a href="${component.snapshotScmUrl}">
+                            <#if component.attributes.snapshotScmUrl?? && component.attributes.snapshotScmUrl?contains("svn")>
+                            <a href="${component.attributes.snapshotScmUrl}">
                                 <img src="images/skin/plugins/lutecetools/subversion.png" alt="GitHub logo" width="24" height="24">
                             </a>
                             </#if>
-                            ${component.snapshotVersion!"Not found"}
+                            ${component.attributes.snapshotVersion!"Not found"}
                         </td>
                         <td class="small">
-                            <#if component.scmUrl?contains("git")>
-                            <a href="${component.scmUrl}">
+                            <#if component.attributes.scmUrl?? && component.attributes.scmUrl?contains("git")>
+                            <a href="${component.attributes.scmUrl}">
                                 <img src="images/skin/plugins/lutecetools/github.png" alt="GitHub logo" width="24" height="24">
                             </a>
                             </#if>
-                            <#if component.scmUrl?contains("svn")>
-                            <a href="${component.scmUrl}" >
+                            <#if component.attributes.scmUrl?? && component.attributes.scmUrl?contains("svn")>
+                            <a href="${component.attributes.scmUrl}" >
                                 <img src="images/skin/plugins/lutecetools/subversion.png" alt="GitHub logo" width="24" height="24">
                             </a>
                             </#if>
                             ${component.version}
                         </td>
-                        <td class="small">${component.snapshotParentPomVersion!"Not found"}</td>
-                        <td class="small">${component.parentPomVersion!"Not found"}</td>
+                        <td class="small">${component.attributes.snapshotParentPomVersion!"Not found"}</td>
+                        <td class="small">${component.attributes.parentPomVersion!"Not found"}</td>
                         <#if core_versions>
-                        <td class="small">${component.snapshotCoreVersion!"Not found"}</td>
-                        <td class="small">${component.coreVersion!"Not found"}</td>
+                        <td class="small">${component.attributes.snapshotCoreVersion!"Not found"}</td>
+                        <td class="small">${component.attributes.coreVersion!"Not found"}</td>
                         </#if>
-                        <td class="small">${component.sonarNbLines!"Not found"}</td>
+                        <td class="small">${component.attributes.sonarNbLines!"Not found"}</td>
                         <td class="small">
                             <#attempt>
                                 <a href="http://dev.lutece.paris.fr/sonar/overview?id=fr.paris.lutece.plugins%3A${component.artifactId}">
@@ -241,37 +243,46 @@
                                         <#assign RCIDanger = RCIDanger + 1>
                                 </#if>
                                 </a>
-                                ${component.sonarRCI}
+                                ${component.attributes.sonarRCI}
                                 <#recover>
                                 Not found
                             </#attempt>
                         </td>
                         <td>
-                            <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}">
-                            <#if component.jiraStatus == 0 >
+                            <#if component.attributes.jiraStatus ??>
+                            <a href="https://dev.lutece.paris.fr/jira/browse/${component.attributes.jiraKey!''}">
+                            <#if component.attributes.jiraStatus == 0 >
                                 <span class="hidden">1</span>
-                                <img src="images/skin/plugins/lutecetools/jira-red.png" title="${component.jiraErrors!''}" alt="Jira status RED" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/jira-red.png" title="${component.attributes.jiraErrors!''}" alt="Jira status RED" width="24" height="24">
                             	<#assign jiraDanger = jiraDanger + 1>
                             </#if>
-                            <#if component.jiraStatus == 1 >
+                            <#if component.attributes.jiraStatus == 1 >
                                 <span class="hidden">2</span>
-                                <img src="images/skin/plugins/lutecetools/jira-orange.png" title="${component.jiraErrors!''}" alt="Jira status ORANGE" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/jira-orange.png" title="${component.attributes.jiraErrors!''}" alt="Jira status ORANGE" width="24" height="24">
                             	<#assign jiraWarning = jiraWarning + 1>
                             </#if>
-                            <#if component.jiraStatus == 2 >
+                            <#if component.attributes.jiraStatus == 2 >
                                 <span class="hidden">3</span>
-                                <img src="images/skin/plugins/lutecetools/jira-green.png" title="${component.jiraErrors!''}" alt="Jira status GREEN" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/jira-green.png" title="${component.attributes.jiraErrors!''}" alt="Jira status GREEN" width="24" height="24">
                                 <#assign jiraOk = jiraOk + 1>
                             </#if>
                             </a>
+                            </#if>
                         </td>
                         <td class="small">
-                            ${component.jiraLastUnreleasedVersion!"Not found"}
+                            ${component.attributes.jiraLastUnreleasedVersion!"Not found"}
                         </td>
                         <td>
-                            <#assign fixed = component.jiraIssuesCount - component.jiraUnresolvedIssuesCount />
-                            <#assign unresolved = component.jiraUnresolvedIssuesCount />
-                            <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}#selectedTab=com.atlassian.jira.plugin.system.project%3Aroadmap-panel" >
+                            <#if component.attributes.jiraIssuesCount?? && component.attributes.jiraUnresolvedIssuesCount ??>
+                                <#assign fixed = component.attributes.jiraIssuesCount - component.attributes.jiraUnresolvedIssuesCount />
+                                <#assign unresolved = component.attributes.jiraUnresolvedIssuesCount />
+                            <#else>
+                                <#assign fixed = 0 />
+                                <#assign unresolved = 0 />
+                            </#if>
+                            <assign fixed = 1 />
+                            <assign unresolved = 1 />
+                            <a href="https://dev.lutece.paris.fr/jira/browse/${component.attributes.jiraKey!''}#selectedTab=com.atlassian.jira.plugin.system.project%3Aroadmap-panel" >
                                 <span class="label label-success"> ${fixed}</span>
                                 <#if unresolved == 0>
                                     <span class="label label-success"> ${unresolved}</span>
@@ -291,11 +302,11 @@
                             </#if>
                         </td>
                         <td class="small">
-                            <span class="hidden">${component.jenkinsStatus!''}</span> 
-                            <a href="${component.jenkinsJobBuildUrl!''}"><img src="${component.jenkinsJobBadgeIconUrl!''}"></a>
+                            <span class="hidden">${component.attributes.jenkinsStatus!''}</span> 
+                            <a href="${component.attributes.jenkinsJobBuildUrl!''}"><img src="${component.attributes.jenkinsJobBadgeIconUrl!''}"></a>
                         </td>
                         <td>
-                            <a href="https://dev.lutece.paris.fr/jira/browse/${component.jiraKey!''}" title="JIRA">
+                            <a href="https://dev.lutece.paris.fr/jira/browse/${component.attributes.jiraKey!''}" title="JIRA">
                                 <img src="images/skin/plugins/lutecetools/jira.png" alt="Jira logo" width="24" height="24"/>
                             </a>
                             <a href="http://dev.lutece.paris.fr/plugins/${component.artifactId}/index.html" title="English" class="btn btn-default btn-xs">en</a>

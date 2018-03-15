@@ -4,7 +4,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" >
 
-    <bean id="lutecetools.filler.gitHub" class="fr.paris.lutece.plugins.lutecetools.service.GitHubService" />
+    <bean id="lutecetools.filler.gitHub" class="fr.paris.lutece.plugins.lutecetools.service.GitHubService" >
+        <property name="gitPlatform" value="github" />
+    </bean>
+    <bean id="lutecetools.filler.gitLab" class="fr.paris.lutece.plugins.lutecetools.service.GitLabService" >
+        <property name="gitPlatform" value="gitlab" />
+    </bean>
     <bean id="lutecetools.filler.jira" class="fr.paris.lutece.plugins.lutecetools.service.JiraService" />
     <bean id="lutecetools.filler.sonar" class="fr.paris.lutece.plugins.lutecetools.service.SonarService" />
     <bean id="lutecetools.filler.jenkins" class="fr.paris.lutece.plugins.lutecetools.service.JenkinsService" />

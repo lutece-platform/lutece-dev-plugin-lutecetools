@@ -64,7 +64,7 @@ public class StatsService
                     nGithubOK++;
                 }
             }
-            if ( component.getJiraStatus( ) > 1 )
+            if ( component.getInt( JiraService.JIRA_STATUS ) > 1 )
             {
                 nJiraOK++;
             }

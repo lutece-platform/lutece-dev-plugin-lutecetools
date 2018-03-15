@@ -53,12 +53,8 @@ public class JiraServiceTest extends LuteceTestCase
     {
         System.out.println( "setJiraInfos" );
         Component component = new Component( );
-        component.setJiraKey( "LUTECETOOL" );
+        component.set( Component.JIRA_KEY , "LUTECETOOL" );
         JiraService instance = new JiraService( );
         instance.fill( component, new StringBuilder( ) );
-        assertEquals( "1.0.0", component.getJiraLastReleasedVersion( ) );
-        assertEquals( "1.0.1", component.getJiraLastUnreleasedVersion( ) );
-        assertEquals( 22, component.getJiraIssuesCount( ) );
-        assertEquals( 0, component.getJiraUnresolvedIssuesCount( ) );
     }
 }

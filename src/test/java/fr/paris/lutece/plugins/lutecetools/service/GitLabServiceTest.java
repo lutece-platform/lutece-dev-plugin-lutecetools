@@ -37,40 +37,47 @@ package fr.paris.lutece.plugins.lutecetools.service;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.test.LuteceTestCase;
+import java.util.Map;
+import java.util.Map.Entry;
+import org.gitlab.api.models.GitlabProject;
 import org.junit.Test;
 
 /**
  * GitlabService Test
  */
-public class GitlabServiceTest extends LuteceTestCase
+public class GitLabServiceTest extends LuteceTestCase
 {
 
     /**
      * Test of getRepositories method, of class GitlabService.
      */
-    @Test
     public void testGetRepositories() throws Exception
     {
         System.out.println( "getRepositories" );
-        GitlabService.getRepositories();
-        // TODO review the generated test code and remove the default call to fail.
-        fail( "The test case is a prototype." );
+        Map<String, GitlabProject> mapRepositories = GitLabService.getRepositories();
+        for( GitlabProject project : mapRepositories.values() )
+        {
+            System.out.println( "Repository : " + project.getName() + " group : " + GitLabService.getGroup( project ));
+        }
     }
     
 
     /**
      * Test of fill method, of class GitlabService.
      */
-    @Test
     public void testFill()
     {
         System.out.println( "fill" );
-        Component component = null;
-        StringBuilder sbLogs = null;
-        GitlabService instance = new GitlabService();
-        instance.fill( component, sbLogs );
-        // TODO review the generated test code and remove the default call to fail.
-        fail( "The test case is a prototype." );
+        Component component = new Component();
+        component.setArtifactId( "plugin-docupaie");
+        StringBuilder sb = new StringBuilder();
+        GitLabService service = new GitLabService();
+        service.fill( component, sb);
+        
+        
+        
+        System.out.println( "component artifact id : " + component.getArtifactId() );
+        System.out.println( "component organization : " + component.getGitHubOwner() );
     }
 
 }

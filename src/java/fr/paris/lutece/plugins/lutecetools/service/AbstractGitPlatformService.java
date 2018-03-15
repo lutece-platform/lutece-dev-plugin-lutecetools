@@ -31,59 +31,93 @@
  *
  * License 1.0
  */
-
-
 package fr.paris.lutece.plugins.lutecetools.service;
 
-import fr.paris.lutece.plugins.lutecetools.business.Component;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import java.io.IOException;
-import java.util.Map;
-import org.gitlab.api.GitlabAPI;
-import org.gitlab.api.models.GitlabProject;
-
 /**
- * GitlabService
+ * GitPlatform
  */
-public class GitlabService implements ComponentInfoFiller
-{
-    private static final String SERVICE_NAME = "Gitlab Info filler service";
-    private static final String PROPERTY_GITLAB_URL = "lutecetools.gitlab.url";
-    private static final String PROPERTY_GITLAB_ACCOUNT_NAME = "lutecetools.gitlab.account.name";
-    private static final String PROPERTY_GITLAB_ACCOUNT_TOKEN = "lutecetools.gitlab.account.token";
-    private static final String PROPERTY_GITLAB_GROUPS = "lutecetools.gitlab.groups";
-    private static final String DSKEY_PARENT_POM_VERSION = "lutecetools.site_property.globalPom.version";
+public abstract class AbstractGitPlatformService implements ComponentInfoFiller
+{        
 
-    private static Map<String, GitlabProject> _mapRepositories;
-
+    private String _strGitPlatform;
+    private int _nItemCount;
+    private int _nItemOk;
 
     /**
-     * {@inheritDoc }
+     * Returns the GitPlatform
+     *
+     * @return The GitPlatform
      */
-    @Override
-    public String getName()
+    public String getGitPlatform()
     {
-        return SERVICE_NAME;
+        return _strGitPlatform;
     }
 
     /**
-     * {@inheritDoc }
+     * Sets the GitPlatform
+     *
+     * @param strGitPlatform The GitPlatform
      */
-    @Override
-    public void fill( Component component, StringBuilder sbLogs )
+    public void setGitPlatform(String strGitPlatform)
     {
-        
+        _strGitPlatform = strGitPlatform;
     }
-    
-    public static void getRepositories() throws IOException
+
+    /**
+     * Returns the ItemCount
+     *
+     * @return The ItemCount
+     */
+    public int getItemCount()
     {
-        String strUrl = AppPropertiesService.getProperty( PROPERTY_GITLAB_URL );
-        String strToken = AppPropertiesService.getProperty( PROPERTY_GITLAB_ACCOUNT_TOKEN );
-        GitlabAPI gitLabApi = GitlabAPI.connect( strUrl , strToken );
-        for (GitlabProject project : gitLabApi.getProjects()) 
-        {
-            _mapRepositories.put( project.getName() , project );
-        }
+        return _nItemCount;
     }
+
+    /**
+     * Sets the ItemCount
+     *
+     * @param nItemCount The ItemCount
+     */
+    public void setItemCount(int nItemCount)
+    {
+        _nItemCount = nItemCount;
+    }
+
+    /**
+     * Returns the ItemOk
+     *
+     * @return The ItemOk
+     */
+    public int getItemOk()
+    {
+        return _nItemOk;
+    }
+
+    /**
+     * Sets the ItemOk
+     *
+     * @param nItemOk The ItemOk
+     */
+    public void setItemOk(int nItemOk)
+    {
+        _nItemOk = nItemOk;
+    }
+
+    /**
+     * Increment item count
+     */
+    public void incrementItemCount()
+    {
+        _nItemCount++;
+    }
+
+    /**
+     * Increment item OK
+     */
+    public void incrementItemOk()
+    {
+        _nItemOk++;
+    }
+
 
 }

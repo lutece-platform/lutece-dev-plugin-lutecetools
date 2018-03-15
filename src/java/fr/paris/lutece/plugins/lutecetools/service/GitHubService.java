@@ -62,7 +62,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * GitHub Service
  */
-public class GitHubService implements ComponentInfoFiller
+public class GitHubService extends AbstractGitPlatformService
 {
     private static final String SERVICE_NAME = "GitHub Info filler service registered";
     private static final String PROPERTY_GITHUB_ACCOUNT_NAME = "lutecetools.github.account.name";
@@ -78,7 +78,6 @@ public class GitHubService implements ComponentInfoFiller
      */
     public GitHubService( )
     {
-        updateGitHubRepositoriesList( );
         _strParentPomVersion = DatastoreService.getDataValue( DSKEY_PARENT_POM_VERSION, "3.0.3" );
     }
 
@@ -115,6 +114,7 @@ public class GitHubService implements ComponentInfoFiller
             try
             {
                 component.setGitHubOwner( repo.getOwner( ).getLogin( ) );
+                component.setGitPlatform( getGitPlatform() );
                 Map<String, GHBranch> mapBranches = repo.getBranches( );
                 List<String> listBranches = new ArrayList<String>( );
 
@@ -168,16 +168,18 @@ public class GitHubService implements ComponentInfoFiller
 
     private String getGitHubRepository( Component component )
     {
-        if ( _mapRepositories != null )
+        if ( _mapRepositories == null )
         {
-            for ( String strRepository : _mapRepositories.keySet( ) )
+            _mapRepositories = getRepositories();
+        }
+        for ( String strRepository : _mapRepositories.keySet( ) )
+        {
+            if ( strRepository.endsWith( component.getArtifactId( ) ) )
             {
-                if ( strRepository.endsWith( component.getArtifactId( ) ) )
-                {
-                    return strRepository;
-                }
+                return strRepository;
             }
         }
+
         return null;
         
     }
@@ -259,22 +261,22 @@ public class GitHubService implements ComponentInfoFiller
 
         if ( component.getGitHubRepo( ) )
         {
-            if ( !component.getScmUrl( ).contains( ".git" ) )
+            if ( !component.get( Component.SCM_URL ).contains( ".git" ) )
             {
                 sbErrors.append( "Bad SCM info in the released POM. \n" );
             }
 
-            if ( !component.getSnapshotScmUrl( ).contains( ".git" ) )
+            if ( !component.get( Component.SNAPSHOT_SCM_URL ).contains( ".git" ) )
             {
                 sbErrors.append( "Bad SCM info in the snapshot POM. \n" );
             }
 
-            if ( !_strParentPomVersion.equals( component.getParentPomVersion( ) ) )
+            if ( !_strParentPomVersion.equals( component.get( Component.PARENT_POM_VERSION ) ) )
             {
                 sbErrors.append( "Bad parent POM in release POM. should be global-pom version " ).append( _strParentPomVersion ).append( '\n' );
             }
 
-            if ( !_strParentPomVersion.equals( component.getSnapshotParentPomVersion( ) ) )
+            if ( !_strParentPomVersion.equals( component.get( Component.SNAPSHOT_PARENT_POM_VERSION ) ) )
             {
                 sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom version " ).append( _strParentPomVersion ).append( '\n' );
             }
@@ -302,12 +304,12 @@ public class GitHubService implements ComponentInfoFiller
             nStatus++;
         }
 
-        if ( component.getScmUrl( ).contains( "github" ) )
+        if ( component.get( Component.SCM_URL ).contains( "github" ) )
         {
             nStatus++;
         }
 
-        if ( component.getSnapshotScmUrl( ).contains( "github" ) )
+        if ( component.get( Component.SNAPSHOT_SCM_URL ).contains( "github" ) )
         {
             nStatus++;
         }

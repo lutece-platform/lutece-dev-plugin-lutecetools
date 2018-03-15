@@ -34,26 +34,32 @@
 package fr.paris.lutece.plugins.lutecetools.business;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Component
  */
+
+@JsonIgnoreProperties( ignoreUnknown = true )
 public class Component extends AbstractComponent implements Comparable
 {
-    private String _strCoreVersion;
-    private String _strParentPomVersion;
-    private String _strSnapshotVersion;
-    private String _strSnapshotCoreVersion;
-    private String _strSnapshotParentPomVersion;
-    private String _strSonarNbLines;
-    private String _strSonarRCI;
-    private String _strJiraKey;
-    private String _strScmUrl;
-    private String _strScmConnection;
-    private String _strScmDeveloperConnection;
-    private String _strSnapshotScmUrl;
+    public static final String CORE_VERSION = "coreVersion";
+    public static final String PARENT_POM_VERSION = "parentPomVersion";
+    public static final String SNAPSHOT_VERSION = "snapshotVersion";
+    public static final String SNAPSHOT_CORE_VERSION = "snapshotCoreVersion";
+    public static final String SNAPSHOT_PARENT_POM_VERSION = "snapshotParentPomVersion";
+    public static final String JIRA_KEY = "jiraKey";
+    public static final String SCM_URL = "scmUrl";
+    public static final String SCM_CONNECTION = "scmConnection";
+    public static final String SCM_DEVELOPER_CONNECTION = "scmDeveloperConnection";
+    public static final String SNAPSHOT_SCM_URL = "snapshotScmUrl";
+
+    
+    
     private boolean _bGitHubRepo;
     private String _strGitHubOwner;
     private boolean _bGitHubReadme;
@@ -63,289 +69,9 @@ public class Component extends AbstractComponent implements Comparable
     private long _nOldestPullRequest;
     private long _lLastUpdate;
     private List<String> _listBranches;
-    private String _strJiraLastReleasedVersion;
-    private String _strJiraLastUnreleasedVersion;
-    private int _nJiraIssuesCount;
-    private int _nJiraUnresolvedIssuesCount;
-    private int _nJiraKeyError;
-    private int _nJiraStatus;
-    private String _strJiraErrors;
-    private String _strJenkinsJobBuildUrl;
-    private String _strJenkinsJobBadgeIconUrl;
-    private String _strJenkinsStatus;
+    private String _strGitPlatform;
+    private Map<String, Object> _mapAttributes = new HashMap<>();
 
-    /**
-     * Returns the CoreVersion
-     * 
-     * @return The CoreVersion
-     */
-    public String getCoreVersion( )
-    {
-        return _strCoreVersion;
-    }
-
-    /**
-     * Sets the CoreVersion
-     * 
-     * @param strCoreVersion
-     *            The CoreVersion
-     */
-    public void setCoreVersion( String strCoreVersion )
-    {
-        _strCoreVersion = strCoreVersion;
-    }
-
-    /**
-     * Returns the ParentPomVersion
-     * 
-     * @return The ParentPomVersion
-     */
-    public String getParentPomVersion( )
-    {
-        return _strParentPomVersion;
-    }
-
-    /**
-     * Sets the ParentPomVersion
-     * 
-     * @param strParentPomVersion
-     *            The ParentPomVersion
-     */
-    public void setParentPomVersion( String strParentPomVersion )
-    {
-        _strParentPomVersion = strParentPomVersion;
-    }
-
-    /**
-     * Returns the SonarNbLines
-     * 
-     * @return The SonarNbLines
-     */
-    public String getSonarNbLines( )
-    {
-        return _strSonarNbLines;
-    }
-
-    /**
-     * Sets the SonarNbLines
-     * 
-     * @param strSonarNbLines
-     *            The SonarNbLines
-     */
-    public void setSonarNbLines( String strSonarNbLines )
-    {
-        _strSonarNbLines = strSonarNbLines;
-    }
-
-    /**
-     * Returns the SonarRCI
-     * 
-     * @return The SonarRCI
-     */
-    public String getSonarRCI( )
-    {
-        return _strSonarRCI;
-    }
-
-    /**
-     * Sets the SonarRCI
-     * 
-     * @param strSonarRCI
-     *            The SonarRCI
-     */
-    public void setSonarRCI( String strSonarRCI )
-    {
-        _strSonarRCI = strSonarRCI;
-    }
-
-    /**
-     * Returns the JiraKey
-     * 
-     * @return The JiraKey
-     */
-    public String getJiraKey( )
-    {
-        return _strJiraKey;
-    }
-
-    /**
-     * Sets the JiraKey
-     * 
-     * @param strJiraKey
-     *            The JiraKey
-     */
-    public void setJiraKey( String strJiraKey )
-    {
-        _strJiraKey = strJiraKey;
-    }
-
-    /**
-     * Returns the JiraLastReleasedVersion
-     * 
-     * @return The JiraLastReleasedVersion
-     */
-    public String getJiraLastReleasedVersion( )
-    {
-        return _strJiraLastReleasedVersion;
-    }
-
-    /**
-     * Sets the JiraLastReleasedVersion
-     * 
-     * @param strJiraLastReleasedVersion
-     *            The JiraLastReleasedVersion
-     */
-    public void setJiraLastReleasedVersion( String strJiraLastReleasedVersion )
-    {
-        _strJiraLastReleasedVersion = strJiraLastReleasedVersion;
-    }
-
-    /**
-     * Returns the JiraLastUnreleasedVersion
-     * 
-     * @return The JiraLastUnreleasedVersion
-     */
-    public String getJiraLastUnreleasedVersion( )
-    {
-        return _strJiraLastUnreleasedVersion;
-    }
-
-    /**
-     * Sets the JiraLastUnreleasedVersion
-     * 
-     * @param strJiraLastUnreleasedVersion
-     *            The JiraLastUnreleasedVersion
-     */
-    public void setJiraLastUnreleasedVersion( String strJiraLastUnreleasedVersion )
-    {
-        _strJiraLastUnreleasedVersion = strJiraLastUnreleasedVersion;
-    }
-
-    /**
-     * Returns the JiraIssuesCount
-     * 
-     * @return The JiraIssuesCount
-     */
-    public int getJiraIssuesCount( )
-    {
-        return _nJiraIssuesCount;
-    }
-
-    /**
-     * Sets the JiraIssuesCount
-     * 
-     * @param nJiraIssuesCount
-     *            The JiraIssuesCount
-     */
-    public void setJiraIssuesCount( int nJiraIssuesCount )
-    {
-        _nJiraIssuesCount = nJiraIssuesCount;
-    }
-
-    /**
-     * Returns the JiraUnresolvedIssuesCount
-     * 
-     * @return The JiraUnresolvedIssuesCount
-     */
-    public int getJiraUnresolvedIssuesCount( )
-    {
-        return _nJiraUnresolvedIssuesCount;
-    }
-
-    /**
-     * Sets the JiraUnresolvedIssuesCount
-     * 
-     * @param nJiraUnresolvedIssuesCount
-     *            The JiraUnresolvedIssuesCount
-     */
-    public void setJiraUnresolvedIssuesCount( int nJiraUnresolvedIssuesCount )
-    {
-        _nJiraUnresolvedIssuesCount = nJiraUnresolvedIssuesCount;
-    }
-
-    /**
-     * Returns the JiraKeyError
-     * 
-     * @return The JiraKeyError
-     */
-    public int getJiraKeyError( )
-    {
-        return _nJiraKeyError;
-    }
-
-    /**
-     * Sets the JiraKeyError
-     * 
-     * @param nJiraKeyError
-     *            The JiraKeyError
-     */
-    public void setJiraKeyError( int nJiraKeyError )
-    {
-        _nJiraKeyError = nJiraKeyError;
-    }
-
-    /**
-     * Returns the SnapshotVersion
-     * 
-     * @return The SnapshotVersion
-     */
-    public String getSnapshotVersion( )
-    {
-        return _strSnapshotVersion;
-    }
-
-    /**
-     * Sets the SnapshotVersion
-     * 
-     * @param strSnapshotVersion
-     *            The SnapshotVersion
-     */
-    public void setSnapshotVersion( String strSnapshotVersion )
-    {
-        _strSnapshotVersion = strSnapshotVersion;
-    }
-
-    /**
-     * Returns the SnapshotCoreVersion
-     * 
-     * @return The SnapshotCoreVersion
-     */
-    public String getSnapshotCoreVersion( )
-    {
-        return _strSnapshotCoreVersion;
-    }
-
-    /**
-     * Sets the SnapshotCoreVersion
-     * 
-     * @param strSnapshotCoreVersion
-     *            The SnapshotCoreVersion
-     */
-    public void setSnapshotCoreVersion( String strSnapshotCoreVersion )
-    {
-        _strSnapshotCoreVersion = strSnapshotCoreVersion;
-    }
-
-    /**
-     * Returns the SnapshotParentPomVersion
-     * 
-     * @return The SnapshotParentPomVersion
-     */
-    public String getSnapshotParentPomVersion( )
-    {
-        return _strSnapshotParentPomVersion;
-    }
-
-    /**
-     * Sets the SnapshotParentPomVersion
-     * 
-     * @param strSnapshotParentPomVersion
-     *            The SnapshotParentPomVersion
-     */
-    public void setSnapshotParentPomVersion( String strSnapshotParentPomVersion )
-    {
-        _strSnapshotParentPomVersion = strSnapshotParentPomVersion;
-    }
 
     /**
      *
@@ -468,39 +194,6 @@ public class Component extends AbstractComponent implements Comparable
         return _nOldestPullRequest;
     }
 
-    /**
-     * @return the Scm Url
-     */
-    public String getScmUrl( )
-    {
-        return ( _strScmUrl == null ) ? "" : _strScmUrl;
-    }
-
-    /**
-     * @param strScmUrl
-     *            the Scm Url to set
-     */
-    public void setScmUrl( String strScmUrl )
-    {
-        _strScmUrl = strScmUrl;
-    }
-
-    /**
-     * @return the Scm Url
-     */
-    public String getSnapshotScmUrl( )
-    {
-        return ( _strSnapshotScmUrl == null ) ? "" : _strSnapshotScmUrl;
-    }
-
-    /**
-     * @param strScmUrl
-     *            the Scm Url to set
-     */
-    public void setSnapshotScmUrl( String strScmUrl )
-    {
-        _strSnapshotScmUrl = strScmUrl;
-    }
 
     /**
      * Sets the branches list
@@ -539,67 +232,6 @@ public class Component extends AbstractComponent implements Comparable
         return _strGitHubErrors;
     }
 
-    /**
-     * Set status
-     * 
-     * @param nStatus
-     *            the status
-     */
-    public void setJiraStatus( int nStatus )
-    {
-        _nJiraStatus = nStatus;
-    }
-
-    /**
-     * @return the Jira Status
-     */
-    public int getJiraStatus( )
-    {
-        return _nJiraStatus;
-    }
-
-    /**
-     * Set errors
-     * 
-     * @param strErrors
-     *            the errors
-     */
-    public void setJiraErrors( String strErrors )
-    {
-        _strJiraErrors = strErrors;
-    }
-
-    /**
-     * @return the Jira Status
-     */
-    public String getJiraErrors( )
-    {
-        return _strJiraErrors;
-    }
-
-    /**
-     * @return the Jenkins Status
-     */
-    public String getJenkinsStatus( )
-    {
-        return _strJenkinsStatus;
-    }
-
-    /**
-     * @return the Jenkins job build url
-     */
-    public String getJenkinsJobBuildUrl( )
-    {
-        return _strJenkinsJobBuildUrl;
-    }
-
-    /**
-     * @return the Jenkins job badge icon url
-     */
-    public String getJenkinsJobBadgeIconUrl( )
-    {
-        return _strJenkinsJobBadgeIconUrl;
-    }
 
     /**
      * @return the LastUpdate
@@ -631,12 +263,12 @@ public class Component extends AbstractComponent implements Comparable
         sbTrace.append( "Component : " ).append( getArtifactId() )
                 .append( "\n  GitHub status: " ).append( getGitHubStatus() )
                 .append( "\n  [release] Version: " ).append( getVersion() )
-                .append( "\n  [release] Core version: " ).append( getCoreVersion() )
-                .append( "\n  [release] SCM URL: " ).append( getScmUrl() )
-                .append( "\n  [release] Parent POM Version: " ).append( getParentPomVersion() )
-                .append( "\n  [snapshot] Core version: " ).append( getSnapshotCoreVersion() )
-                .append( "\n  [snapshot] SCM URL: " ).append( getSnapshotScmUrl() )
-                .append( "\n  [snapshot] Parent POM Version: " ).append( getSnapshotParentPomVersion() );
+                .append( "\n  [release] Core version: " ).append( get( CORE_VERSION) )
+                .append( "\n  [release] SCM URL: " ).append( get(SCM_URL) )
+                .append( "\n  [release] Parent POM Version: " ).append( get( PARENT_POM_VERSION ) )
+                .append( "\n  [snapshot] Core version: " ).append( get( SNAPSHOT_CORE_VERSION ) )
+                .append( "\n  [snapshot] SCM URL: " ).append( get( SNAPSHOT_SCM_URL ) )
+                .append( "\n  [snapshot] Parent POM Version: " ).append( get( SNAPSHOT_PARENT_POM_VERSION ) );
 
         List<String> listBranches = getBranchesList( );
 
@@ -653,69 +285,72 @@ public class Component extends AbstractComponent implements Comparable
         return sbTrace.toString( );
     }
 
-    /**
-     * Sets the status
-     * 
-     * @param strJenkinsStatus
-     *            The status
-     */
-    public void setJenkinsStatus( String strJenkinsStatus )
-    {
-        _strJenkinsStatus = strJenkinsStatus;
-    }
+    
+       /**
+        * Returns the GitPlatform
+        * @return The GitPlatform
+        */ 
+        public String getGitPlatform()
+        {
+            return _strGitPlatform;
+        }
+    
+       /**
+        * Sets the GitPlatform
+        * @param strGitPlatform The GitPlatform
+        */ 
+        public void setGitPlatform( String strGitPlatform )
+        {
+            _strGitPlatform = strGitPlatform;
+        }
+    
+        /**
+         * Get an attribute value
+         * @param strAttributeKey The attribute key
+         * @return The value 
+         */
+        public String get( String strAttributeKey )
+        {
+            return (String) _mapAttributes.get( strAttributeKey );
+        }
+        
+        /**
+         * Get an attribute value
+         * @param strAttributeKey The attribute key
+         * @return The value 
+         */
+        public int getInt( String strAttributeKey )
+        {
+            return (int) _mapAttributes.get( strAttributeKey );
+        }
+        
+        /**
+         * Set an attribute value
+         * @param strAttributeKey The attribute key
+         * @param strValue The attribute value
+         */
+        public void set( String strAttributeKey , String strValue )
+        {
+            _mapAttributes.put( strAttributeKey , strValue );
+        }
+        
+        /**
+         * Set an attribute value
+         * @param strAttributeKey The attribute key
+         * @param nValue The attribute value
+         */
+        public void set( String strAttributeKey , int nValue )
+        {
+            _mapAttributes.put( strAttributeKey , nValue );
+        }
+        
+        /**
+         * get Attributes
+         * @return Attributes 
+         */
+        public Map getAttributes()
+        {
+            return _mapAttributes;
+        }
 
-    /**
-     * Sets the build job URL
-     * 
-     * @param strJenkinsJobBuildUrl
-     *            the build job URL
-     */
-    public void setJenkinsJobBuildUrl( String strJenkinsJobBuildUrl )
-    {
-        _strJenkinsJobBuildUrl = strJenkinsJobBuildUrl;
-    }
-
-    /**
-     * Sets the badge icon URL
-     * 
-     * @param strJenkinsJobBadgeIconUrl
-     *            the badge icon URL
-     */
-    public void setJenkinsJobBadgeIconUrl( String strJenkinsJobBadgeIconUrl )
-    {
-        _strJenkinsJobBadgeIconUrl = strJenkinsJobBadgeIconUrl;
-    }
-
-    /**
-     * 
-     * @return scm connection url
-     */
-    public String getScmConnection( )
-    {
-        return _strScmConnection;
-    }
-    /**
-     * 
-     * @param _strScmConnection scm connection url
-     */
-    public void setScmConnection( String _strScmConnection )
-    {
-        this._strScmConnection = _strScmConnection;
-    }
-    /**
-     * 
-     * @return scm developer connection url
-     */
-    public String getScmDeveloperConnection( )
-    {
-        return _strScmDeveloperConnection;
-    }
-    /**
-     * 
-     * @param _strScmDeveloperConnection scm developer connection url
-     */
-    public void setScmDeveloperConnection( String _strScmDeveloperConnection )
-    {
-        this._strScmDeveloperConnection = _strScmDeveloperConnection;
-    }
 }
