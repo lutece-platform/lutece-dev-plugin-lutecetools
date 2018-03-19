@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,10 +56,10 @@ public class StatsService
         int nReadmeOk = 0;
         for ( Component component : ci.getListComponents( ) )
         {
-            if ( component.getGitHubStatus( ) > 0 )
+            if ( component.getInt( AbstractGitPlatformService.GIT_REPO_STATUS ) > 0 )
             {
                 nGithubCount++;
-                if ( component.getGitHubStatus( ) > 3 )
+                if ( component.getInt( AbstractGitPlatformService.GIT_REPO_STATUS ) > 3 )
                 {
                     nGithubOK++;
                 }
@@ -68,7 +68,7 @@ public class StatsService
             {
                 nJiraOK++;
             }
-            if ( component.getGitHubReadme( ) )
+            if ( component.getBoolean( AbstractGitPlatformService.HAS_README ) )
             {
                 nReadmeOk++;
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ import fr.paris.lutece.util.signrequest.RequestAuthenticator;
 public class JenkinsService implements ComponentInfoFiller
 {
     public static final String DEFAULT_BADGE_URL = "images/skin/plugins/lutecetools/job-not-found.svg";
-    
+
     private static final String JENKINS_JOB_BUILD_URL = "jenkinsJobBuildUrl";
     private static final String JENKINS_JOB_BADGE_ICON_URL = "jenkinsJobBadgeIconUrl";
     private static final String JENKINS_JOB_STATUS = "jenkinsStatus";
@@ -74,25 +74,26 @@ public class JenkinsService implements ComponentInfoFiller
     public void fill( Component component, StringBuilder sbLogs )
     {
         String strScmInfos = component.get( Component.SNAPSHOT_SCM_URL );
-        if( strScmInfos != null )
+        if ( strScmInfos != null )
         {
             String strJobName = getJobName( strScmInfos );
             String strJenkinsBadgeUrl = AppPropertiesService.getProperty( PROPERTY_JENKINS_BADGE_URL );
             String strBadgeUrl = DEFAULT_BADGE_URL;
-            if( strJobName != null )
+            if ( strJobName != null )
             {
                 strBadgeUrl = strJenkinsBadgeUrl + strJobName;
             }
-            component.set( JENKINS_JOB_STATUS , String.valueOf( strJobName != null ));
-            component.set( JENKINS_JOB_BADGE_ICON_URL , strBadgeUrl );
+            component.set( JENKINS_JOB_STATUS, String.valueOf( strJobName != null ) );
+            component.set( JENKINS_JOB_BADGE_ICON_URL, strBadgeUrl );
         }
     }
-    
+
     /**
      * Gets a Jenkins Authenticator
+     * 
      * @return An Authenticator
      */
-    public RequestAuthenticator getJenkinsAuthenticator()
+    public RequestAuthenticator getJenkinsAuthenticator( )
     {
         String strUser = AppPropertiesService.getProperty( PROPERTY_JENKINS_CREDENTIALS_USER );
         String strPassword = AppPropertiesService.getProperty( PROPERTY_JENKINS_CREDENTIALS_PWD );
@@ -101,39 +102,42 @@ public class JenkinsService implements ComponentInfoFiller
 
     /**
      * Get JobName from SCM infos
-     * @param strScmInfos SCM infos
+     * 
+     * @param strScmInfos
+     *            SCM infos
      * @return the Job name
      */
     private String getJobName( String strScmInfos )
     {
-        if( strScmInfos == null )
+        if ( strScmInfos == null )
         {
             return null;
         }
-        if( strScmInfos.contains( "lutece-core" ))
+        if ( strScmInfos.contains( "lutece-core" ) )
         {
             return "lutece-core-deploy";
         }
-        
+
         String strJobName;
-        if( strScmInfos.startsWith( PREFIX_LUTECE_PLATFORM ))
+        if ( strScmInfos.startsWith( PREFIX_LUTECE_PLATFORM ) )
         {
-            strJobName = strScmInfos.substring( PREFIX_LUTECE_PLATFORM.length() );
-        } 
-        else if( strScmInfos.startsWith( PREFIX_LUTECE_SECTEUR_PUBLIC ))
-        {
-            strJobName = strScmInfos.substring( PREFIX_LUTECE_SECTEUR_PUBLIC.length() );
-        } 
-        else
-        {
-            strJobName = getSvnJobName( strScmInfos );
+            strJobName = strScmInfos.substring( PREFIX_LUTECE_PLATFORM.length( ) );
         }
-        
-        if( strJobName != null )
-        {
-            if( strJobName.endsWith( SUFFIX_GIT ))
+        else
+            if ( strScmInfos.startsWith( PREFIX_LUTECE_SECTEUR_PUBLIC ) )
             {
-                strJobName = strJobName.substring( 0 , strJobName.length() - SUFFIX_GIT.length() );
+                strJobName = strScmInfos.substring( PREFIX_LUTECE_SECTEUR_PUBLIC.length( ) );
+            }
+            else
+            {
+                strJobName = getSvnJobName( strScmInfos );
+            }
+
+        if ( strJobName != null )
+        {
+            if ( strJobName.endsWith( SUFFIX_GIT ) )
+            {
+                strJobName = strJobName.substring( 0, strJobName.length( ) - SUFFIX_GIT.length( ) );
             }
             strJobName += SUFFIX_DEPLOY_JOB;
         }
@@ -142,27 +146,29 @@ public class JenkinsService implements ComponentInfoFiller
 
     /**
      * Gets Job name from a SVN SCM URL
-     * @param strScmInfos The SCM infos
+     * 
+     * @param strScmInfos
+     *            The SCM infos
      * @return The JobName
      */
     private String getSvnJobName( String strScmInfos )
     {
         String strJobName = null;
-        
-        if( strScmInfos.endsWith( "/" ))
+
+        if ( strScmInfos.endsWith( "/" ) )
         {
-            strScmInfos = strScmInfos.substring( 0 , strScmInfos.length() - 1 );
+            strScmInfos = strScmInfos.substring( 0, strScmInfos.length( ) - 1 );
         }
         int nPos = strScmInfos.lastIndexOf( '/' );
-        if( nPos > 0 )
+        if ( nPos > 0 )
         {
             strJobName = strScmInfos.substring( nPos + 1 );
-            String strPath = strScmInfos.substring( 0 , nPos );
-            if( nPos > 0 )
+            String strPath = strScmInfos.substring( 0, nPos );
+            if ( nPos > 0 )
             {
                 nPos = strPath.lastIndexOf( '/' );
                 String strCategory = strPath.substring( nPos + 1 );
-                if( strCategory.equals( "trunk") )
+                if ( strCategory.equals( "trunk" ) )
                 {
                     strCategory = "application";
                 }

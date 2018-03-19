@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,6 @@
  * License 1.0
  */
 
-
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
@@ -51,33 +50,30 @@ public class GitLabServiceTest extends LuteceTestCase
     /**
      * Test of getRepositories method, of class GitlabService.
      */
-    public void testGetRepositories() throws Exception
+    public void testGetRepositories( ) throws Exception
     {
         System.out.println( "getRepositories" );
-        Map<String, GitlabProject> mapRepositories = GitLabService.getRepositories();
-        for( GitlabProject project : mapRepositories.values() )
+        Map<String, GitlabProject> mapRepositories = GitLabService.getRepositories( );
+        for ( GitlabProject project : mapRepositories.values( ) )
         {
-            System.out.println( "Repository : " + project.getName() + " group : " + GitLabService.getGroup( project ));
+            System.out.println( "Repository : " + project.getName( ) + " group : " + GitLabService.getGroup( project ) );
         }
     }
-    
 
     /**
      * Test of fill method, of class GitlabService.
      */
-    public void testFill()
+    public void testFill( )
     {
         System.out.println( "fill" );
-        Component component = new Component();
-        component.setArtifactId( "plugin-docupaie");
-        StringBuilder sb = new StringBuilder();
-        GitLabService service = new GitLabService();
-        service.fill( component, sb);
-        
-        
-        
-        System.out.println( "component artifact id : " + component.getArtifactId() );
-        System.out.println( "component organization : " + component.getGitHubOwner() );
+        Component component = new Component( );
+        component.setArtifactId( "plugin-docupaie" );
+        StringBuilder sb = new StringBuilder( );
+        GitLabService service = new GitLabService( );
+        service.fill( component, sb );
+
+        System.out.println( "component artifact id : " + component.getArtifactId( ) );
+        System.out.println( "component organization : " + component.get( AbstractGitPlatformService.GIT_GROUP ) );
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,13 +46,15 @@ public abstract class VersionUtils
 {
 
     /** private constructor */
-    private VersionUtils()
+    private VersionUtils( )
     {
     }
-    
+
     /**
      * Get latest version
-     * @param listVersions The list of versions
+     * 
+     * @param listVersions
+     *            The list of versions
      * @return The latest
      */
     public static String getLatestVersion( List<String> listVersions )

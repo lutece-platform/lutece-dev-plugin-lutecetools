@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,6 @@ public final class MavenRepoService
 
     private static final String URL_CORE = URL_MAVEN_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
     private static final String URL_THEMES = URL_MAVEN_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_THEMES );
-    
 
     private static final String KEY_SITE_POM_VERSION = "lutecetools.pom.site.version";
     private static final String RELEASE_NOT_FOUND = "Release not found";
@@ -88,7 +87,7 @@ public final class MavenRepoService
     private static final String URL_SNAPSHOT_PLUGINS = URL_SNAPSHOT_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
     private static final String URL_SNAPSHOT_CORE = URL_SNAPSHOT_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
     private static final String URL_SNAPSHOT_THEMES = URL_SNAPSHOT_REPO + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_THEMES );
-    
+
     private static final String EXCEPTION_MESSAGE = "LuteceTools - MavenRepoService : Error retrieving pom infos : ";
     private static final String PROPERTY_NON_AVAILABLE = "lutecetools.nonAvailable";
     private static final String NON_AVAILABLE = AppPropertiesService.getProperty( PROPERTY_NON_AVAILABLE );
@@ -102,7 +101,7 @@ public final class MavenRepoService
 
     // Tags
     private static final String TAG_LUTECE_CORE = "lutece-core";
-  
+
     private static MavenRepoService _singleton;
     private static StringBuilder _sbLogs = new StringBuilder( );
     private static List<ComponentInfoFiller> _listComponentFiller = new ArrayList<>( );
@@ -198,7 +197,7 @@ public final class MavenRepoService
     public ComponentsInfos getComponents( )
     {
         ComponentsInfos ciInfos = new ComponentsInfos( );
-        List<Component> list = new ArrayList<Component>( );
+        List<Component> list = new ArrayList<>( );
         List<String> listComponents = getComponentsListFromRepository( );
         int nCount = 0;
         int nAvailable = 0;
@@ -212,6 +211,10 @@ public final class MavenRepoService
             if ( !NON_AVAILABLE.equals( component.getVersion( ) ) )
             {
                 nAvailable++;
+            }
+            else
+            {
+                AppLogService.info( "Component not processed : " + component.getArtifactId() );
             }
         }
         Collections.sort( list );
@@ -310,14 +313,14 @@ public final class MavenRepoService
                 component = new Component( );
                 component.setArtifactId( strArtifactId );
                 component.set( Component.CORE_VERSION, NON_AVAILABLE );
-                component.set( Component.PARENT_POM_VERSION , NON_AVAILABLE );
-                component.set( Component.SCM_URL , NON_AVAILABLE );
-                component.set( Component.SNAPSHOT_VERSION , NON_AVAILABLE );
-                component.set( Component.SNAPSHOT_CORE_VERSION , NON_AVAILABLE );
-                component.set( Component.SNAPSHOT_PARENT_POM_VERSION,  NON_AVAILABLE );
-                component.set( Component.JIRA_KEY , NON_AVAILABLE );
+                component.set( Component.PARENT_POM_VERSION, NON_AVAILABLE );
+                component.set( Component.SCM_URL, NON_AVAILABLE );
+                component.set( Component.SNAPSHOT_VERSION, NON_AVAILABLE );
+                component.set( Component.SNAPSHOT_CORE_VERSION, NON_AVAILABLE );
+                component.set( Component.SNAPSHOT_PARENT_POM_VERSION, NON_AVAILABLE );
+                component.set( Component.JIRA_KEY, NON_AVAILABLE );
                 component.setVersion( NON_AVAILABLE );
-                component.setGitHubRepo( false );
+                component.set( Component.IS_GIT_REPO, false );
             }
         }
 
@@ -345,16 +348,14 @@ public final class MavenRepoService
         {
             component.setVersion( getVersion( URL_CORE ) );
         }
+        else  if ( Constants.MAVEN_REPO_LUTECE_SITE.equals( getMavenRepoDirectoryType( strArtifactId, strType ) ) )
+        {
+            component.setVersion( getVersion( URL_THEMES + strArtifactId ) );
+        }
         else
-            if ( Constants.MAVEN_REPO_LUTECE_SITE.equals( getMavenRepoDirectoryType( strArtifactId, strType ) ) )
-            {
-                component.setVersion( getVersion( URL_THEMES + strArtifactId ) );
-            }
-
-            else
-            {
-                component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
-            }
+        {
+            component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
+        }
 
         long lTime1 = new Date( ).getTime( );
         getPomInfos( component, strType, sbLogs );
@@ -406,7 +407,7 @@ public final class MavenRepoService
             sbPomUrl.append( component.getArtifactId( ) ).append( '-' ).append( component.getVersion( ) ).append( ".pom" );
             getPomInfos( component, sbPomUrl.toString( ), false, sbLogs );
         }
-        String strSnapshotPomUrl = getSnapshotPomUrl( component, sbLogs,strType );
+        String strSnapshotPomUrl = getSnapshotPomUrl( component, sbLogs, strType );
 
         if ( strSnapshotPomUrl != null )
         {
@@ -443,19 +444,19 @@ public final class MavenRepoService
 
             if ( bSnapshot )
             {
-                component.set( Component.SNAPSHOT_PARENT_POM_VERSION , handler.getParentPomVersion( ) );
-                component.set( Component.SNAPSHOT_CORE_VERSION , handler.getCoreVersion( ) );
-                component.set( Component.SNAPSHOT_SCM_URL , handler.getScmUrl( ) );
+                component.set( Component.SNAPSHOT_PARENT_POM_VERSION, handler.getParentPomVersion( ) );
+                component.set( Component.SNAPSHOT_CORE_VERSION, handler.getCoreVersion( ) );
+                component.set( Component.SNAPSHOT_SCM_URL, handler.getScmUrl( ) );
             }
             else
             {
-                component.set( Component.SNAPSHOT_PARENT_POM_VERSION , handler.getParentPomVersion( ) );
+                component.set( Component.SNAPSHOT_PARENT_POM_VERSION, handler.getParentPomVersion( ) );
                 component.set( Component.CORE_VERSION, handler.getCoreVersion( ) );
-                component.set( Component.SCM_URL , handler.getScmUrl( ) );
+                component.set( Component.SCM_URL, handler.getScmUrl( ) );
             }
-            component.set( Component.SCM_CONNECTION , handler.getScmConnection( ) );
-            component.set( Component.SCM_DEVELOPER_CONNECTION , handler.getScmDeveloperConnection( ));
-            component.set( Component.JIRA_KEY , handler.getJiraKey( ) );
+            component.set( Component.SCM_CONNECTION, handler.getScmConnection( ) );
+            component.set( Component.SCM_DEVELOPER_CONNECTION, handler.getScmDeveloperConnection( ) );
+            component.set( Component.JIRA_KEY, handler.getJiraKey( ) );
         }
         catch( IOException e )
         {
@@ -485,25 +486,26 @@ public final class MavenRepoService
      *            The logs
      * @return The URL
      */
-    private static String getSnapshotPomUrl( Component component, StringBuilder sbLogs,String strType )
+    private static String getSnapshotPomUrl( Component component, StringBuilder sbLogs, String strType )
     {
         String strPomUrl = null;
         String strSnapshotsDirUrl;
 
         if ( Constants.MAVEN_REPO_LUTECE_CORE.equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
         {
-       
+
             strSnapshotsDirUrl = URL_SNAPSHOT_CORE;
         }
-        else if ( Constants.MAVEN_REPO_LUTECE_SITE.equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
-        {
-            strSnapshotsDirUrl = URL_SNAPSHOT_THEMES + component.getArtifactId( );
-
-        }
         else
-        {
-            strSnapshotsDirUrl = URL_SNAPSHOT_PLUGINS + component.getArtifactId( );
-        }
+            if ( Constants.MAVEN_REPO_LUTECE_SITE.equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
+            {
+                strSnapshotsDirUrl = URL_SNAPSHOT_THEMES + component.getArtifactId( );
+
+            }
+            else
+            {
+                strSnapshotsDirUrl = URL_SNAPSHOT_PLUGINS + component.getArtifactId( );
+            }
 
         try
         {
@@ -521,7 +523,7 @@ public final class MavenRepoService
             }
 
             String strSnapshotVersion = VersionUtils.getLatestVersion( listVersions );
-            component.set( Component.SNAPSHOT_VERSION , strSnapshotVersion );
+            component.set( Component.SNAPSHOT_VERSION, strSnapshotVersion );
 
             String strLastSnapshotDirUrl = strSnapshotsDirUrl + "/" + strSnapshotVersion;
             strHtml = httpAccess.doGet( strLastSnapshotDirUrl );
@@ -655,7 +657,7 @@ public final class MavenRepoService
             }
             else
             {
-                _sbLogs.append( "\nComponent" ).append( strArtifactId ).append( " is up to date" );
+                _sbLogs.append( "\nComponent " ).append( strArtifactId ).append( " is up to date" );
             }
         }
     }

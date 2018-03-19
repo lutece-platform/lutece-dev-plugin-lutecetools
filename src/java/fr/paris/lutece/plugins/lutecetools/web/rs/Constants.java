@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,10 +52,7 @@ public final class Constants
     public static final String DEPENDENCY_TYPE_LUTECE_SITE = "lutece-site";
     public static final String DEPENDENCY_TYPE_LUTECE_CORE = "lutece-core";
     public static final String MAVEN_REPO_LUTECE_PLUGIN = "lutece-plugin";
-    public static final String MAVEN_REPO_LUTECE_SITE= "lutece-site";
+    public static final String MAVEN_REPO_LUTECE_SITE = "lutece-site";
     public static final String MAVEN_REPO_LUTECE_CORE = "lutece-core";
-    
-    
-    
-    
+
 }

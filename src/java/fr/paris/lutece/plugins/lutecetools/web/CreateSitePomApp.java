@@ -32,7 +32,6 @@
  * License 1.0
  */
 
-
 package fr.paris.lutece.plugins.lutecetools.web;
 
 import fr.paris.lutece.plugins.lutecetools.service.DependenciesService;
@@ -77,7 +76,7 @@ public class CreateSitePomApp extends MVCApplication
         Map<String, Object> model = getModel( );
         model.put( MARK_INPUT, _strInput );
         model.put( MARK_OUTPUT, formatToHtml( _strOutput ) );
-        model.put( MARK_GENERATED , _bGenerated );
+        model.put( MARK_GENERATED, _bGenerated );
 
         return getXPage( TEMPLATE_XPAGE, request.getLocale( ), model );
     }
@@ -93,21 +92,21 @@ public class CreateSitePomApp extends MVCApplication
 
         return redirectView( request, VIEW_HOME );
     }
-    
+
     @Action( ACTION_CLEAR )
     public XPage doClear( HttpServletRequest request )
     {
         _strInput = "";
         _strOutput = "";
         _bGenerated = false;
-    
+
         return redirectView( request, VIEW_HOME );
     }
-    
+
     @Action( ACTION_DOWNLOAD )
     public XPage doDownload( HttpServletRequest request )
     {
-        return download( _strOutput , "pom.xml", "application/xml" );
+        return download( _strOutput, "pom.xml", "application/xml" );
     }
 
     private String formatToHtml( String strSource )
@@ -116,7 +115,5 @@ public class CreateSitePomApp extends MVCApplication
         strOutput = strOutput.replace( ">", "&gt;" );
         return strOutput;
     }
-    
-    
-}
 
+}

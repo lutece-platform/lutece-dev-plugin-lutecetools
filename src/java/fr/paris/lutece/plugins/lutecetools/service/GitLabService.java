@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,12 +55,11 @@ public class GitLabService extends AbstractGitPlatformService
 
     private static Map<String, GitlabProject> _mapRepositories;
 
-
     /**
      * {@inheritDoc }
      */
     @Override
-    public String getName()
+    public String getName( )
     {
         return SERVICE_NAME;
     }
@@ -69,43 +68,43 @@ public class GitLabService extends AbstractGitPlatformService
      * {@inheritDoc }
      */
     @Override
-    public void fill(Component component, StringBuilder sbLogs)
+    public void fill( Component component, StringBuilder sbLogs )
     {
-        String strRepository = getGitLabRepository(component);
-        if( strRepository != null )
+        String strRepository = getGitLabRepository( component );
+        if ( strRepository != null )
         {
             GitlabProject project = _mapRepositories.get( strRepository );
-            component.setGitHubRepo(true);
-            component.setGitPlatform( getGitPlatform() );
-            component.setGitHubOwner( getGroup( project ) );
-            
-            incrementItemCount();
-            incrementItemOk();
-            
+            component.set( Component.IS_GIT_REPO, true );
+            component.set( GIT_PLATFORM, getGitPlatform( ) );
+            component.set( GIT_GROUP, getGroup( project ) );
+
+            incrementItemCount( );
+            incrementItemOk( );
+
         }
 
     }
 
-    private String getGitLabRepository(Component component)
+    private String getGitLabRepository( Component component )
     {
         try
         {
-            if (_mapRepositories == null)
+            if ( _mapRepositories == null )
             {
-                _mapRepositories = getRepositories();
+                _mapRepositories = getRepositories( );
             }
-            for (String strRepository : _mapRepositories.keySet())
+            for ( String strRepository : _mapRepositories.keySet( ) )
             {
-                if (strRepository.endsWith(component.getArtifactId()))
+                if ( strRepository.endsWith( component.getArtifactId( ) ) )
                 {
                     return strRepository;
                 }
             }
 
         }
-        catch (IOException ex)
+        catch( IOException ex )
         {
-            AppLogService.error( "GitlabService - Error getting repositories : " + ex.getMessage(), ex);
+            AppLogService.error( "GitlabService - Error getting repositories : " + ex.getMessage( ), ex );
         }
         return null;
 
@@ -113,42 +112,46 @@ public class GitLabService extends AbstractGitPlatformService
 
     /**
      * Fetch all repositories hosted by the platform
+     * 
      * @return The repositories map
-     * @throws IOException if an error occurs
+     * @throws IOException
+     *             if an error occurs
      */
-    public static Map<String, GitlabProject> getRepositories() throws IOException
+    public static Map<String, GitlabProject> getRepositories( ) throws IOException
     {
-        String strUrl = AppPropertiesService.getProperty(PROPERTY_GITLAB_URL);
-        String strToken = AppPropertiesService.getProperty(PROPERTY_GITLAB_ACCOUNT_TOKEN);
-        GitlabAPI gitLabApi = GitlabAPI.connect(strUrl, strToken);
-        List<GitlabProject> listProjects = gitLabApi.getProjects();
-        AppLogService.debug("GitlabService - fetching Gitlab repositories " + listProjects.size());
-        Map<String, GitlabProject> mapRepositories = new HashMap<String, GitlabProject>();
-        for (GitlabProject project : listProjects)
+        String strUrl = AppPropertiesService.getProperty( PROPERTY_GITLAB_URL );
+        String strToken = AppPropertiesService.getProperty( PROPERTY_GITLAB_ACCOUNT_TOKEN );
+        GitlabAPI gitLabApi = GitlabAPI.connect( strUrl, strToken );
+        List<GitlabProject> listProjects = gitLabApi.getProjects( );
+        AppLogService.debug( "GitlabService - fetching Gitlab repositories " + listProjects.size( ) );
+        Map<String, GitlabProject> mapRepositories = new HashMap<String, GitlabProject>( );
+        for ( GitlabProject project : listProjects )
         {
             String strGroup = getGroup( project );
-            AppLogService.debug("GitlabService - fetching repository : " + project.getName() + " group : " + strGroup );
-            mapRepositories.put(project.getName(), project);
+            AppLogService.debug( "GitlabService - fetching repository : " + project.getName( ) + " group : " + strGroup );
+            mapRepositories.put( project.getName( ), project );
         }
         return mapRepositories;
     }
-    
+
     /**
      * Gets the group from a given GitLab project
-     * @param project The project
+     * 
+     * @param project
+     *            The project
      * @return The group
      */
     static String getGroup( GitlabProject project )
     {
-        String strNameWithNamespace = project.getNameWithNamespace();
-                
-        int nPos = strNameWithNamespace.indexOf('/');
-        if( nPos > 0 )
+        String strNameWithNamespace = project.getNameWithNamespace( );
+
+        int nPos = strNameWithNamespace.indexOf( '/' );
+        if ( nPos > 0 )
         {
-            return strNameWithNamespace.substring( 0 , nPos);
+            return strNameWithNamespace.substring( 0, nPos );
         }
-        AppLogService.error("Error no group found for repository : " + strNameWithNamespace );
-        
+        AppLogService.error( "Error no group found for repository : " + strNameWithNamespace );
+
         return "";
     }
 

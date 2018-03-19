@@ -57,14 +57,12 @@ public class JiraService implements ComponentInfoFiller
     public static final String JIRA_ISSUES_COUNT = "jiraIssuesCount";
     public static final String JIRA_UNRESOLVED_ISSUES_COUNT = "jiraUnresolvedIssuesCount";
     public static final String JIRA_FIXED_ISSUES_COUNT = "jiraFixedIssuesCount";
-    
+
     private static final String JIRA_LAST_RELEASED_VERSION = "jiraLastReleasedVersion";
     private static final String JIRA_LAST_UNRELEASED_VERSION = "jiraLastUnreleasedVersion";
     private static final String JIRA_KEY_ERROR = "jiraKeyError";
-    private static final String JIRA_ERRORS= "jiraErrors";
+    private static final String JIRA_ERRORS = "jiraErrors";
 
-    
-    
     private static final String URL_JIRA_SERVER = "http://dev.lutece.paris.fr/jira/";
     private static final String URL_API_VERSION = URL_JIRA_SERVER + "rest/api/2/version/";
     private static final String SERVICE_NAME = "JIRA Info filler service registered";
@@ -84,21 +82,20 @@ public class JiraService implements ComponentInfoFiller
         String strProxyPort = AppPropertiesService.getProperty( "httpAccess.proxyPort" );
         String strProxyUserName = AppPropertiesService.getProperty( "httpAccess.proxyUserName" );
         String strProxyPassword = AppPropertiesService.getProperty( "httpAccess.proxyPassword" );
-        
-        
+
         if ( !StringUtils.isEmpty( strProxyHost ) )
         {
             System.getProperties( ).put( "https.proxyHost", strProxyHost );
             System.getProperties( ).put( "https.proxyPort", strProxyPort );
             System.getProperties( ).put( "https.proxyUser", strProxyUserName );
             System.getProperties( ).put( "https.proxyPassword", strProxyPassword );
-            System.getProperties( ).put( "https.proxySet", "true");
+            System.getProperties( ).put( "https.proxySet", "true" );
             AppLogService.info( "LuteceTools : Using httpaccess.properties defined proxy to connect to JIRA." );
         }
-        
+
         _factory = new AsynchronousJiraRestClientFactory( );
         _auth = new AnonymousAuthenticationHandler( );
-        
+
     }
 
     /**
@@ -141,19 +138,19 @@ public class JiraService implements ComponentInfoFiller
                 }
                 if ( versionLastReleased != null )
                 {
-                    component.set( JIRA_LAST_RELEASED_VERSION , versionLastReleased.getName( ) );
+                    component.set( JIRA_LAST_RELEASED_VERSION, versionLastReleased.getName( ) );
                 }
                 if ( versionLastUnreleased != null )
                 {
-                    component.set( JIRA_LAST_UNRELEASED_VERSION , versionLastUnreleased.getName( ) );
+                    component.set( JIRA_LAST_UNRELEASED_VERSION, versionLastUnreleased.getName( ) );
                     String strURI = URL_API_VERSION + versionLastUnreleased.getId( );
                     URI uriVersion = new URI( strURI );
                     VersionRestClient clientVersion = client.getVersionRestClient( );
                     int nUnresolvedIssues = clientVersion.getNumUnresolvedIssues( uriVersion ).claim( );
-                    component.set( JIRA_UNRESOLVED_ISSUES_COUNT , nUnresolvedIssues );
+                    component.set( JIRA_UNRESOLVED_ISSUES_COUNT, nUnresolvedIssues );
                     VersionRelatedIssuesCount vRelatedIssues = clientVersion.getVersionRelatedIssuesCount( uriVersion ).claim( );
-                    component.set( JIRA_ISSUES_COUNT , vRelatedIssues.getNumFixedIssues( ) );
-                    component.set( JIRA_FIXED_ISSUES_COUNT,  vRelatedIssues.getNumFixedIssues( ) - nUnresolvedIssues );
+                    component.set( JIRA_ISSUES_COUNT, vRelatedIssues.getNumFixedIssues( ) );
+                    component.set( JIRA_FIXED_ISSUES_COUNT, vRelatedIssues.getNumFixedIssues( ) - nUnresolvedIssues );
                     if ( AppLogService.isDebugEnabled( ) )
                     {
                         StringBuilder sbDebug = new StringBuilder( );
@@ -163,12 +160,12 @@ public class JiraService implements ComponentInfoFiller
                         AppLogService.debug( sbDebug.toString( ) );
                     }
                 }
-                component.set( JIRA_STATUS , getJiraStatus( component ) );
-                component.set( JIRA_ERRORS , getJiraErrors( component ) );
+                component.set( JIRA_STATUS, getJiraStatus( component ) );
+                component.set( JIRA_ERRORS, getJiraErrors( component ) );
             }
             catch( RestClientException ex )
             {
-                component.set( JIRA_KEY_ERROR , JIRAKEY_ERROR_INVALID );
+                component.set( JIRA_KEY_ERROR, JIRAKEY_ERROR_INVALID );
                 sbLogs.append( "\n*** ERROR *** Invalid Jira Key '" ).append( strJiraKey ).append( " for component " ).append( component.getArtifactId( ) );
             }
 
@@ -194,7 +191,7 @@ public class JiraService implements ComponentInfoFiller
         }
         else
         {
-            component.set( JIRA_KEY_ERROR , JIRAKEY_ERROR_MISSING );
+            component.set( JIRA_KEY_ERROR, JIRAKEY_ERROR_MISSING );
             sbLogs.append( "\n*** ERROR *** Error no Jira key defined for component " ).append( component.getArtifactId( ) );
         }
 

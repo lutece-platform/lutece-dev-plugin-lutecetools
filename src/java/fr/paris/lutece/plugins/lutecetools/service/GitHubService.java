@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -105,25 +105,25 @@ public class GitHubService extends AbstractGitPlatformService
     public void fill( Component component, StringBuilder sbLogs )
     {
         String strRepository = getGitHubRepository( component );
-        if( strRepository != null )
+        if ( strRepository != null )
         {
-            component.setGitHubRepo( true );
+            component.set( Component.IS_GIT_REPO, true );
 
             GHRepository repo = _mapRepositories.get( strRepository );
 
             try
             {
-                component.setGitHubOwner( repo.getOwner( ).getLogin( ) );
-                component.setGitPlatform( getGitPlatform() );
+                component.set( GIT_GROUP, repo.getOwner( ).getLogin( ) );
+                component.set( GIT_PLATFORM, getGitPlatform( ) );
                 Map<String, GHBranch> mapBranches = repo.getBranches( );
-                List<String> listBranches = new ArrayList<String>( );
+                List<String> listBranches = new ArrayList<>( );
 
                 for ( String strBranch : mapBranches.keySet( ) )
                 {
                     listBranches.add( strBranch );
                 }
 
-                component.setBranchesList( listBranches );
+                component.set( BRANCHES_LIST, listBranches );
             }
             catch( Exception ex )
             {
@@ -133,19 +133,19 @@ public class GitHubService extends AbstractGitPlatformService
             try
             {
                 repo.getReadme( );
-                component.setGitHubReadme( true );
+                component.set( HAS_README, true );
             }
             catch( Exception e )
             {
                 if ( e instanceof FileNotFoundException )
                 {
-                    component.setGitHubReadme( false );
+                    component.set( HAS_README, false );
                 }
             }
             try
             {
                 List<GHPullRequest> prs = repo.getPullRequests( GHIssueState.OPEN );
-                component.setGitHubPullRequests( prs.size( ) );
+                component.set( PULL_REQUEST_COUNT, prs.size( ) );
                 long oldest = Long.MAX_VALUE;
                 for ( GHPullRequest pr : prs )
                 {
@@ -154,7 +154,7 @@ public class GitHubService extends AbstractGitPlatformService
                         oldest = pr.getUpdatedAt( ).getTime( );
                     }
                 }
-                component.setOldestPullRequest( oldest );
+                component.set( OLDEST_PULL_REQUEST, oldest );
             }
             catch( IOException e )
             {
@@ -170,7 +170,7 @@ public class GitHubService extends AbstractGitPlatformService
     {
         if ( _mapRepositories == null )
         {
-            _mapRepositories = getRepositories();
+            _mapRepositories = getRepositories( );
         }
         for ( String strRepository : _mapRepositories.keySet( ) )
         {
@@ -181,11 +181,9 @@ public class GitHubService extends AbstractGitPlatformService
         }
 
         return null;
-        
+
     }
-            
-    
-    
+
     /**
      * Gets all repositories of a given organization
      *
@@ -197,7 +195,7 @@ public class GitHubService extends AbstractGitPlatformService
 
         String [ ] organizations = strOrganizations.split( "," );
 
-        Map<String, GHRepository> mapRepositories = new ConcurrentHashMap<String, GHRepository>( );
+        Map<String, GHRepository> mapRepositories = new ConcurrentHashMap<>( );
 
         for ( String strOrganization : organizations )
         {
@@ -220,8 +218,10 @@ public class GitHubService extends AbstractGitPlatformService
 
     /**
      * Gets a GitHub object to request repositories
+     * 
      * @return GitHub object
-     * @throws IOException if an exception occurs
+     * @throws IOException
+     *             if an exception occurs
      */
     private static GitHub getGitHub( ) throws IOException
     {
@@ -253,20 +253,23 @@ public class GitHubService extends AbstractGitPlatformService
     /**
      * Returns GitHub errors
      *
-     * @param component The component
+     * @param component
+     *            The component
      */
     private void fillGitHubErrors( Component component )
     {
         StringBuilder sbErrors = new StringBuilder( "" );
 
-        if ( component.getGitHubRepo( ) )
+        if ( component.getBoolean( Component.IS_GIT_REPO ) )
         {
-            if ( !component.get( Component.SCM_URL ).contains( ".git" ) )
+            String strScmUrl = component.get( Component.SCM_URL );
+            if ( strScmUrl != null  && strScmUrl.contains( "github" ) )
             {
                 sbErrors.append( "Bad SCM info in the released POM. \n" );
             }
 
-            if ( !component.get( Component.SNAPSHOT_SCM_URL ).contains( ".git" ) )
+            String strSnapshotScmUrl = component.get( Component.SNAPSHOT_SCM_URL );
+            if ( strSnapshotScmUrl!= null && strSnapshotScmUrl.contains( "github" ) )
             {
                 sbErrors.append( "Bad SCM info in the snapshot POM. \n" );
             }
@@ -281,44 +284,49 @@ public class GitHubService extends AbstractGitPlatformService
                 sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom version " ).append( _strParentPomVersion ).append( '\n' );
             }
 
-            if ( ( component.getBranchesList( ) != null ) && ( !component.getBranchesList( ).contains( "develop" ) ) )
+            List listBranches = (List) component.getObject( BRANCHES_LIST );
+            if ( ( listBranches != null ) && ( listBranches.contains( "develop" ) ) )
             {
                 sbErrors.append( "Branch 'develop' is missing. \n" );
             }
         }
 
-        component.setGitHubErrors( sbErrors.toString( ) );
+        component.set( GIT_REPO_ERRORS, sbErrors.toString( ) );
     }
 
     /**
      * Calculate GitHub status
      *
-     * @param component  The component
+     * @param component
+     *            The component
      */
     private void fillGitHubStatus( Component component )
     {
         int nStatus = 0;
 
-        if ( component.getGitHubRepo( ) )
+        if ( component.getBoolean( Component.IS_GIT_REPO ) )
+        {
+            nStatus++;
+        }
+        
+        String strScmUrl = component.get( Component.SCM_URL );
+        if ( strScmUrl != null  && strScmUrl.contains( "github" ) )
         {
             nStatus++;
         }
 
-        if ( component.get( Component.SCM_URL ).contains( "github" ) )
+        String strSnapshotScmUrl = component.get( Component.SNAPSHOT_SCM_URL );
+        if ( strSnapshotScmUrl!= null && strSnapshotScmUrl.contains( "github" ) )
         {
             nStatus++;
         }
-
-        if ( component.get( Component.SNAPSHOT_SCM_URL ).contains( "github" ) )
+        
+        List listBranches = (List) component.getObject( BRANCHES_LIST );
+        if ( ( listBranches != null ) && ( listBranches.contains( "develop" ) ) )
         {
             nStatus++;
         }
-
-        if ( ( component.getBranchesList( ) != null ) && ( component.getBranchesList( ).contains( "develop" ) ) )
-        {
-            nStatus++;
-        }
-        component.setGitHubStatus( nStatus );
+        component.set( GIT_REPO_STATUS, nStatus );
     }
 
 }

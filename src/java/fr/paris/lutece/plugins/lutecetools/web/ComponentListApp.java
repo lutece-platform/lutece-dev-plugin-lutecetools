@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.lutecetools.web;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.plugins.lutecetools.service.AbstractGitPlatformService;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentService;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentsInfos;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
@@ -84,7 +85,6 @@ public class ComponentListApp extends MVCApplication
     private static final String PROPERTY_SONAR_RCI_WARNING = "lutecetools.sonar.mark.rci.warning";
     private static final String SONAR_RCI_WARNING = AppPropertiesService.getProperty( PROPERTY_SONAR_RCI_WARNING );
 
-
     /**
      * Returns the content of the page lutecetools.
      *
@@ -112,18 +112,19 @@ public class ComponentListApp extends MVCApplication
             ciInfos.setListComponents( filterGitHub( ciInfos.getListComponents( ) ) );
         }
 
+        // FIXME
         for ( Component c : ciInfos.getListComponents( ) )
         {
             if ( c.get( SonarService.SONAR_NB_LINES ) != null )
             {
                 nTotal += Integer.parseInt( c.get( SonarService.SONAR_NB_LINES ).replace( ",", "" ) );
             }
-            if ( c.getGitHubPullRequests( ) > 0 )
+            if ( c.getInt( AbstractGitPlatformService.PULL_REQUEST_COUNT ) > 0 )
             {
-                nTotalPRs = nTotalPRs + c.getGitHubPullRequests( );
-                if ( c.getOldestPullRequest( ) < oldestPR )
+                nTotalPRs = nTotalPRs + c.getInt( AbstractGitPlatformService.PULL_REQUEST_COUNT );
+                if ( c.getLong( AbstractGitPlatformService.OLDEST_PULL_REQUEST ) < oldestPR )
                 {
-                    oldestPR = c.getOldestPullRequest( );
+                    oldestPR = c.getLong( AbstractGitPlatformService.OLDEST_PULL_REQUEST );
                 }
             }
         }
@@ -186,7 +187,8 @@ public class ComponentListApp extends MVCApplication
 
         for ( Component c : listComponents )
         {
-            if ( c.getGitHubStatus( ) > 0 )
+            Integer iStatus = c.getInt( AbstractGitPlatformService.GIT_REPO_STATUS );
+            if ( iStatus != null && iStatus > 0 )
             {
                 list.add( c );
             }
@@ -204,7 +206,7 @@ public class ComponentListApp extends MVCApplication
      */
     private Map<String, String> getViewParameters( HttpServletRequest request )
     {
-        Map<String, String> mapParameters = new ConcurrentHashMap<String, String>( );
+        Map<String, String> mapParameters = new ConcurrentHashMap<>( );
         String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
 

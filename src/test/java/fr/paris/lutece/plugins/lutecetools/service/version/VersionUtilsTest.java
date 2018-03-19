@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,11 +60,11 @@ public class VersionUtilsTest extends LuteceTestCase
         listVersions.add( "2.4.2" );
         listVersions.add( "3.1" );
 
-     //   VersionUtils instance = new VersionUtils( );
+        // VersionUtils instance = new VersionUtils( );
         String expResult = "3.1.2";
-      //  String result = instance.getLatestVersion( listVersions );
-   //     System.out.println( result );
-     //   assertEquals( expResult, result );
+        // String result = instance.getLatestVersion( listVersions );
+        // System.out.println( result );
+        // assertEquals( expResult, result );
     }
 
 }

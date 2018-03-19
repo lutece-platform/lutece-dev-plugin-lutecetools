@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,21 +60,21 @@ public class JenkinsServiceTest
      * Test of getJenkinsAuthenticator method, of class JenkinsService.
      */
     @Test
-    public void testGetJenkinsAuthenticator() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    public void testGetJenkinsAuthenticator( ) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         System.out.println( "getJobName" );
-        Method method = JenkinsService.class.getDeclaredMethod( "getJobName" , String.class );
-        method.setAccessible(true);
-        JenkinsService jenkinsService = new JenkinsService();
-        String strJob = (String) method.invoke( jenkinsService , GIT_PLATFORM_SCM );
-        System.out.println( strJob );        
-        assertEquals( strJob , GIT_PLATFORM_JOB );
-        strJob = (String) method.invoke( jenkinsService , GIT_SECTEUR_PUBLIC_SCM );        
-        System.out.println( strJob );        
-        assertEquals( strJob , GIT_SECTEUR_PUBLIC_JOB );
-        strJob = (String) method.invoke( jenkinsService , SVN_SCM );        
-        System.out.println( strJob );        
-        assertEquals( strJob , SVN_JOB );
+        Method method = JenkinsService.class.getDeclaredMethod( "getJobName", String.class );
+        method.setAccessible( true );
+        JenkinsService jenkinsService = new JenkinsService( );
+        String strJob = (String) method.invoke( jenkinsService, GIT_PLATFORM_SCM );
+        System.out.println( strJob );
+        assertEquals( strJob, GIT_PLATFORM_JOB );
+        strJob = (String) method.invoke( jenkinsService, GIT_SECTEUR_PUBLIC_SCM );
+        System.out.println( strJob );
+        assertEquals( strJob, GIT_SECTEUR_PUBLIC_JOB );
+        strJob = (String) method.invoke( jenkinsService, SVN_SCM );
+        System.out.println( strJob );
+        assertEquals( strJob, SVN_JOB );
     }
-    
+
 }

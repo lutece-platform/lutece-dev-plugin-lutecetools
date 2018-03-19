@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,11 +40,11 @@ import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
 import java.net.URI;
 
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Response;
 
 /**
@@ -68,25 +68,29 @@ public class JenkinsRest
 
     /**
      * Returns Jenkins Badge URL
-     * @param strUrl The Jenkins Job URL
+     * 
+     * @param strUrl
+     *            The Jenkins Job URL
      * @return The badge URL
      */
     @GET
     @Path( Constants.PATH_JENKINS_BADGE )
     @Produces( "image/svg+xml" )
-    public Response getJenkinsBadge( @QueryParam( Constants.PARAMETER_URL ) String strUrl ) 
+    public Response getJenkinsBadge( @QueryParam( Constants.PARAMETER_URL ) String strUrl )
     {
         try
         {
-            HttpAccess httpAccess = new HttpAccess();
-            String strContent = httpAccess.doGet( strUrl, _jenkinsService.getJenkinsAuthenticator() , null );
-            return Response.ok( strContent , "image/svg+xml" ).build( );
+            HttpAccess httpAccess = new HttpAccess( );
+            String strContent = httpAccess.doGet( strUrl, _jenkinsService.getJenkinsAuthenticator( ), null );
+            CacheControl cc = new CacheControl( );
+            cc.setMaxAge( 36000 );
+            return Response.ok( strContent, "image/svg+xml" ).cacheControl( cc ).build( );
         }
         catch( HttpAccessException ex )
         {
             AppLogService.error( "LuteceTools : Bad Jenkins Job URL : " + strUrl );
             String strRedirectURI = JenkinsService.DEFAULT_BADGE_URL;
-            return Response.temporaryRedirect( URI.create( strRedirectURI )).build();
+            return Response.temporaryRedirect( URI.create( strRedirectURI ) ).build( );
         }
 
     }

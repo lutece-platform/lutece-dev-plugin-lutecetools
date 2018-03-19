@@ -21,7 +21,29 @@ var dataGithub = [
 	label: "Github WARNING"
 }
 ];
+
+var dataGitlab = [
+{
+	value: $("#valGitlabRed").val(),
+	color:"red",
+	highlight: "#FF5A5E",
+	label: "Gitlab DANGER"
+},
+{
+	value: $("#valGitlabGreen").val(),
+	color: "#00b300",
+	highlight: "#47d147",
+	label: "Gitlab OK"
+},
+{
+	value: $("#valGitlabOrange").val(),
+	color: "orange",
+	highlight: "#FFC870",
+	label: "Gitlab WARNING"
+}
+];
 	
+
 var dataJira = [
 {
 	value: $("#valJiraRed").val(),
@@ -85,13 +107,16 @@ var ctx1 = $("#pieChart1").get(0).getContext("2d");
 var myDoughnutChart = new Chart(ctx1).Doughnut(dataGithub);
 
 var ctx2 = $("#pieChart2").get(0).getContext("2d");
-var myDoughnutChart = new Chart(ctx2).Doughnut(dataJira)
+var myDoughnutChart = new Chart(ctx2).Doughnut(dataGitlab)
 	
 var ctx3 = $("#pieChart3").get(0).getContext("2d");
-var myDoughnutChart = new Chart(ctx3).Doughnut(dataReadme);
-	
+var myDoughnutChart = new Chart(ctx3).Doughnut(dataJira)
+
 var ctx4 = $("#pieChart4").get(0).getContext("2d");
-var myDoughnutChart = new Chart(ctx4).Doughnut(dataRCI);
+var myDoughnutChart = new Chart(ctx4).Doughnut(dataReadme);
+	
+var ctx5 = $("#pieChart5").get(0).getContext("2d");
+var myDoughnutChart = new Chart(ctx5).Doughnut(dataRCI);
 
 
 // Autocompletion graphics

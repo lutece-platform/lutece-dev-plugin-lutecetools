@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,15 @@ package fr.paris.lutece.plugins.lutecetools.service;
  * GitPlatform
  */
 public abstract class AbstractGitPlatformService implements ComponentInfoFiller
-{        
+{
+    public static final String GIT_PLATFORM = "gitPlatform";
+    public static final String GIT_GROUP = "gitGroup";
+    public static final String HAS_README = "hasReadme";
+    public static final String PULL_REQUEST_COUNT = "pullRequests";
+    public static final String GIT_REPO_ERRORS = "gitRepoErrors";
+    public static final String GIT_REPO_STATUS = "gitRepoStatus";
+    public static final String OLDEST_PULL_REQUEST = "oldestPullRequest";
+    public static final String BRANCHES_LIST = "branchesList";
 
     private String _strGitPlatform;
     private int _nItemCount;
@@ -48,7 +56,7 @@ public abstract class AbstractGitPlatformService implements ComponentInfoFiller
      *
      * @return The GitPlatform
      */
-    public String getGitPlatform()
+    public String getGitPlatform( )
     {
         return _strGitPlatform;
     }
@@ -56,9 +64,10 @@ public abstract class AbstractGitPlatformService implements ComponentInfoFiller
     /**
      * Sets the GitPlatform
      *
-     * @param strGitPlatform The GitPlatform
+     * @param strGitPlatform
+     *            The GitPlatform
      */
-    public void setGitPlatform(String strGitPlatform)
+    public void setGitPlatform( String strGitPlatform )
     {
         _strGitPlatform = strGitPlatform;
     }
@@ -68,7 +77,7 @@ public abstract class AbstractGitPlatformService implements ComponentInfoFiller
      *
      * @return The ItemCount
      */
-    public int getItemCount()
+    public int getItemCount( )
     {
         return _nItemCount;
     }
@@ -76,9 +85,10 @@ public abstract class AbstractGitPlatformService implements ComponentInfoFiller
     /**
      * Sets the ItemCount
      *
-     * @param nItemCount The ItemCount
+     * @param nItemCount
+     *            The ItemCount
      */
-    public void setItemCount(int nItemCount)
+    public void setItemCount( int nItemCount )
     {
         _nItemCount = nItemCount;
     }
@@ -88,7 +98,7 @@ public abstract class AbstractGitPlatformService implements ComponentInfoFiller
      *
      * @return The ItemOk
      */
-    public int getItemOk()
+    public int getItemOk( )
     {
         return _nItemOk;
     }
@@ -96,9 +106,10 @@ public abstract class AbstractGitPlatformService implements ComponentInfoFiller
     /**
      * Sets the ItemOk
      *
-     * @param nItemOk The ItemOk
+     * @param nItemOk
+     *            The ItemOk
      */
-    public void setItemOk(int nItemOk)
+    public void setItemOk( int nItemOk )
     {
         _nItemOk = nItemOk;
     }
@@ -106,7 +117,7 @@ public abstract class AbstractGitPlatformService implements ComponentInfoFiller
     /**
      * Increment item count
      */
-    public void incrementItemCount()
+    public void incrementItemCount( )
     {
         _nItemCount++;
     }
@@ -114,10 +125,9 @@ public abstract class AbstractGitPlatformService implements ComponentInfoFiller
     /**
      * Increment item OK
      */
-    public void incrementItemOk()
+    public void incrementItemOk( )
     {
         _nItemOk++;
     }
-
 
 }

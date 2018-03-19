@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,9 +81,7 @@ public class ComponentRest
     private static final String KEY_SCM_SNAPSHOT_URL = "scm_snapshot_url";
     private static final String KEY_SCM_CONNECTION = "scm_connection";
     private static final String KEY_SCM_DEVELOPER_CONNECTION = "scm_developer_connection";
-    
-    
-    
+
     @GET
     @Path( Constants.PATH_ALL )
     public Response getComponents( @HeaderParam( HttpHeaders.ACCEPT ) String accept, @QueryParam( Constants.PARAMETER_FORMAT ) String format )
@@ -156,8 +154,10 @@ public class ComponentRest
      *            The Accept header parameter
      * @param format
      *            The format
-     * @param bCache false if the component informations must be recalculated
-     * @param strType the compoent type(lutece-plugin,lutece-site,...)           
+     * @param bCache
+     *            false if the component informations must be recalculated
+     * @param strType
+     *            the compoent type(lutece-plugin,lutece-site,...)
      * @return The response
      * @throws IOException
      *             if an error occurs
@@ -165,19 +165,20 @@ public class ComponentRest
     @GET
     @Path( "/{" + Constants.PATH_ID + "}" )
     public Response getComponent( @PathParam( Constants.PATH_ID ) String strArtifactId, @HeaderParam( HttpHeaders.ACCEPT ) String accept,
-            @QueryParam( Constants.PARAMETER_FORMAT ) String format, @QueryParam( Constants.PARAMETER_CACHE) Boolean bCache, @QueryParam( Constants.PARAMETER_TYPE) String strType) throws IOException
+            @QueryParam( Constants.PARAMETER_FORMAT ) String format, @QueryParam( Constants.PARAMETER_CACHE ) Boolean bCache,
+            @QueryParam( Constants.PARAMETER_TYPE ) String strType ) throws IOException
     {
         String entity;
         String mediaType;
 
         if ( ( ( accept != null ) && accept.contains( MediaType.APPLICATION_JSON ) ) || ( ( format != null ) && format.equals( Constants.MEDIA_TYPE_JSON ) ) )
         {
-            entity = getComponentJson( strArtifactId,bCache!=null?bCache:true,strType);
+            entity = getComponentJson( strArtifactId, bCache != null ? bCache : true, strType );
             mediaType = MediaType.APPLICATION_JSON;
         }
         else
         {
-            entity = getComponentXml( strArtifactId,bCache!=null?bCache:true,strType );
+            entity = getComponentXml( strArtifactId, bCache != null ? bCache : true, strType );
             mediaType = MediaType.APPLICATION_XML;
         }
 
@@ -189,17 +190,19 @@ public class ComponentRest
      * 
      * @param strArtifactId
      *            The artifact ID
-     * @param bCache false if the component informations must be recalculated
-     * @param strType the compoent type(lutece-plugin,lutece-site,...) 
+     * @param bCache
+     *            false if the component informations must be recalculated
+     * @param strType
+     *            the compoent type(lutece-plugin,lutece-site,...)
      * @return The XML output
      */
-    public String getComponentXml( String strArtifactId,boolean bCache,String strType)
+    public String getComponentXml( String strArtifactId, boolean bCache, String strType )
     {
         StringBuffer sbXML = new StringBuffer( );
 
         try
         {
-            Component component = MavenRepoService.getComponent( strArtifactId, true,!bCache,strType );
+            Component component = MavenRepoService.getComponent( strArtifactId, true, !bCache, strType );
 
             if ( component != null )
             {
@@ -224,19 +227,21 @@ public class ComponentRest
      * 
      * @param strArtifactId
      *            The artifact ID
-     * @param bCache false if the component informations must be recalculated
-     * @param strType the compoent type(lutece-plugin,lutece-site,...) 
+     * @param bCache
+     *            false if the component informations must be recalculated
+     * @param strType
+     *            the compoent type(lutece-plugin,lutece-site,...)
      * @return The JSON output
      */
-    public String getComponentJson( String strArtifactId ,boolean bCache,String strType)
+    public String getComponentJson( String strArtifactId, boolean bCache, String strType )
     {
         JSONObject json = new JSONObject( );
         String strJson = "";
 
         try
         {
-          
-            Component component = MavenRepoService.getComponent( strArtifactId, true,!bCache,strType);
+
+            Component component = MavenRepoService.getComponent( strArtifactId, true, !bCache, strType );
 
             if ( component != null )
             {
@@ -277,14 +282,16 @@ public class ComponentRest
         XmlUtil.addElement( sbXML, KEY_SONAR_NB_LINES, component.get( SonarService.SONAR_NB_LINES ) );
         XmlUtil.addElement( sbXML, KEY_SONAR_RCI, component.get( SonarService.SONAR_RCI ) );
         XmlUtil.addElement( sbXML, KEY_JIRA_CODE, component.get( Component.JIRA_KEY ) );
-        XmlUtil.addElement( sbXML, KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.get( Component.JIRA_KEY ) + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
-        XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, component.getInt( JiraService.JIRA_ISSUES_COUNT ) - component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
+        XmlUtil.addElement( sbXML, KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.get( Component.JIRA_KEY )
+                + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
+        XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES,
+                component.getInt( JiraService.JIRA_ISSUES_COUNT ) - component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
         XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
         XmlUtil.addElement( sbXML, KEY_SCM_URL, component.get( Component.SCM_URL ) );
         XmlUtil.addElement( sbXML, KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
         XmlUtil.addElement( sbXML, KEY_SCM_CONNECTION, component.get( Component.SCM_CONNECTION ) );
         XmlUtil.addElement( sbXML, KEY_SCM_DEVELOPER_CONNECTION, component.get( Component.SCM_DEVELOPER_CONNECTION ) );
-        
+
         XmlUtil.endElement( sbXML, KEY_COMPONENT );
     }
 
@@ -309,15 +316,16 @@ public class ComponentRest
         jsonComponent.accumulate( KEY_SONAR_NB_LINES, component.get( SonarService.SONAR_NB_LINES ) );
         jsonComponent.accumulate( KEY_SONAR_RCI, component.get( SonarService.SONAR_RCI ) );
         jsonComponent.accumulate( KEY_JIRA_CODE, component.get( Component.JIRA_KEY ) );
-        jsonComponent.accumulate( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.get( Component.JIRA_KEY ) + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
-        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, component.getInt( JiraService.JIRA_ISSUES_COUNT ) - component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
+        jsonComponent.accumulate( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.get( Component.JIRA_KEY )
+                + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
+        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES,
+                component.getInt( JiraService.JIRA_ISSUES_COUNT ) - component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
         jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
         jsonComponent.accumulate( KEY_SCM_URL, component.get( Component.SCM_URL ) );
         jsonComponent.accumulate( KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
         jsonComponent.accumulate( KEY_SCM_CONNECTION, component.get( Component.SCM_CONNECTION ) );
         jsonComponent.accumulate( KEY_SCM_DEVELOPER_CONNECTION, component.get( Component.SCM_DEVELOPER_CONNECTION ) );
-        
-        
+
         json.accumulate( KEY_COMPONENT, jsonComponent );
     }
 }
