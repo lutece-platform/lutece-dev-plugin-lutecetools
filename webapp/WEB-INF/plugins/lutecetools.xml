@@ -22,6 +22,7 @@
     <css-stylesheets>
         <css-stylesheets-scope>xpage</css-stylesheets-scope>
         <css-stylesheet>lutecetools/lutecetools.css</css-stylesheet>
+        <css-stylesheet>lutecetools/AdminLTE.min.css</css-stylesheet>
     </css-stylesheets>
     
     <javascript-files>

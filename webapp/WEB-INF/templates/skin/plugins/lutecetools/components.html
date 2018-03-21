@@ -17,90 +17,113 @@
 
 <div class="container-fluid">
 
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="well hero">
-      	<@messages errors=errors />
-        <@messages infos=infos />
-        <h1>#i18n{lutecetools.components.title}</h1>
-        <br>
-        <#if !components_list.complete>
-        <h3>
-            <img src="images/skin/plugins/lutecetools/fetching.gif" width="64" height="64" alt="animated fetching icon" /> &nbsp;
-            Recherche des informations en cours ...
-        </h3>
+    <@messages errors=errors />
+    <@messages infos=infos />
+    <h1>#i18n{lutecetools.components.title}<br><small>Liste provenant du repository Maven</small></h1>
 
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="${components_list.percentAvailable}" aria-valuemin="0" aria-valuemax="100" style="width: ${components_list.percentAvailable}%;">
+    <br>
+    <#if !components_list.complete>
+    <h3>
+        <img src="images/skin/plugins/lutecetools/fetching.gif" width="64" height="64" alt="animated fetching icon" /> &nbsp;
+        Recherche des informations en cours ...
+    </h3>
+
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="${components_list.percentAvailable}" aria-valuemin="0" aria-valuemax="100" style="width: ${components_list.percentAvailable}%;">
             ${components_list.percentAvailable}%
+        </div>
+    </div>
+    </#if>
+    <div class="row">
+        <div class="panel panel-default well well-sm">
+            <div class="panel-body">
+                <form method="GET" action="jsp/site/Portal.jsp">
+                    <input type="hidden" name="page" value="components" />
+                    <div class="col-md-3">
+                        <h4><i class="fa fa-filter"></i> Filtrer par plate-forme </h4> 
+                    </div>
+                    <div class="col-md-3">
+                        <input type="checkbox" name="github" <#if github_filter> checked </#if> />  GitHub<br>
+                        <input type="checkbox" name="gitlab" <#if gitlab_filter> checked </#if> />  GitLab
+                    </div>
+                    <div class="col-md-3">
+                        <input type="checkbox" name="core"  <#if core_versions> checked </#if> /> Afficher les versions du core
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary btn-lg" type="submit" title="Refresh" name="action_refresh">
+                            <span class="fa fa-refresh" aria-hidden="true"></span>
+                        </button>
+                        <button class="btn btn-danger btn-lg" type="submit" title="Clear cache" name="action_clearCache" >
+                            <span class="fa fa-trash" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-        </#if>
+    </div>
+    <div class="well hero">
         <div class="row">
-            <div class="panel panel-default well well-sm">
-                <div class="panel-body">
-                    <form method="GET" action="jsp/site/Portal.jsp">
-                        <input type="hidden" name="page" value="components" />
-                        <div class="col-md-3">
-                            Filtrer par plate-forme : 
-                        </div>
-                        <div class="col-md-3">
-                            <input type="checkbox" name="github" <#if github_filter> checked </#if> />  GitHub<br>
-                            <input type="checkbox" name="gitlab" <#if gitlab_filter> checked </#if> />  GitLab
-                        </div>
-                        <div class="col-md-3">
-                            <input type="checkbox" name="core"  <#if core_versions> checked </#if> /> Afficher les versions du core
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-primary btn-xs" type="submit" title="Refresh" name="action_refresh">
-                                <span class="fa fa-refresh" aria-hidden="true"></span>
-                            </button>
-                            <button class="btn btn-danger btn-xs" type="submit" title="Clear cache" name="action_clearCache" >
-                                <span class="fa fa-trash" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </form>
+            <div class="col-md-4">
+                <div class="small-box bg-orange">
+                    <div class="inner">
+                        <h3>${components_list.listComponents?size}</h3>
+
+                        <p>#i18n{lutecetools.components.count}</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-puzzle-piece"></i>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
             <div class="col-md-4">
-                #i18n{lutecetools.components.count} : <strong> ${components_list.listComponents?size} </strong>
+                <div class="small-box bg-orange">
+                    <div class="inner">
+                        <h3>${total_lines}</h3>
+
+                        <p>#i18n{lutecetools.components.countLines}</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-code"></i>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
-                #i18n{lutecetools.components.countLines} : <strong> ${total_lines} </strong>
-            </div>
-            <div class="col-md-4">
-                <#if total_prs?has_content>
-                    #i18n{lutecetools.components.totalprs} : <strong> ${total_prs} </strong>
-                </#if>
-                <br>
-                <#if oldest_pr?has_content>
-                    #i18n{lutecetools.components.oldestpr} : <strong> ${oldest_pr?date} </strong>
-                </#if>
+                <div class="small-box bg-orange">
+                    <div class="inner">
+                        <h3><#if total_prs?has_content> ${total_prs} <#else> 0 </#if></h3>
+                        <p>#i18n{lutecetools.components.totalprs}
+                            <#if oldest_pr?has_content>
+                            [ #i18n{lutecetools.components.oldestpr} : <strong> ${oldest_pr?date} </strong> ]
+                            </#if>
+                        </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-share-alt"></i>
+                    </div>
+                </div>
             </div>
         </div>
         <br />
         <div class="row" style="text-align:center">
             <div class="col-md-2">
                 <h4><i class="fa fa-github"> </i> GitHub</h4>
-            	<canvas id="pieChart1" width="250"></canvas>
+                <canvas id="pieChart1" width="250"></canvas>
             </div>
             <div class="col-md-2">
                 <h4><i class="fa fa-gitlab"> </i> GitLab</h4>
-            	<canvas id="pieChart2" width="250"></canvas>
+                <canvas id="pieChart2" width="250"></canvas>
             </div>
             <div class="col-md-2">
                 <h4><i class="fa fa-jira"> </i> Jira</h4>
-            	<canvas id="pieChart3" width="250"></canvas>
+                <canvas id="pieChart3" width="250"></canvas>
             </div>
             <div class="col-md-2">
                 <h4><i class="fa fa-markdown"></i> Readme</h4>
-            	<canvas id="pieChart4" width="250"></canvas>
+                <canvas id="pieChart4" width="250"></canvas>
             </div>
             <div class="col-md-2">
                 <h4><i class="fa fa-sonar"></i> Sonar</h4>
-            	<canvas id="pieChart5" width="250"></canvas>
+                <canvas id="pieChart5" width="250"></canvas>
             </div>
         </div>
 
@@ -392,26 +415,24 @@
                 </tboby>
             </table>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="form-group" >
-      <textarea  class="form-control">${logs}</textarea>
-  </div>
-  <input type="hidden" id="valGithubGreen" value="${githubOk}">
-  <input type="hidden" id="valGithubOrange" value="${githubWarning}">
-  <input type="hidden" id="valGithubRed" value="${githubDanger}">
-  <input type="hidden" id="valGitlabGreen" value="${gitlabOk}">
-  <input type="hidden" id="valGitlabOrange" value="${gitlabWarning}">
-  <input type="hidden" id="valGitlabRed" value="${gitlabDanger}">
-  <input type="hidden" id="valJiraGreen" value="${jiraOk}">
-  <input type="hidden" id="valJiraOrange" value="${jiraWarning}">
-  <input type="hidden" id="valJiraRed" value="${jiraDanger}">
-  <input type="hidden" id="valReadmeGreen" value="${readmeOk}">
-  <input type="hidden" id="valReadmeRed" value="${readmeDanger}">
-  <input type="hidden" id="valRCIGreen" value="${RCIOk}">
-  <input type="hidden" id="valRCIOrange" value="${RCIWarning}">
-  <input type="hidden" id="valRCIRed" value="${RCIDanger}">
+    <div class="form-group" >
+        <textarea  class="form-control">${logs}</textarea>
+    </div>
+    <input type="hidden" id="valGithubGreen" value="${githubOk}">
+    <input type="hidden" id="valGithubOrange" value="${githubWarning}">
+    <input type="hidden" id="valGithubRed" value="${githubDanger}">
+    <input type="hidden" id="valGitlabGreen" value="${gitlabOk}">
+    <input type="hidden" id="valGitlabOrange" value="${gitlabWarning}">
+    <input type="hidden" id="valGitlabRed" value="${gitlabDanger}">
+    <input type="hidden" id="valJiraGreen" value="${jiraOk}">
+    <input type="hidden" id="valJiraOrange" value="${jiraWarning}">
+    <input type="hidden" id="valJiraRed" value="${jiraDanger}">
+    <input type="hidden" id="valReadmeGreen" value="${readmeOk}">
+    <input type="hidden" id="valReadmeRed" value="${readmeDanger}">
+    <input type="hidden" id="valRCIGreen" value="${RCIOk}">
+    <input type="hidden" id="valRCIOrange" value="${RCIWarning}">
+    <input type="hidden" id="valRCIRed" value="${RCIDanger}">
 </div>
 <script>
 $(document).ready(function(){
