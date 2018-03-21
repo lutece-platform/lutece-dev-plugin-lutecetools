@@ -1,10 +1,27 @@
+<#assign githubOk = 0 />
+<#assign githubWarning = 0 />
+<#assign githubDanger = 0 />
+<#assign gitlabOk = 0 />
+<#assign gitlabWarning = 0 />
+<#assign gitlabDanger = 0 />
+<#assign jiraOk = 0 />
+<#assign jiraWarning = 0 />
+<#assign jiraDanger = 0 />
+<#assign readmeOk = 0 />
+<#assign readmeDanger = 0 />
+<#assign RCIOk = 0 />
+<#assign RCIWarning = 0 />
+<#assign RCIDanger = 0 />
+<#assign nbLinesTotal = 0 />
+
+
 <div class="container-fluid">
 
   <div class="row">
     <div class="col-lg-12">
       <div class="well hero">
       	<@messages errors=errors />
-		<@messages infos=infos />
+        <@messages infos=infos />
         <h1>#i18n{lutecetools.components.title}</h1>
         <br>
         <#if !components_list.complete>
@@ -19,78 +36,75 @@
             </div>
         </div>
         </#if>
-        <form method="GET" action="jsp/site/Portal.jsp">
-            <input type="hidden" name="page" value="components" />
-            <div class="row">
-                <div class="col-md-4">
-                    #i18n{lutecetools.components.count} : <strong> ${components_list.listComponents?size} </strong>
-                </div>
-                <div class="col-md-3">
-                    <input type="checkbox" name="github" <#if github_filter> checked </#if> /> Filtrer sur les projets GitHub
-                </div>
-                <div class="col-md-3">
-                   	<input type="checkbox" name="core"  <#if core_versions> checked </#if> /> Afficher les versions du core
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-primary btn-xs" type="submit" title="Refresh" name="action_refresh">
-                        <span class="fa fa-refresh" aria-hidden="true"></span>
-                    </button>
-                    <button class="btn btn-danger btn-xs" type="submit" title="Clear cache" name="action_clearCache" >
-                        <span class="fa fa-trash" aria-hidden="true"></span>
-                    </button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    #i18n{lutecetools.components.countLines} : <strong> ${total_lines} </strong>
-                </div>
-                <div class="col-md-3">
-                    <#if total_prs?has_content>
-                        #i18n{lutecetools.components.totalprs} : <strong> ${total_prs} </strong>
-                    </#if>
-                </div>
-                <div class="col-md-4">
-                    <#if oldest_pr?has_content>
-                        #i18n{lutecetools.components.oldestpr} : <strong> ${oldest_pr?date} </strong>
-                    </#if>
+        <div class="row">
+            <div class="panel panel-default well well-sm">
+                <div class="panel-body">
+                    <form method="GET" action="jsp/site/Portal.jsp">
+                        <input type="hidden" name="page" value="components" />
+                        <div class="col-md-3">
+                            Filtrer par plate-forme : 
+                        </div>
+                        <div class="col-md-3">
+                            <input type="checkbox" name="github" <#if github_filter> checked </#if> />  GitHub<br>
+                            <input type="checkbox" name="gitlab" <#if gitlab_filter> checked </#if> />  GitLab
+                        </div>
+                        <div class="col-md-3">
+                            <input type="checkbox" name="core"  <#if core_versions> checked </#if> /> Afficher les versions du core
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary btn-xs" type="submit" title="Refresh" name="action_refresh">
+                                <span class="fa fa-refresh" aria-hidden="true"></span>
+                            </button>
+                            <button class="btn btn-danger btn-xs" type="submit" title="Clear cache" name="action_clearCache" >
+                                <span class="fa fa-trash" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </form>
-        <br /><br />
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                #i18n{lutecetools.components.count} : <strong> ${components_list.listComponents?size} </strong>
+            </div>
+            <div class="col-md-4">
+                #i18n{lutecetools.components.countLines} : <strong> ${total_lines} </strong>
+            </div>
+            <div class="col-md-4">
+                <#if total_prs?has_content>
+                    #i18n{lutecetools.components.totalprs} : <strong> ${total_prs} </strong>
+                </#if>
+                <br>
+                <#if oldest_pr?has_content>
+                    #i18n{lutecetools.components.oldestpr} : <strong> ${oldest_pr?date} </strong>
+                </#if>
+            </div>
+        </div>
+        <br />
         <div class="row" style="text-align:center">
             <div class="col-md-2">
-            	<strong>GitHub</strong>
-            </div>
-            <div class="col-md-2">
-            	<strong>GitLab</strong>
-            </div>
-            <div class="col-md-2">
-            	<strong>Jira</strong>
-            </div>
-            <div class="col-md-2">
-            	<strong>Readme</strong>
-            </div>
-            <div class="col-md-2">
-            	<strong>Sonar - RCI</strong>
-            </div>
-       	</div>
-        <div class="row" style="text-align:center">
-            <div class="col-md-2">
+                <h4><i class="fa fa-github"> </i> GitHub</h4>
             	<canvas id="pieChart1" width="250"></canvas>
             </div>
             <div class="col-md-2">
+                <h4><i class="fa fa-gitlab"> </i> GitLab</h4>
             	<canvas id="pieChart2" width="250"></canvas>
             </div>
             <div class="col-md-2">
+                <h4><i class="fa fa-jira"> </i> Jira</h4>
             	<canvas id="pieChart3" width="250"></canvas>
             </div>
             <div class="col-md-2">
+                <h4><i class="fa fa-markdown"></i> Readme</h4>
             	<canvas id="pieChart4" width="250"></canvas>
             </div>
             <div class="col-md-2">
+                <h4><i class="fa fa-sonar"></i> Sonar</h4>
             	<canvas id="pieChart5" width="250"></canvas>
             </div>
         </div>
+
+
         <div class="table-responsive">
             <table id="components-table" class="table table-striped table-hover table-condensed tablesorter myTableGraphic">
                 <thead>
@@ -134,56 +148,37 @@
                     </tr>
                 </thead>
                 <tboby>
-                    <#assign githubOk = 0 />
-                    <#assign githubWarning = 0 />
-                    <#assign githubDanger = 0 />
-                    <#assign gitlabOk = 0 />
-                    <#assign gitlabWarning = 0 />
-                    <#assign gitlabDanger = 0 />
-                    <#assign jiraOk = 0 />
-                    <#assign jiraWarning = 0 />
-                    <#assign jiraDanger = 0 />
-                    <#assign readmeOk = 0 />
-                    <#assign readmeDanger = 0 />
-                    <#assign RCIOk = 0 />
-                    <#assign RCIWarning = 0 />
-                    <#assign RCIDanger = 0 />
-                    <#assign nbLinesTotal = 0 />
 
 		    <#list components_list.listComponents as component>
                     <tr class="component-box" data-component="${component.artifactId}">
                         <td class="small">${component.artifactId}</td>
                         <td>
-                            <span class="hidden">${component.attributes.gitRepoStatus}</span>
-                            
-                            <#if component.attributes.snapshotScmUrl?? && component.attributes.isGitRepo >
-                                <a href="${component.attributes.snapshotScmUrl}">
-                            </#if>        
+                            <#if component.attributes.gitRepoStatus??>
+                                <span class="hidden">${component.attributes.gitRepoStatus}</span>
 
-                            <#if component.attributes.gitRepoStatus gt 0 && component.attributes.gitRepoStatus lt 3>
-                                <#switch component.attributes.gitPlatform>
-                                    <#case "github">
-                                    <#assign githubDanger = githubDanger + 1>
-                                    <#break>
-                                    
-                                    <#case "gitlab">
-                                    <#assign gitlabDanger = gitlabDanger + 1>
-                                    <#break>
-                                
-                                </#switch>
-                                <img src="images/skin/plugins/lutecetools/${component.attributes.gitPlatform}-red.png" title="${component.attributes.gitRepoErrors!''}" alt="GitHub status RED" width="24" height="24">
+                                <#if component.attributes.snapshotScmUrl?? && component.attributes.isGitRepo >
+                                    <a href="${component.attributes.snapshotScmUrl}">
+                                </#if>        
+
+                                <#if component.attributes.gitRepoStatus gt -1 && component.attributes.gitRepoStatus lt 3>
+                                    <#if component.attributes.gitPlatform == "github"><#assign githubDanger = githubDanger + 1></#if>
+                                    <#if component.attributes.gitPlatform == "gitlab"><#assign gitlabDanger = gitlabDanger + 1></#if>
+                                    <img src="images/skin/plugins/lutecetools/${component.attributes.gitPlatform}-red.png" title="${component.attributes.gitRepoErrors!''}" alt="GitHub status RED" width="24" height="24">
+                                </#if>
+                                <#if component.attributes.gitRepoStatus == 3 >
+                                    <#if component.attributes.gitPlatform == "github"><#assign githubWarning = githubWarning + 1></#if>
+                                    <#if component.attributes.gitPlatform == "gitlab"><#assign gitlabWarning = gitlabWarning + 1></#if>
+                                    <img src="images/skin/plugins/lutecetools/${component.attributes.gitPlatform}-orange.png" title="${component.attributes.gitRepoErrors!''}" alt="GitHub status ORANGE" width="24" height="24">
+                                </#if>
+                                <#if component.attributes.gitRepoStatus == 4 >
+                                    <#if component.attributes.gitPlatform == "github"><#assign githubOk = githubOk + 1></#if>
+                                    <#if component.attributes.gitPlatform == "gitlab"><#assign gitlabOk = gitlabOk + 1></#if>
+                                    <img src="images/skin/plugins/lutecetools/${component.attributes.gitPlatform}-green.png" title="${component.attributes.gitRepoErrors!''}" alt="GitHub status GREEN" width="24" height="24">
+                                </#if>
+                                <#if component.attributes.snapshotScmUrl?? && component.attributes.snapshotScmUrl?contains("git")>
+                                    </a>
+                                </#if>   
                             </#if>
-                            <#if component.attributes.gitRepoStatus == 3 >
-                                <img src="images/skin/plugins/lutecetools/github-orange.png" title="${component.attributes.gitRepoErrors!''}" alt="GitHub status ORANGE" width="24" height="24">
-                            	<#assign githubWarning = githubWarning + 1>
-                            </#if>
-                            <#if component.attributes.gitRepoStatus == 4 >
-                                <img src="images/skin/plugins/lutecetools/github-green.png" title="${component.attributes.gitRepoErrors!''}" alt="GitHub status GREEN" width="24" height="24">
-                                <#assign githubOk = githubOk + 1>
-                            </#if>
-                            <#if component.attributes.snapshotScmUrl?? && component.attributes.snapshotScmUrl?contains("git")>
-                                </a>
-                            </#if>        
                         </td>
                         <td class="small">${component.attributes.gitGroup!""}</td>
                         <td class="small">
@@ -194,19 +189,21 @@
                             </#if>
                         </td>
                         <td>
-                            <#if !component.attributes.hasReadme && component.attributes.gitRepoStatus gt 0>
-                                <span class="hidden">1</span> 
-                                <img src="images/skin/plugins/lutecetools/readme-red.png" title="Readme file missing" width="24" height="24" />
-                            	<#assign readmeDanger = readmeDanger +1 />
-                            </#if>
-                            <#if component.attributes.hasReadme && component.attributes.gitRepoStatus gt 0>
-                                <span class="hidden">2</span> 
-                                <img src="images/skin/plugins/lutecetools/readme-green.png" title="Readme file available" width="24" height="24" />
-                                <#assign readmeOk = readmeOk +1 />
+                            <#if component.attributes.gitRepoStatus?? && component.attributes.hasReadme?? >
+                                <#if !component.attributes.hasReadme && component.attributes.gitRepoStatus gt 0>
+                                    <span class="hidden">1</span> 
+                                    <img src="images/skin/plugins/lutecetools/readme-red.png" title="Readme file missing" width="24" height="24" />
+                                    <#assign readmeDanger = readmeDanger +1 />
+                                </#if>
+                                <#if component.attributes.hasReadme && component.attributes.gitRepoStatus gt 0>
+                                    <span class="hidden">2</span> 
+                                    <img src="images/skin/plugins/lutecetools/readme-green.png" title="Readme file available" width="24" height="24" />
+                                    <#assign readmeOk = readmeOk +1 />
+                                </#if>
                             </#if>
                         </td>
                         <td>
-                            <#if component.attributes.pullRequests gt 0>
+                            <#if component.attributes.pullRequests?? && component.attributes.pullRequests gt 0>
                                 <a href="${component.snapshotScmUrl?remove_ending(".git")}/pulls" title="${i18n("lutecetools.components.oldestpr")?html} ${(component.attributes.oldestPullRequest?number_to_date)?html}">
                                 ${component.attributes.pullRequests}
                                 <img src="images/skin/plugins/lutecetools/pull-request.png" alt="Pull request icon" height="24">
@@ -214,9 +211,9 @@
                             </#if>
                         </td>
                         <td class="small">
-                            <#if component.attributes.snapshotScmUrl?? && component.attributes.snapshotScmUrl?contains("git")>
+                            <#if component.attributes.snapshotScmUrl?? && component.attributes.snapshotScmUrl?contains(".git")>
                             <a href="${component.attributes.snapshotScmUrl}">
-                                <img src="images/skin/plugins/lutecetools/github.png" alt="GitHub logo" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/${component.attributes.gitPlatform!''}.png" alt="GitHub logo" width="24" height="24">
                             </a>
                             </#if>
                             <#if component.attributes.snapshotScmUrl?? && component.attributes.snapshotScmUrl?contains("svn")>
@@ -229,7 +226,7 @@
                         <td class="small">
                             <#if component.attributes.scmUrl?? && component.attributes.scmUrl?contains("git")>
                             <a href="${component.attributes.scmUrl}">
-                                <img src="images/skin/plugins/lutecetools/github.png" alt="GitHub logo" width="24" height="24">
+                                <img src="images/skin/plugins/lutecetools/${component.attributes.gitPlatform!''}.png" alt="GitHub logo" width="24" height="24">
                             </a>
                             </#if>
                             <#if component.attributes.scmUrl?? && component.attributes.scmUrl?contains("svn")>
@@ -338,48 +335,46 @@
                     <div class="row"  style="text-align:center;">
                         <div class="col-md-2">
                             <img src="images/skin/plugins/lutecetools/github-green.png" alt="GitHub status GREEN" width="20" height="20">
-                            <span class="badge"> ${githubOk} </span> &nbsp;
+                            <span class="badge"> ${githubOk} </span> <br>
                             <img src="images/skin/plugins/lutecetools/github-orange.png" alt="GitHub status ORANGE" width="20" height="20">
-                            <span class="badge"> ${githubWarning} </span> &nbsp;
+                            <span class="badge"> ${githubWarning} </span> <br>
                             <img src="images/skin/plugins/lutecetools/github-red.png" alt="GitHub status RED" width="20" height="20">
-                            <span class="badge"> ${githubDanger} </span> &nbsp;
+                            <span class="badge"> ${githubDanger} </span> <br>
                         </div>
                         <div class="col-md-2">
                             <i class="fa fa-gitlab" style="color: green"></i>
                             <!--<img src="images/skin/plugins/lutecetools/gitlab-green.png" alt="Gitlab status GREEN" width="20" height="20">-->
-                            <span class="badge"> ${gitlabOk} </span> &nbsp;
+                            <span class="badge"> ${gitlabOk} </span> <br>
                             <i class="fa fa-gitlab" style="color: orange"></i>
                             <!--<img src="images/skin/plugins/lutecetools/gitlab-orange.png" alt="Gitlab status ORANGE" width="20" height="20">-->
-                            <span class="badge"> ${gitlabWarning} </span> &nbsp;
+                            <span class="badge"> ${gitlabWarning} </span> <br>
                             <!--<img src="images/skin/plugins/lutecetools/gitlab-red.png" alt="Gitlab status RED" width="20" height="20">-->
                             <i class="fa fa-gitlab" style="color: red"></i>
-                            <span class="badge"> ${gitlabDanger} </span> &nbsp;
+                            <span class="badge"> ${gitlabDanger} </span> <br>
                         </div>
                         <div class="col-md-2">
                             <img src="images/skin/plugins/lutecetools/jira-green.png" alt="Jira status GREEN" width="20" height="20">
-                            <span class="badge"> ${jiraOk} </span> &nbsp;
+                            <span class="badge"> ${jiraOk} </span> <br>
                             <img src="images/skin/plugins/lutecetools/jira-orange.png" alt="Jira status ORANGE" width="20" height="20">
-                            <span class="badge"> ${jiraWarning} </span> &nbsp;
+                            <span class="badge"> ${jiraWarning} </span> <br>
                             <img src="images/skin/plugins/lutecetools/jira-red.png" alt="Jira status RED" width="20" height="20">
-                            <span class="badge"> ${jiraDanger} </span> &nbsp;
+                            <span class="badge"> ${jiraDanger} </span> <br>
                         </div>
                         <div class="col-md-2">
                             <img src="images/skin/plugins/lutecetools/readme-green.png" alt="Readme status GREEN" width="20" height="20">
-                            <span class="badge"> ${readmeOk} </span> &nbsp;
+                            <span class="badge"> ${readmeOk} </span> <br>
                             <img src="images/skin/plugins/lutecetools/readme-red.png" alt="Readme status RED" width="20" height="20">
-                            <span class="badge"> ${readmeDanger} </span> &nbsp;
+                            <span class="badge"> ${readmeDanger} </span> <br>
                         </div>
                         <div class="col-md-2">
                             <span class="fa fa-check-circle" style="color:#00b300;font-size:1.1em;"></span>
-                            <span class="badge"> ${RCIOk} </span> &nbsp;
+                            <span class="badge"> ${RCIOk} </span> <br>
                             <span class="fa fa-exclamation-circle" style="color:orange;"></span>
-                            <span class="badge"> ${RCIWarning} </span> &nbsp;
+                            <span class="badge"> ${RCIWarning} </span> <br>
                             <span class="fa fa-exclamation-triangle" style="color:red;"></span>
-                            <span class="badge"> ${RCIDanger} </span> &nbsp;
+                            <span class="badge"> ${RCIDanger} </span> <br>
                         </div>
                     </div>
-                    <br />
-                    <br />
                     <br />
                     <div class="row">
                         <div class="col-md-2">

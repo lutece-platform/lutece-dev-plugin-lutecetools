@@ -64,6 +64,7 @@ public class ComponentListApp extends MVCApplication
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/components.html";
     private static final String MARK_COMPONENTS_LIST = "components_list";
     private static final String MARK_GITHUB_FILTER = "github_filter";
+    private static final String MARK_GITLAB_FILTER = "gitlab_filter";
     private static final String MARK_DISPLAY_CORE_VERSIONS = "core_versions";
     private static final String MARK_LOGS = "logs";
     private static final String MARK_INTEGER_SUCCESS = "rci_color_success";
@@ -75,8 +76,12 @@ public class ComponentListApp extends MVCApplication
     private static final String ACTION_REFRESH = "refresh";
     private static final String ACTION_CLEAR_CACHE = "clearCache";
     private static final String PARAMETER_GITHUB = "github";
+    private static final String PARAMETER_GITLAB = "gitlab";
     private static final String PARAMETER_CORE_VERSIONS = "core";
     private static final String VALUE_ON = "on";
+    private static final String PLATFORM_GITHUB = "github";
+    private static final String PLATFORM_GITLAB = "gitlab";
+    
     private static final long serialVersionUID = 1L;
 
     // RCI color mark
@@ -95,10 +100,19 @@ public class ComponentListApp extends MVCApplication
     @View( value = VIEW_HOME, defaultView = true )
     public XPage viewHome( HttpServletRequest request )
     {
+        List<String> listFilterPlatform = new ArrayList<>();
         String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
+        String strGitLabFilter = request.getParameter( PARAMETER_GITLAB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
         boolean bDisplayCoreVersions = ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON );
-        boolean bGitHubFilter = ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) );
+        if (( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) ))
+        {
+            listFilterPlatform.add( PLATFORM_GITHUB );
+        }
+        if(( strGitLabFilter != null ) && ( strGitLabFilter.equals( VALUE_ON ) ))
+        {
+            listFilterPlatform.add( PLATFORM_GITLAB );
+        }
         Integer nTotal = 0;
         int nTotalPRs = 0;
         long oldestPR = Long.MAX_VALUE;
@@ -107,9 +121,9 @@ public class ComponentListApp extends MVCApplication
 
         ComponentsInfos ciInfos = MavenRepoService.instance( ).getComponents( );
 
-        if ( bGitHubFilter )
+        if ( ! listFilterPlatform.isEmpty() )
         {
-            ciInfos.setListComponents( filterGitHub( ciInfos.getListComponents( ) ) );
+            ciInfos.setListComponents( filterPlatform(ciInfos.getListComponents( ) , listFilterPlatform ) );
         }
 
         // FIXME
@@ -119,7 +133,8 @@ public class ComponentListApp extends MVCApplication
             {
                 nTotal += Integer.parseInt( c.get( SonarService.SONAR_NB_LINES ).replace( ",", "" ) );
             }
-            if ( c.getInt( AbstractGitPlatformService.PULL_REQUEST_COUNT ) > 0 )
+            Integer iPullRequestCount = c.getInt( AbstractGitPlatformService.PULL_REQUEST_COUNT );
+            if ( iPullRequestCount != null && iPullRequestCount > 0 )
             {
                 nTotalPRs = nTotalPRs + c.getInt( AbstractGitPlatformService.PULL_REQUEST_COUNT );
                 if ( c.getLong( AbstractGitPlatformService.OLDEST_PULL_REQUEST ) < oldestPR )
@@ -138,7 +153,8 @@ public class ComponentListApp extends MVCApplication
             model.put( MARK_TOTAL_PRS, nTotalPRs );
             model.put( MARK_OLDEST_PR, new Date( oldestPR ) );
         }
-        model.put( MARK_GITHUB_FILTER, bGitHubFilter );
+        model.put( MARK_GITHUB_FILTER, listFilterPlatform.contains( PLATFORM_GITHUB ) );
+        model.put( MARK_GITLAB_FILTER, listFilterPlatform.contains( PLATFORM_GITLAB ) );
         model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );
         model.put( MARK_LOGS, MavenRepoService.getLogs( ) );
 
@@ -181,14 +197,14 @@ public class ComponentListApp extends MVCApplication
      *            The list to filter
      * @return The filtered list
      */
-    private List<Component> filterGitHub( List<Component> listComponents )
+    private List<Component> filterPlatform( List<Component> listComponents , List<String> listPlatform )
     {
-        List<Component> list = new ArrayList<Component>( );
+        List<Component> list = new ArrayList<>( );
 
         for ( Component c : listComponents )
         {
-            Integer iStatus = c.getInt( AbstractGitPlatformService.GIT_REPO_STATUS );
-            if ( iStatus != null && iStatus > 0 )
+            String strPlatform = c.get( AbstractGitPlatformService.GIT_PLATFORM );
+            if ( listPlatform.contains( strPlatform ) )
             {
                 list.add( c );
             }
@@ -208,11 +224,16 @@ public class ComponentListApp extends MVCApplication
     {
         Map<String, String> mapParameters = new ConcurrentHashMap<>( );
         String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
+        String strGitLabFilter = request.getParameter( PARAMETER_GITLAB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
 
         if ( ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) ) )
         {
             mapParameters.put( PARAMETER_GITHUB, VALUE_ON );
+        }
+        if ( ( strGitLabFilter != null ) && ( strGitLabFilter.equals( VALUE_ON ) ) )
+        {
+            mapParameters.put( PARAMETER_GITLAB, VALUE_ON );
         }
 
         if ( ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON ) )

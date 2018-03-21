@@ -78,6 +78,10 @@ public class GitLabService extends AbstractGitPlatformService
             component.set( GIT_PLATFORM, getGitPlatform( ) );
             component.set( GIT_GROUP, getGroup( project ) );
 
+            component.set( GIT_REPO_STATUS , 4 );  //FIXME 4 = OK
+            component.set( GIT_REPO_ERRORS , "" );
+            component.set( HAS_README, false );
+            
             incrementItemCount( );
             incrementItemOk( );
 
