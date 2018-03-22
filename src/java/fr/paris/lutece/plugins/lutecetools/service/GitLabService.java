@@ -128,7 +128,7 @@ public class GitLabService extends AbstractGitPlatformService
         GitlabAPI gitLabApi = GitlabAPI.connect( strUrl, strToken );
         List<GitlabProject> listProjects = gitLabApi.getProjects( );
         AppLogService.debug( "GitlabService - fetching Gitlab repositories " + listProjects.size( ) );
-        Map<String, GitlabProject> mapRepositories = new HashMap<String, GitlabProject>( );
+        Map<String, GitlabProject> mapRepositories = new HashMap<>( );
         for ( GitlabProject project : listProjects )
         {
             String strGroup = getGroup( project );
