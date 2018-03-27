@@ -14,7 +14,7 @@
 <#assign RCIDanger = 0 />
 <#assign nbLinesTotal = 0 />
 
-
+<div id=luteceToolsComponents>
 <div class="container-fluid">
 
     <@messages errors=errors />
@@ -436,6 +436,7 @@
     <input type="hidden" id="valRCIGreen" value="${RCIOk}">
     <input type="hidden" id="valRCIOrange" value="${RCIWarning}">
     <input type="hidden" id="valRCIRed" value="${RCIDanger}">
+</div>
 </div>
 <script>
 $(document).ready(function(){
