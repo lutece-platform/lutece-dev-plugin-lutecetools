@@ -79,7 +79,6 @@
                 <div class="small-box bg-orange">
                     <div class="inner">
                         <h3>${total_lines}</h3>
-
                         <p>#i18n{lutecetools.components.countLines}</p>
                     </div>
                     <div class="icon">
@@ -105,14 +104,18 @@
         </div>
         <br />
         <div class="row" style="text-align:center">
+            <#if !gitlab_filter || github_filter>
             <div class="col-md-2">
                 <h4><i class="fa fa-github"> </i> GitHub</h4>
                 <canvas id="pieChart1" width="250"></canvas>
             </div>
+            </#if>
+            <#if !github_filter || gitlab_filter>
             <div class="col-md-2">
                 <h4><i class="fa fa-gitlab"> </i> GitLab</h4>
                 <canvas id="pieChart2" width="250"></canvas>
             </div>
+            </#if>
             <div class="col-md-2">
                 <h4><i class="fa fa-jira"> </i> Jira</h4>
                 <canvas id="pieChart3" width="250"></canvas>

@@ -450,7 +450,7 @@ public final class MavenRepoService
             }
             else
             {
-                component.set( Component.SNAPSHOT_PARENT_POM_VERSION, handler.getParentPomVersion( ) );
+                component.set( Component.PARENT_POM_VERSION, handler.getParentPomVersion( ) );
                 component.set( Component.CORE_VERSION, handler.getCoreVersion( ) );
                 component.set( Component.SCM_URL, handler.getScmUrl( ) );
             }
