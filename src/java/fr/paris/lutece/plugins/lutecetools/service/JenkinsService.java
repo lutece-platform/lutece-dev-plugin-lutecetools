@@ -50,13 +50,16 @@ public class JenkinsService implements ComponentInfoFiller
     private static final String JENKINS_JOB_STATUS = "jenkinsStatus";
 
     private static final String SERVICE_NAME = "Jenkins Info filler service registered";
+    private static final String PROPERTY_JENKINS_JOB_URL = "lutecetools.jenkins.job.url";
     private static final String PROPERTY_JENKINS_BADGE_URL = "lutecetools.jenkins.badge.url";
     private static final String PROPERTY_JENKINS_CREDENTIALS_USER = "lutecetools.jenkins.user";
     private static final String PROPERTY_JENKINS_CREDENTIALS_PWD = "lutecetools.jenkins.pwd";
     private static final String PREFIX_LUTECE_PLATFORM = "https://github.com/lutece-platform/lutece-";
     private static final String PREFIX_LUTECE_SECTEUR_PUBLIC = "https://github.com/lutece-secteur-public/";
+    private static final String PREFIX_GITLAB = "https://dev.lutece.paris.fr/gitlab/";
     private static final String SUFFIX_GIT = ".git";
     private static final String SUFFIX_DEPLOY_JOB = "-deploy";
+    private static final String[] GITLAB_GROUPS = { "MDP" , "TMMA" , "Projets" };
 
     /**
      * {@inheritDoc }
@@ -77,14 +80,17 @@ public class JenkinsService implements ComponentInfoFiller
         if ( strScmInfos != null )
         {
             String strJobName = getJobName( strScmInfos );
+            String strJenkinsJobUrl = AppPropertiesService.getProperty( PROPERTY_JENKINS_JOB_URL );
             String strJenkinsBadgeUrl = AppPropertiesService.getProperty( PROPERTY_JENKINS_BADGE_URL );
             String strBadgeUrl = DEFAULT_BADGE_URL;
             if ( strJobName != null )
             {
+                String strJobUrl = strJenkinsJobUrl + strJobName;
+                component.set( JENKINS_JOB_BUILD_URL, strJobUrl );
                 strBadgeUrl = strJenkinsBadgeUrl + strJobName;
+                component.set( JENKINS_JOB_BADGE_ICON_URL, strBadgeUrl );
             }
             component.set( JENKINS_JOB_STATUS, String.valueOf( strJobName != null ) );
-            component.set( JENKINS_JOB_BADGE_ICON_URL, strBadgeUrl );
         }
     }
 
@@ -123,16 +129,21 @@ public class JenkinsService implements ComponentInfoFiller
         {
             strJobName = strScmInfos.substring( PREFIX_LUTECE_PLATFORM.length( ) );
         }
+        else if ( strScmInfos.startsWith( PREFIX_LUTECE_SECTEUR_PUBLIC ) )
+        {
+            strJobName = strScmInfos.substring( PREFIX_LUTECE_SECTEUR_PUBLIC.length( ) );
+        }
+        else if( strScmInfos.startsWith( PREFIX_GITLAB ))
+        {
+            strJobName = getGitlabJobName( strScmInfos.substring( PREFIX_GITLAB.length()) );
+        }
         else
-            if ( strScmInfos.startsWith( PREFIX_LUTECE_SECTEUR_PUBLIC ) )
-            {
-                strJobName = strScmInfos.substring( PREFIX_LUTECE_SECTEUR_PUBLIC.length( ) );
-            }
-            else
-            {
-                strJobName = getSvnJobName( strScmInfos );
-            }
+        {
+            strJobName = getSvnJobName( strScmInfos );
+        }
 
+        
+        
         if ( strJobName != null )
         {
             if ( strJobName.endsWith( SUFFIX_GIT ) )
@@ -175,6 +186,17 @@ public class JenkinsService implements ComponentInfoFiller
                 strJobName = strCategory + "-" + strJobName;
             }
         }
+        return strJobName;
+    }
+
+    private String getGitlabJobName(String strScmInfos)
+    {
+        String strJobName = strScmInfos;
+        for( int i = 0 ; i < GITLAB_GROUPS.length ; i++ )
+        {
+            strJobName = strJobName.replace( GITLAB_GROUPS[i].toLowerCase(), GITLAB_GROUPS[i] );
+        }
+        strJobName = strJobName.replace( '/', '-' );
         return strJobName;
     }
 }

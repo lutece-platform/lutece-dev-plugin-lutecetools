@@ -82,9 +82,7 @@ public class JenkinsRest
         {
             HttpAccess httpAccess = new HttpAccess( );
             String strContent = httpAccess.doGet( strUrl, _jenkinsService.getJenkinsAuthenticator( ), null );
-            CacheControl cc = new CacheControl( );
-            cc.setMaxAge( 36000 );
-            return Response.ok( strContent, "image/svg+xml" ).cacheControl( cc ).build( );
+            return Response.ok( strContent, "image/svg+xml" ).build( );
         }
         catch( HttpAccessException ex )
         {

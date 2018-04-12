@@ -212,10 +212,6 @@ public final class MavenRepoService
             {
                 nAvailable++;
             }
-            else
-            {
-                AppLogService.info( "Component not processed : " + component.getArtifactId() );
-            }
         }
         Collections.sort( list );
 

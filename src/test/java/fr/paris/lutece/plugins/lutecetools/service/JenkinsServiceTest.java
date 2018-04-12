@@ -53,6 +53,8 @@ public class JenkinsServiceTest
     private static final String GIT_PLATFORM_JOB = "dev-plugin-lutecetools-deploy";
     private static final String GIT_SECTEUR_PUBLIC_SCM = "https://github.com/lutece-secteur-public/dev-plugin-lutecetools.git";
     private static final String GIT_SECTEUR_PUBLIC_JOB = "dev-plugin-lutecetools-deploy";
+    private static final String GITLAB_SCM = "https://dev.lutece.paris.fr/gitlab/mdp/a00/plugin-myapp";
+    private static final String GITLAB_JOB = "MDP-a00-plugin-myapp-deploy";
     private static final String SVN_SCM = "http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/seo/plugin-sitemap";
     private static final String SVN_JOB = "seo-plugin-sitemap-deploy";
 
@@ -75,6 +77,9 @@ public class JenkinsServiceTest
         strJob = (String) method.invoke( jenkinsService, SVN_SCM );
         System.out.println( strJob );
         assertEquals( strJob, SVN_JOB );
+        strJob = (String)  method.invoke( jenkinsService, GITLAB_SCM );
+        System.out.println( strJob );
+        assertEquals( strJob, GITLAB_JOB );
     }
 
 }
