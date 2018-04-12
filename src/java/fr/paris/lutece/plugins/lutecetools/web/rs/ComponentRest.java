@@ -282,7 +282,7 @@ public class ComponentRest
         XmlUtil.addElement( sbXML, KEY_SONAR_NB_LINES, component.get( SonarService.SONAR_NB_LINES ) );
         XmlUtil.addElement( sbXML, KEY_SONAR_RCI, component.get( SonarService.SONAR_RCI ) );
         XmlUtil.addElement( sbXML, KEY_JIRA_CODE, component.get( Component.JIRA_KEY ) );
-        XmlUtil.addElement( sbXML, KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.get( Component.JIRA_KEY )
+        XmlUtil.addElement( sbXML, KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/projects/" + component.get( Component.JIRA_KEY )
                 + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
         XmlUtil.addElement( sbXML, KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES,
                 component.getInt( JiraService.JIRA_ISSUES_COUNT ) - component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
@@ -316,7 +316,7 @@ public class ComponentRest
         jsonComponent.accumulate( KEY_SONAR_NB_LINES, component.get( SonarService.SONAR_NB_LINES ) );
         jsonComponent.accumulate( KEY_SONAR_RCI, component.get( SonarService.SONAR_RCI ) );
         jsonComponent.accumulate( KEY_JIRA_CODE, component.get( Component.JIRA_KEY ) );
-        jsonComponent.accumulate( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/browse/" + component.get( Component.JIRA_KEY )
+        jsonComponent.accumulate( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/projects/" + component.get( Component.JIRA_KEY )
                 + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
         jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES,
                 component.getInt( JiraService.JIRA_ISSUES_COUNT ) - component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );

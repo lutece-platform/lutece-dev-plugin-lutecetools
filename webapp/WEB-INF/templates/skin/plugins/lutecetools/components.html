@@ -291,7 +291,7 @@
                         </td>
                         <td>
                             <#if component.attributes.jiraStatus ??>
-                            <a href="https://dev.lutece.paris.fr/jira/browse/${component.attributes.jiraKey!''}">
+                            <a href="https://dev.lutece.paris.fr/jira/projects/${component.attributes.jiraKey!''}">
                             <#if component.attributes.jiraStatus == 0 >
                                 <span class="hidden">1</span>
                                 <img src="images/skin/plugins/lutecetools/jira-red.png" title="${component.attributes.jiraErrors!''}" alt="Jira status RED" width="24" height="24">
@@ -323,7 +323,7 @@
                             </#if>
                             <assign fixed = 1 />
                             <assign unresolved = 1 />
-                            <a href="https://dev.lutece.paris.fr/jira/browse/${component.attributes.jiraKey!''}#selectedTab=com.atlassian.jira.plugin.system.project%3Aroadmap-panel" >
+                            <a href="https://dev.lutece.paris.fr/jira/projects/${component.attributes.jiraKey!''}#selectedTab=com.atlassian.jira.plugin.system.project%3Aroadmap-panel" >
                                 <span class="label label-success"> ${fixed}</span>
                                 <#if unresolved == 0>
                                     <span class="label label-success"> ${unresolved}</span>
@@ -347,7 +347,7 @@
                             <a href="${component.attributes.jenkinsJobBuildUrl!''}"><img src="${component.attributes.jenkinsJobBadgeIconUrl!''}"></a>
                         </td>
                         <td>
-                            <a href="https://dev.lutece.paris.fr/jira/browse/${component.attributes.jiraKey!''}" title="JIRA">
+                            <a href="https://dev.lutece.paris.fr/jira/projects/${component.attributes.jiraKey!''}" title="JIRA">
                                 <img src="images/skin/plugins/lutecetools/jira.png" alt="Jira logo" width="24" height="24"/>
                             </a>
                             <a href="http://dev.lutece.paris.fr/plugins/${component.artifactId}/index.html" title="English" class="btn btn-default btn-xs">en</a>
