@@ -359,6 +359,7 @@
                     </tr>
                     </#list>
                     <div class="row"  style="text-align:center;">
+                        <#if !gitlab_filter || github_filter>
                         <div class="col-md-2">
                             <img src="images/skin/plugins/lutecetools/github-green.png" alt="GitHub status GREEN" width="20" height="20">
                             <span class="badge"> ${githubOk} </span> <br>
@@ -367,6 +368,8 @@
                             <img src="images/skin/plugins/lutecetools/github-red.png" alt="GitHub status RED" width="20" height="20">
                             <span class="badge"> ${githubDanger} </span> <br>
                         </div>
+                        </#if>
+                        <#if !github_filter || gitlab_filter>
                         <div class="col-md-2">
                             <i class="fa fa-gitlab" style="color: green"></i>
                             <!--<img src="images/skin/plugins/lutecetools/gitlab-green.png" alt="Gitlab status GREEN" width="20" height="20">-->
@@ -378,6 +381,7 @@
                             <i class="fa fa-gitlab" style="color: red"></i>
                             <span class="badge"> ${gitlabDanger} </span> <br>
                         </div>
+                        </#if>
                         <div class="col-md-2">
                             <img src="images/skin/plugins/lutecetools/jira-green.png" alt="Jira status GREEN" width="20" height="20">
                             <span class="badge"> ${jiraOk} </span> <br>
