@@ -196,9 +196,9 @@ public class JenkinsService implements ComponentInfoFiller
         {
             strJobName = strJobName.replace( GITLAB_GROUPS[i].toLowerCase(), GITLAB_GROUPS[i] );
         }
-        if ( strJobName.endsWith( '/' ) )
+        if ( strJobName.endsWith( "/" ) )
         {
-            strJobName = strJobName.substring( 0, strJobName.length( ) - 1 )
+            strJobName = strJobName.substring( 0, strJobName.length( ) - 1 );
         }
         strJobName = strJobName.replace( '/', '-' );
         return strJobName;
