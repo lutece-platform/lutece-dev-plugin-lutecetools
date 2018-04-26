@@ -109,12 +109,16 @@
                 <h4><i class="fa fa-github"> </i> GitHub</h4>
                 <canvas id="pieChart1" width="250"></canvas>
             </div>
+            <#else>
+                <canvas id="pieChart1" width="0"></canvas>
             </#if>
             <#if !github_filter || gitlab_filter>
             <div class="col-md-2">
                 <h4><i class="fa fa-gitlab"> </i> GitLab</h4>
                 <canvas id="pieChart2" width="250"></canvas>
             </div>
+            <#else>
+                <canvas id="pieChart2" width="0"></canvas>
             </#if>
             <div class="col-md-2">
                 <h4><i class="fa fa-jira"> </i> Jira</h4>
