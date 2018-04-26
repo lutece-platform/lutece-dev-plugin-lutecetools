@@ -169,6 +169,7 @@ public final class MavenRepoService
         {
             HttpAccess httpAccess = new HttpAccess( );
             String strHtml = httpAccess.doGet( strUrl );
+            
             List<String> listElement = getAnchorsList( strHtml );
             List<String> listVersions = new ArrayList<String>( );
             for ( String strAnchor : listElement )
@@ -234,7 +235,7 @@ public final class MavenRepoService
         try
         {
             HttpAccess httpAccess = new HttpAccess( );
-            String strHtml = httpAccess.doGet( URL_PLUGINS );
+            String strHtml = httpAccess.doGet( URL_SNAPSHOT_PLUGINS );
             list = getAnchorsList( strHtml );
 
             // remove the 4 first links
