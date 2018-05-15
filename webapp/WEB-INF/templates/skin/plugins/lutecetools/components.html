@@ -276,7 +276,7 @@
                         <td class="small">
                             <#attempt>
                                 <a href="http://dev.lutece.paris.fr/sonar/overview?id=fr.paris.lutece.plugins%3A${component.artifactId}">
-                                <#assign nb = "${component.attributes.sonarRci}"?replace("%", "")?number>
+                                <#assign nb = "${component.attributes.sonarRci!'0'}"?replace("%", "")?number>
                                 <#if nb gte "${rci_color_success}"?number>
                                         <span class="fa fa-check-circle" style="color:#00b300;font-size:2em;"></span>
                                         <#assign RCIOk = RCIOk + 1>
