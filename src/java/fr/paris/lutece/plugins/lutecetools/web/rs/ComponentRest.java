@@ -306,6 +306,10 @@ public class ComponentRest
     private void addComponentJson( JSONObject json, Component component )
     {
         JSONObject jsonComponent = new JSONObject( );
+        int nJiraIssueCount=component.get( JiraService.JIRA_ISSUES_COUNT )!=null ?  component.getInt( JiraService.JIRA_ISSUES_COUNT ) :0;
+        int nJiraIssueUnresolved=component.get( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT )!=null ?  component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) :0;
+          
+        
         jsonComponent.accumulate( KEY_ID, component.getArtifactId( ) );
         jsonComponent.accumulate( KEY_VERSION, component.getVersion( ) );
         jsonComponent.accumulate( KEY_CORE_VERSION, component.get( Component.CORE_VERSION ) );
@@ -319,8 +323,8 @@ public class ComponentRest
         jsonComponent.accumulate( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/projects/" + component.get( Component.JIRA_KEY )
                 + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
         jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES,
-                component.getInt( JiraService.JIRA_ISSUES_COUNT ) - component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
-        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) );
+                nJiraIssueCount - nJiraIssueUnresolved );
+        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, nJiraIssueUnresolved );
         jsonComponent.accumulate( KEY_SCM_URL, component.get( Component.SCM_URL ) );
         jsonComponent.accumulate( KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
         jsonComponent.accumulate( KEY_SCM_CONNECTION, component.get( Component.SCM_CONNECTION ) );
