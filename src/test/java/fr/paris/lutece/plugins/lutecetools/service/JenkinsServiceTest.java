@@ -77,7 +77,7 @@ public class JenkinsServiceTest
         strJob = (String) method.invoke( jenkinsService, SVN_SCM );
         System.out.println( strJob );
         assertEquals( strJob, SVN_JOB );
-        strJob = (String)  method.invoke( jenkinsService, GITLAB_SCM );
+        strJob = (String) method.invoke( jenkinsService, GITLAB_SCM );
         System.out.println( strJob );
         assertEquals( strJob, GITLAB_JOB );
     }

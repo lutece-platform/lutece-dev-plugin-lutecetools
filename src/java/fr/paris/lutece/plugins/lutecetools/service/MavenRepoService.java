@@ -169,7 +169,7 @@ public final class MavenRepoService
         {
             HttpAccess httpAccess = new HttpAccess( );
             String strHtml = httpAccess.doGet( strUrl );
-            
+
             List<String> listElement = getAnchorsList( strHtml );
             List<String> listVersions = new ArrayList<String>( );
             for ( String strAnchor : listElement )
@@ -345,14 +345,15 @@ public final class MavenRepoService
         {
             component.setVersion( getVersion( URL_CORE ) );
         }
-        else  if ( Constants.MAVEN_REPO_LUTECE_SITE.equals( getMavenRepoDirectoryType( strArtifactId, strType ) ) )
-        {
-            component.setVersion( getVersion( URL_THEMES + strArtifactId ) );
-        }
         else
-        {
-            component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
-        }
+            if ( Constants.MAVEN_REPO_LUTECE_SITE.equals( getMavenRepoDirectoryType( strArtifactId, strType ) ) )
+            {
+                component.setVersion( getVersion( URL_THEMES + strArtifactId ) );
+            }
+            else
+            {
+                component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
+            }
 
         long lTime1 = new Date( ).getTime( );
         getPomInfos( component, strType, sbLogs );

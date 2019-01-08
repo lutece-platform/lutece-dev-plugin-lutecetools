@@ -51,16 +51,15 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Rest service for generating pom files or part of pom files. 
+ * Rest service for generating pom files or part of pom files.
  */
 @Path( RestConstants.BASE_PATH + Constants.PATH_PLUGIN + Constants.PATH_POM_BUILDER )
-public class PomBuilderRest 
+public class PomBuilderRest
 {
     private static final ObjectMapper _mapper = new ObjectMapper( );
-    
+
     /**
-     * Returns an XML representing the pom.xml file of the site whose informations are provided in 
-     * the siteBuilderConfigDto object
+     * Returns an XML representing the pom.xml file of the site whose informations are provided in the siteBuilderConfigDto object
      * 
      * @param strSiteBuilderConfigDto
      * @return The badge URL
@@ -68,35 +67,30 @@ public class PomBuilderRest
     @POST
     @Path( Constants.PATH_SITE )
     @Produces( "application/xml" )
-    @Consumes( "application/json")
+    @Consumes( "application/json" )
     public Response getSitePom( String strSiteBuilderConfigDto )
     {
-        try 
+        try
         {
             SiteBuilderConfDto siteBuilderConfDto = _mapper.readValue( strSiteBuilderConfigDto, SiteBuilderConfDto.class );
-            List<Component> listFullComponent = new ArrayList<Component>();
-            //Fill given components if there are missing infos in the config
+            List<Component> listFullComponent = new ArrayList<Component>( );
+            // Fill given components if there are missing infos in the config
             for ( Component comp : siteBuilderConfDto.getListComponents( ) )
             {
-                if ( StringUtils.isEmpty( comp.getVersion() ) || StringUtils.isEmpty( comp.getComponentType( ) ) )
+                if ( StringUtils.isEmpty( comp.getVersion( ) ) || StringUtils.isEmpty( comp.getComponentType( ) ) )
                 {
                     Component fullCompo = MavenRepoService.getComponent( comp.getArtifactId( ), true, true );
                     listFullComponent.add( fullCompo );
                 }
             }
-            
-            return Response
-                .ok( DependenciesService.process( 
-                        listFullComponent, "pom" ) )
-                .build();
+
+            return Response.ok( DependenciesService.process( listFullComponent, "pom" ) ).build( );
         }
-        catch ( IOException e )
+        catch( IOException e )
         {
-            AppLogService.error( " Wrong site builder config format ", e);
-            return Response
-                .serverError( )
-                .build();
+            AppLogService.error( " Wrong site builder config format ", e );
+            return Response.serverError( ).build( );
         }
-        
+
     }
 }

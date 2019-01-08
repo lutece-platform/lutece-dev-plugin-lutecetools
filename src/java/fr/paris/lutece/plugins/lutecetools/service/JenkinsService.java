@@ -59,7 +59,9 @@ public class JenkinsService implements ComponentInfoFiller
     private static final String PREFIX_GITLAB = "https://dev.lutece.paris.fr/gitlab/";
     private static final String SUFFIX_GIT = ".git";
     private static final String SUFFIX_DEPLOY_JOB = "-deploy";
-    private static final String[] GITLAB_GROUPS = { "MDP" , "TMMA" , "Projets" };
+    private static final String [ ] GITLAB_GROUPS = {
+            "MDP", "TMMA", "Projets"
+    };
 
     /**
      * {@inheritDoc }
@@ -129,21 +131,21 @@ public class JenkinsService implements ComponentInfoFiller
         {
             strJobName = strScmInfos.substring( PREFIX_LUTECE_PLATFORM.length( ) );
         }
-        else if ( strScmInfos.startsWith( PREFIX_LUTECE_SECTEUR_PUBLIC ) )
-        {
-            strJobName = strScmInfos.substring( PREFIX_LUTECE_SECTEUR_PUBLIC.length( ) );
-        }
-        else if( strScmInfos.startsWith( PREFIX_GITLAB ))
-        {
-            strJobName = getGitlabJobName( strScmInfos.substring( PREFIX_GITLAB.length()) );
-        }
         else
-        {
-            strJobName = getSvnJobName( strScmInfos );
-        }
+            if ( strScmInfos.startsWith( PREFIX_LUTECE_SECTEUR_PUBLIC ) )
+            {
+                strJobName = strScmInfos.substring( PREFIX_LUTECE_SECTEUR_PUBLIC.length( ) );
+            }
+            else
+                if ( strScmInfos.startsWith( PREFIX_GITLAB ) )
+                {
+                    strJobName = getGitlabJobName( strScmInfos.substring( PREFIX_GITLAB.length( ) ) );
+                }
+                else
+                {
+                    strJobName = getSvnJobName( strScmInfos );
+                }
 
-        
-        
         if ( strJobName != null )
         {
             if ( strJobName.endsWith( SUFFIX_GIT ) )
@@ -189,12 +191,12 @@ public class JenkinsService implements ComponentInfoFiller
         return strJobName;
     }
 
-    private String getGitlabJobName(String strScmInfos)
+    private String getGitlabJobName( String strScmInfos )
     {
         String strJobName = strScmInfos;
-        for( int i = 0 ; i < GITLAB_GROUPS.length ; i++ )
+        for ( int i = 0; i < GITLAB_GROUPS.length; i++ )
         {
-            strJobName = strJobName.replace( GITLAB_GROUPS[i].toLowerCase(), GITLAB_GROUPS[i] );
+            strJobName = strJobName.replace( GITLAB_GROUPS [i].toLowerCase( ), GITLAB_GROUPS [i] );
         }
         if ( strJobName.endsWith( "/" ) )
         {

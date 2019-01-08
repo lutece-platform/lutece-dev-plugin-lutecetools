@@ -74,7 +74,7 @@ public final class DependenciesService
     private DependenciesService( )
     {
     }
-    
+
     /**
      * Process dependencies generation
      * 
@@ -85,14 +85,14 @@ public final class DependenciesService
      * @return The dependencies
      */
     public static String process( String strSource, String strFormat )
-    {   
+    {
         String [ ] components = strSource.split( "\\s+" );
-        
+
         List<Dependency> list = getDependenciesList( components );
 
-        return process( list, strFormat);
+        return process( list, strFormat );
     }
-    
+
     /**
      * Process dependencies generation
      * 
@@ -103,9 +103,9 @@ public final class DependenciesService
      * @return The dependencies
      */
     public static String process( List<? extends AbstractComponent> listComponents, String strFormat )
-    {   
+    {
         List<Dependency> listDependencies = getDependenciesList( listComponents );
-        
+
         if ( ( strFormat != null ) && strFormat.equals( FORMAT_TEXT ) )
         {
             return getDependenciesText( listDependencies );
@@ -123,15 +123,14 @@ public final class DependenciesService
 
         return "Invalid format";
     }
-    
-    
+
     /**
      * Get the dependency list from a list of artifact id
+     * 
      * @param components
-     *          a list of artifact id
-     * @return 
-     *          the list of dependency
-     */ 
+     *            a list of artifact id
+     * @return the list of dependency
+     */
     private static List<Dependency> getDependenciesList( String [ ] components )
     {
         List<Dependency> list = new ArrayList<>( );
@@ -169,12 +168,12 @@ public final class DependenciesService
 
         return list;
     }
-    
+
     /**
      * Get a dependency from an abstractComponent
      * 
      * @param component
-     *              The component
+     *            The component
      * @return a dependency
      */
     private static Dependency getDependency( AbstractComponent component )
@@ -183,7 +182,7 @@ public final class DependenciesService
         dep.setArtifactId( component.getArtifactId( ) );
         dep.setVersion( component.getVersion( ) );
         dep.setComponentType( component.getComponentType( ) );
-        if ( component.getComponentType().equals( LUTECE_CORE ) )
+        if ( component.getComponentType( ).equals( LUTECE_CORE ) )
         {
             dep.setGroupId( GROUP_ID_CORE );
         }
@@ -217,7 +216,7 @@ public final class DependenciesService
 
         return sb.toString( );
     }
-    
+
     /**
      * Returns the dependencies formatted with Text format
      * 
@@ -239,15 +238,16 @@ public final class DependenciesService
 
     /**
      * Get the site POM from a list of dependency
+     * 
      * @param list
-     *          the dependency list
+     *            the dependency list
      * @return the site POM.
      */
     private static String getDependenciesPOM( List<Dependency> list )
     {
-        //Check if core is in given dependency list
+        // Check if core is in given dependency list
         provideCoreDependency( list );
-        
+
         Site site = new Site( );
         Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_SITE, site );
@@ -256,10 +256,12 @@ public final class DependenciesService
 
         return template.getHtml( );
     }
-    
+
     /**
      * Provide core dependency
-     * @param list the list of dependencies
+     * 
+     * @param list
+     *            the list of dependencies
      */
     private static void provideCoreDependency( List<Dependency> list )
     {
@@ -276,7 +278,7 @@ public final class DependenciesService
         coreDependency.setComponentType( LUTECE_CORE );
         coreDependency.setGroupId( GROUP_ID_CORE );
         coreDependency.setVersion( strLatestCoreVersion );
-        list.add( 0 , coreDependency);
+        list.add( 0, coreDependency );
     }
 
 }

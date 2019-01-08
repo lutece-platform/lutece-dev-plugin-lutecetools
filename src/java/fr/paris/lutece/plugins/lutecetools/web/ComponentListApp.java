@@ -81,7 +81,7 @@ public class ComponentListApp extends MVCApplication
     private static final String VALUE_ON = "on";
     private static final String PLATFORM_GITHUB = "github";
     private static final String PLATFORM_GITLAB = "gitlab";
-    
+
     private static final long serialVersionUID = 1L;
 
     // RCI color mark
@@ -100,16 +100,16 @@ public class ComponentListApp extends MVCApplication
     @View( value = VIEW_HOME, defaultView = true )
     public XPage viewHome( HttpServletRequest request )
     {
-        List<String> listFilterPlatform = new ArrayList<>();
+        List<String> listFilterPlatform = new ArrayList<>( );
         String strGitHubFilter = request.getParameter( PARAMETER_GITHUB );
         String strGitLabFilter = request.getParameter( PARAMETER_GITLAB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
         boolean bDisplayCoreVersions = ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON );
-        if (( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) ))
+        if ( ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) ) )
         {
             listFilterPlatform.add( PLATFORM_GITHUB );
         }
-        if(( strGitLabFilter != null ) && ( strGitLabFilter.equals( VALUE_ON ) ))
+        if ( ( strGitLabFilter != null ) && ( strGitLabFilter.equals( VALUE_ON ) ) )
         {
             listFilterPlatform.add( PLATFORM_GITLAB );
         }
@@ -121,9 +121,9 @@ public class ComponentListApp extends MVCApplication
 
         ComponentsInfos ciInfos = MavenRepoService.instance( ).getComponents( );
 
-        if ( ! listFilterPlatform.isEmpty() )
+        if ( !listFilterPlatform.isEmpty( ) )
         {
-            ciInfos.setListComponents( filterPlatform(ciInfos.getListComponents( ) , listFilterPlatform ) );
+            ciInfos.setListComponents( filterPlatform( ciInfos.getListComponents( ), listFilterPlatform ) );
         }
 
         // FIXME
@@ -197,7 +197,7 @@ public class ComponentListApp extends MVCApplication
      *            The list to filter
      * @return The filtered list
      */
-    private List<Component> filterPlatform( List<Component> listComponents , List<String> listPlatform )
+    private List<Component> filterPlatform( List<Component> listComponents, List<String> listPlatform )
     {
         List<Component> list = new ArrayList<>( );
 

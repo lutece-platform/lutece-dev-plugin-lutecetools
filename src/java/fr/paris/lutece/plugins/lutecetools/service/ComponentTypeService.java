@@ -36,8 +36,7 @@ package fr.paris.lutece.plugins.lutecetools.service;
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 
 /**
- * This component info filler fills the component type : plugin, module or lutece-core.
- * This is used for example when building a pom of a site. 
+ * This component info filler fills the component type : plugin, module or lutece-core. This is used for example when building a pom of a site.
  */
 public class ComponentTypeService implements ComponentInfoFiller
 {
@@ -47,22 +46,22 @@ public class ComponentTypeService implements ComponentInfoFiller
     private static final String MODULE = "module";
     private static final String DASH = "-";
     private static final String SERVICE_NAME = "Compenent type filler (plugin, module, lutece-core and library)";
-           
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void fill(Component component, StringBuilder sbLogs) 
+    public void fill( Component component, StringBuilder sbLogs )
     {
         String strArtifactId = component.getArtifactId( );
-        
+
         if ( strArtifactId.equals( LUTECE_CORE ) )
         {
             component.setComponentType( LUTECE_CORE );
             return;
         }
-        
-        switch ( strArtifactId.split(DASH)[0] )
+
+        switch( strArtifactId.split( DASH ) [0] )
         {
             case LIBRARY:
                 component.setComponentType( LIBRARY );
@@ -74,10 +73,8 @@ public class ComponentTypeService implements ComponentInfoFiller
                 component.setComponentType( MODULE );
                 return;
         }
-        
-        sbLogs.append( "Component ")
-            .append( component.getArtifactId( ) )
-            .append( " has to be renamed to plugin-XXX, module-XXX ..." );
+
+        sbLogs.append( "Component " ).append( component.getArtifactId( ) ).append( " has to be renamed to plugin-XXX, module-XXX ..." );
     }
 
     /**
@@ -88,5 +85,5 @@ public class ComponentTypeService implements ComponentInfoFiller
     {
         return SERVICE_NAME;
     }
-    
+
 }

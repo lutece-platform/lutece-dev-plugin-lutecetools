@@ -263,13 +263,13 @@ public class GitHubService extends AbstractGitPlatformService
         if ( component.getBoolean( Component.IS_GIT_REPO ) )
         {
             String strScmUrl = component.get( Component.SCM_URL );
-            if ( strScmUrl != null  && strScmUrl.contains( "github" ) )
+            if ( strScmUrl != null && strScmUrl.contains( "github" ) )
             {
                 sbErrors.append( "Bad SCM info in the released POM. \n" );
             }
 
             String strSnapshotScmUrl = component.get( Component.SNAPSHOT_SCM_URL );
-            if ( strSnapshotScmUrl!= null && strSnapshotScmUrl.contains( "github" ) )
+            if ( strSnapshotScmUrl != null && strSnapshotScmUrl.contains( "github" ) )
             {
                 sbErrors.append( "Bad SCM info in the snapshot POM. \n" );
             }
@@ -308,19 +308,19 @@ public class GitHubService extends AbstractGitPlatformService
         {
             nStatus++;
         }
-        
+
         String strScmUrl = component.get( Component.SCM_URL );
-        if ( strScmUrl != null  && strScmUrl.contains( "github" ) )
+        if ( strScmUrl != null && strScmUrl.contains( "github" ) )
         {
             nStatus++;
         }
 
         String strSnapshotScmUrl = component.get( Component.SNAPSHOT_SCM_URL );
-        if ( strSnapshotScmUrl!= null && strSnapshotScmUrl.contains( "github" ) )
+        if ( strSnapshotScmUrl != null && strSnapshotScmUrl.contains( "github" ) )
         {
             nStatus++;
         }
-        
+
         List listBranches = (List) component.getObject( BRANCHES_LIST );
         if ( ( listBranches != null ) && ( listBranches.contains( "develop" ) ) )
         {

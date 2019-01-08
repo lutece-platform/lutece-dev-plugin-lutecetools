@@ -41,7 +41,6 @@ import fr.paris.lutece.portal.service.daemon.AppDaemonService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
-
 import java.io.IOException;
 
 import java.util.Date;
