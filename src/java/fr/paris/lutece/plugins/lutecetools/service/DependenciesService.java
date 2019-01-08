@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
+import fr.paris.lutece.plugins.lutecetools.business.AbstractComponent;
 import fr.paris.lutece.plugins.lutecetools.business.Dependency;
 import fr.paris.lutece.plugins.lutecetools.business.Site;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
@@ -54,9 +55,11 @@ public final class DependenciesService
     private static final String TEMPLATE_POM = "skin/plugins/lutecetools/pom_template.html";
     private static final String MARK_SITE = "site";
     private static final String MARK_DEPENDENCIES = "dependencies";
-    private static final String MARK_CORE_VERSION = "core_version";
+    private static final String LUTECE_CORE = "lutece-core";
     private static final String TAG_DEPENDENCY = "dependency";
     private static final String TAG_GROUP_ID = "groupId";
+    private static final String GROUP_ID_CORE = "fr.paris.lutece";
+    private static final String GROUP_ID_PLUGINS = GROUP_ID_CORE + ".plugins";
     private static final String TAG_ARTIFACT_ID = "artifactId";
     private static final String TAG_VERSION = "version";
     private static final String TAG_TYPE = "type";
@@ -71,7 +74,7 @@ public final class DependenciesService
     private DependenciesService( )
     {
     }
-
+    
     /**
      * Process dependencies generation
      * 
@@ -82,40 +85,56 @@ public final class DependenciesService
      * @return The dependencies
      */
     public static String process( String strSource, String strFormat )
-    {
+    {   
         String [ ] components = strSource.split( "\\s+" );
-
+        
         List<Dependency> list = getDependenciesList( components );
 
+        return process( list, strFormat);
+    }
+    
+    /**
+     * Process dependencies generation
+     * 
+     * @param listComponents
+     *            The list of components for building the pom
+     * @param strFormat
+     *            The output
+     * @return The dependencies
+     */
+    public static String process( List<? extends AbstractComponent> listComponents, String strFormat )
+    {   
+        List<Dependency> listDependencies = getDependenciesList( listComponents );
+        
         if ( ( strFormat != null ) && strFormat.equals( FORMAT_TEXT ) )
         {
-            return getDependenciesText( list );
+            return getDependenciesText( listDependencies );
         }
         else
             if ( ( strFormat != null ) && strFormat.equals( FORMAT_XML ) )
             {
-                return getDependenciesXML( list );
+                return getDependenciesXML( listDependencies );
             }
             else
                 if ( ( strFormat != null ) && strFormat.equals( FORMAT_POM ) )
                 {
-                    return getDependenciesPOM( list );
+                    return getDependenciesPOM( listDependencies );
                 }
 
         return "Invalid format";
     }
-
+    
+    
     /**
-     * Gets the dependencies list
-     * 
+     * Get the dependency list from a list of artifact id
      * @param components
-     *            The array of components
-     * @return The list
-     */
+     *          a list of artifact id
+     * @return 
+     *          the list of dependency
+     */ 
     private static List<Dependency> getDependenciesList( String [ ] components )
     {
-        List<Dependency> list = new ArrayList<Dependency>( );
-
+        List<Dependency> list = new ArrayList<>( );
         for ( String name : components )
         {
             Dependency dependency = new Dependency( );
@@ -125,10 +144,54 @@ public final class DependenciesService
             MavenRepoService.setReleaseVersion( dependency );
             list.add( dependency );
         }
+        return list;
+
+    }
+
+    /**
+     * Gets the dependencies list from a component list
+     * 
+     * @param components
+     *            The array of components
+     * @return The list
+     */
+    private static List<Dependency> getDependenciesList( List<? extends AbstractComponent> listComponents )
+    {
+        List<Dependency> list = new ArrayList<>( );
+
+        for ( AbstractComponent component : listComponents )
+        {
+            Dependency dependency = getDependency( component );
+            list.add( dependency );
+        }
 
         Collections.sort( list );
 
         return list;
+    }
+    
+    /**
+     * Get a dependency from an abstractComponent
+     * 
+     * @param component
+     *              The component
+     * @return a dependency
+     */
+    private static Dependency getDependency( AbstractComponent component )
+    {
+        Dependency dep = new Dependency( );
+        dep.setArtifactId( component.getArtifactId( ) );
+        dep.setVersion( component.getVersion( ) );
+        dep.setComponentType( component.getComponentType( ) );
+        if ( component.getComponentType().equals( LUTECE_CORE ) )
+        {
+            dep.setGroupId( GROUP_ID_CORE );
+        }
+        else
+        {
+            dep.setGroupId( GROUP_ID_PLUGINS );
+        }
+        return dep;
     }
 
     /**
@@ -154,7 +217,7 @@ public final class DependenciesService
 
         return sb.toString( );
     }
-
+    
     /**
      * Returns the dependencies formatted with Text format
      * 
@@ -174,16 +237,46 @@ public final class DependenciesService
         return sb.toString( );
     }
 
+    /**
+     * Get the site POM from a list of dependency
+     * @param list
+     *          the dependency list
+     * @return the site POM.
+     */
     private static String getDependenciesPOM( List<Dependency> list )
     {
+        //Check if core is in given dependency list
+        provideCoreDependency( list );
+        
         Site site = new Site( );
         Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_SITE, site );
         model.put( MARK_DEPENDENCIES, list );
-        model.put( MARK_CORE_VERSION, MavenRepoService.getLatestCoreVersion( ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_POM, LocaleService.getDefault( ), model );
 
         return template.getHtml( );
+    }
+    
+    /**
+     * Provide core dependency
+     * @param list the list of dependencies
+     */
+    private static void provideCoreDependency( List<Dependency> list )
+    {
+        for ( Dependency dependency : list )
+        {
+            if ( dependency.getArtifactId( ).equals( LUTECE_CORE ) )
+            {
+                return;
+            }
+        }
+        String strLatestCoreVersion = MavenRepoService.getLatestCoreVersion( );
+        Dependency coreDependency = new Dependency( );
+        coreDependency.setArtifactId( LUTECE_CORE );
+        coreDependency.setComponentType( LUTECE_CORE );
+        coreDependency.setGroupId( GROUP_ID_CORE );
+        coreDependency.setVersion( strLatestCoreVersion );
+        list.add( 0 , coreDependency);
     }
 
 }

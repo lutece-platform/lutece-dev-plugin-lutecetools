@@ -33,17 +33,18 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.portal.service.daemon.AppDaemonService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 
 import java.util.Date;
-import org.codehaus.jackson.map.SerializationConfig.Feature;
 
 /**
  * ComponentService
@@ -125,7 +126,7 @@ public class ComponentService
      */
     private static String getAsJSON( Component component ) throws IOException
     {
-        _mapper.enable( Feature.INDENT_OUTPUT );
+        _mapper.enable( SerializationFeature.INDENT_OUTPUT );
         return _mapper.writeValueAsString( component );
     }
 

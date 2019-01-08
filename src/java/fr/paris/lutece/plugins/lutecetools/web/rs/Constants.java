@@ -38,6 +38,8 @@ public final class Constants
     public static final String PATH_COMPONENT = "component";
     public static final String PATH_PLUGIN = "lutecetools/";
     public static final String PATH_STATS = "stats";
+    public static final String PATH_POM_BUILDER = "pombuilder";
+    public static final String PATH_SITE = "site";
     public static final String PATH_JENKINS = "jenkins";
     public static final String PATH_JENKINS_BADGE = "/badge";
     public static final String PATH_ID = "id";
@@ -54,5 +56,4 @@ public final class Constants
     public static final String MAVEN_REPO_LUTECE_PLUGIN = "lutece-plugin";
     public static final String MAVEN_REPO_LUTECE_SITE = "lutece-site";
     public static final String MAVEN_REPO_LUTECE_CORE = "lutece-core";
-
 }
