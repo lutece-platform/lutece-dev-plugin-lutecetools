@@ -60,10 +60,10 @@ public class MavenRepoServiceTest extends LuteceTestCase
     {
         System.out.println( "getComponent" );
 
-        Component component = MavenRepoService.getComponent( "module-mylutece-persona", true );
+        Component component = MavenRepoService.instance().getComponent( "module-mylutece-persona", true );
         System.out.println( component );
 
-        component = MavenRepoService.getComponent( "module-document-cmis", true );
+        component = MavenRepoService.instance().getComponent( "module-document-cmis", true );
         System.out.println( component );
 
     }

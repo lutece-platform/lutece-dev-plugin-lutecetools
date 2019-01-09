@@ -79,7 +79,7 @@ public class PomBuilderRest
             {
                 if ( StringUtils.isEmpty( comp.getVersion( ) ) || StringUtils.isEmpty( comp.getComponentType( ) ) )
                 {
-                    Component fullCompo = MavenRepoService.getComponent( comp.getArtifactId( ), true, true );
+                    Component fullCompo = MavenRepoService.instance( ).getComponent( comp.getArtifactId( ), true, true );
                     listFullComponent.add( fullCompo );
                 }
             }

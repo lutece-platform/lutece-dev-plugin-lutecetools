@@ -114,7 +114,7 @@ public class ComponentRest
         StringBuffer sbXML = new StringBuffer( XmlUtil.getXmlHeader( ) );
         XmlUtil.beginElement( sbXML, KEY_COMPONENTS );
 
-        for ( String strArtifactId : MavenRepoService.getComponentsListFromRepository( ) )
+        for ( String strArtifactId : MavenRepoService.instance().getComponentsListFromRepository( ) )
         {
             XmlUtil.addElement( sbXML, KEY_ID, strArtifactId );
         }
@@ -134,7 +134,7 @@ public class ComponentRest
         JSONObject json = new JSONObject( );
         JSONArray jsonComponents = new JSONArray( );
 
-        for ( String strArtifactId : MavenRepoService.getComponentsListFromRepository( ) )
+        for ( String strArtifactId : MavenRepoService.instance().getComponentsListFromRepository( ) )
         {
             JSONObject jsonComponent = new JSONObject( );
             jsonComponent.accumulate( KEY_ID, strArtifactId );
@@ -202,7 +202,7 @@ public class ComponentRest
 
         try
         {
-            Component component = MavenRepoService.getComponent( strArtifactId, true, !bCache, strType );
+            Component component = MavenRepoService.instance().getComponent( strArtifactId, true, !bCache, strType );
 
             if ( component != null )
             {
@@ -241,7 +241,7 @@ public class ComponentRest
         try
         {
 
-            Component component = MavenRepoService.getComponent( strArtifactId, true, !bCache, strType );
+            Component component = MavenRepoService.instance().getComponent( strArtifactId, true, !bCache, strType );
 
             if ( component != null )
             {
@@ -306,8 +306,8 @@ public class ComponentRest
     private void addComponentJson( JSONObject json, Component component )
     {
         JSONObject jsonComponent = new JSONObject( );
-        int nJiraIssueCount=component.get( JiraService.JIRA_ISSUES_COUNT )!=null ?  component.getInt( JiraService.JIRA_ISSUES_COUNT ) :0;
-        int nJiraIssueUnresolved=component.get( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT )!=null ?  component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) :0;
+        int nJiraIssueCount=component.getObject( JiraService.JIRA_ISSUES_COUNT )!=null ?  component.getInt( JiraService.JIRA_ISSUES_COUNT ) :0;
+        int nJiraIssueUnresolved=component.getObject( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT )!=null ?  component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) :0;
           
         
         jsonComponent.accumulate( KEY_ID, component.getArtifactId( ) );

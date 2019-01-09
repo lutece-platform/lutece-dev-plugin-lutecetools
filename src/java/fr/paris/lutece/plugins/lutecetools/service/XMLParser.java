@@ -85,11 +85,11 @@ public class XMLParser
                 String strLastRelease;
                 if ( strArtifactId.equals( LUTECE_CORE ) )
                 {
-                    strLastRelease = MavenRepoService.getVersion( URL_CORE );
+                    strLastRelease = MavenRepoService.instance().getVersion( URL_CORE );
                 }
                 else
                 {
-                    strLastRelease = MavenRepoService.getVersion( URL_PLUGINS + strArtifactId );
+                    strLastRelease = MavenRepoService.instance().getVersion( URL_PLUGINS + strArtifactId );
                 }
                 if ( !strLastRelease.equals( RELEASE_NOT_FOUND ) )
                 {

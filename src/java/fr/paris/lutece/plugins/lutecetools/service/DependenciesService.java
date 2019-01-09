@@ -140,7 +140,7 @@ public final class DependenciesService
             dependency.setArtifactId( name );
             dependency.setGroupId( "fr.paris.lutece.plugins" );
             dependency.setComponentType( "lutece-plugin" );
-            MavenRepoService.setReleaseVersion( dependency );
+            MavenRepoService.instance( ).setReleaseVersion( dependency );
             list.add( dependency );
         }
         return list;
@@ -272,7 +272,7 @@ public final class DependenciesService
                 return;
             }
         }
-        String strLatestCoreVersion = MavenRepoService.getLatestCoreVersion( );
+        String strLatestCoreVersion = MavenRepoService.instance( ).getLatestCoreVersion( );
         Dependency coreDependency = new Dependency( );
         coreDependency.setArtifactId( LUTECE_CORE );
         coreDependency.setComponentType( LUTECE_CORE );

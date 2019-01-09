@@ -81,7 +81,6 @@ public class ComponentListApp extends MVCApplication
     private static final String VALUE_ON = "on";
     private static final String PLATFORM_GITHUB = "github";
     private static final String PLATFORM_GITLAB = "gitlab";
-
     private static final long serialVersionUID = 1L;
 
     // RCI color mark
@@ -108,10 +107,6 @@ public class ComponentListApp extends MVCApplication
         if ( ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) ) )
         {
             listFilterPlatform.add( PLATFORM_GITHUB );
-        }
-        if ( ( strGitLabFilter != null ) && ( strGitLabFilter.equals( VALUE_ON ) ) )
-        {
-            listFilterPlatform.add( PLATFORM_GITLAB );
         }
         Integer nTotal = 0;
         int nTotalPRs = 0;
@@ -156,7 +151,7 @@ public class ComponentListApp extends MVCApplication
         model.put( MARK_GITHUB_FILTER, listFilterPlatform.contains( PLATFORM_GITHUB ) );
         model.put( MARK_GITLAB_FILTER, listFilterPlatform.contains( PLATFORM_GITLAB ) );
         model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );
-        model.put( MARK_LOGS, MavenRepoService.getLogs( ) );
+        model.put( MARK_LOGS, MavenRepoService.instance().getLogs( ) );
 
         return getXPage( TEMPLATE_XPAGE, request.getLocale( ), model );
     }
@@ -185,7 +180,7 @@ public class ComponentListApp extends MVCApplication
     public XPage clearCache( HttpServletRequest request )
     {
         ComponentService.clearCache( );
-        MavenRepoService.clearLogs( );
+        MavenRepoService.instance().clearLogs( );
 
         return redirect( request, VIEW_HOME, getViewParameters( request ) );
     }
