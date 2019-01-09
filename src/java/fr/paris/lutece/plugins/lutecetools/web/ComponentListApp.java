@@ -108,6 +108,10 @@ public class ComponentListApp extends MVCApplication
         {
             listFilterPlatform.add( PLATFORM_GITHUB );
         }
+	 if ( ( strGitLabFilter != null ) && ( strGitLabFilter.equals( VALUE_ON ) ) )
+        {
+            listFilterPlatform.add( PLATFORM_GITLAB );
+        }
         Integer nTotal = 0;
         int nTotalPRs = 0;
         long oldestPR = Long.MAX_VALUE;
