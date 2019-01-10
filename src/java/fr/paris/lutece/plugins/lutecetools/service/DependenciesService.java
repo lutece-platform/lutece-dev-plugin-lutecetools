@@ -90,7 +90,7 @@ public final class DependenciesService
 
         List<Dependency> list = getDependenciesList( components );
 
-        return process( list, strFormat );
+        return process( list, strFormat, null );
     }
 
     /**
@@ -100,9 +100,13 @@ public final class DependenciesService
      *            The list of components for building the pom
      * @param strFormat
      *            The output
+     * @param site
+     *            The site to build
+     * @param strArtifactId
+     *            The artifact Id
      * @return The dependencies
      */
-    public static String process( List<? extends AbstractComponent> listComponents, String strFormat )
+    public static String process( List<? extends AbstractComponent> listComponents, String strFormat, Site site )
     {
         List<Dependency> listDependencies = getDependenciesList( listComponents );
 
@@ -118,7 +122,7 @@ public final class DependenciesService
             else
                 if ( ( strFormat != null ) && strFormat.equals( FORMAT_POM ) )
                 {
-                    return getDependenciesPOM( listDependencies );
+                    return getDependenciesPOM( listDependencies, site );
                 }
 
         return "Invalid format";
@@ -241,15 +245,18 @@ public final class DependenciesService
      * 
      * @param list
      *            the dependency list
+     * @param strArtifactId
+     *            the artifact id
      * @return the site POM.
+     *            the site name
      */
-    private static String getDependenciesPOM( List<Dependency> list )
+    private static String getDependenciesPOM( List<Dependency> list, Site site)
     {
         // Check if core is in given dependency list
         provideCoreDependency( list );
-
-        Site site = new Site( );
-        Map<String, Object> model = new HashMap<String, Object>( );
+        
+        if ( site == null ) site = new Site();
+        Map<String, Object> model = new HashMap<>( );
         model.put( MARK_SITE, site );
         model.put( MARK_DEPENDENCIES, list );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_POM, LocaleService.getDefault( ), model );

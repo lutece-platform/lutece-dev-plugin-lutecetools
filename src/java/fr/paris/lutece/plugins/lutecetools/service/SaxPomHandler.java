@@ -261,6 +261,6 @@ public class SaxPomHandler extends DefaultHandler
                                 if ( _bSCM && _bDevelopperConnection )
                                 {
                                     _sbScmDeveloperConnection.append( new String( ch, start, length ) );
-                                }
+                                }                                     
     }
 }

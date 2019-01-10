@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.lutecetools.web.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.plugins.lutecetools.business.Site;
 import fr.paris.lutece.plugins.lutecetools.business.dto.SiteBuilderConfDto;
 import fr.paris.lutece.plugins.lutecetools.service.DependenciesService;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
@@ -83,8 +84,15 @@ public class PomBuilderRest
                     listFullComponent.add( fullCompo );
                 }
             }
+            
+            Site siteToBuild = new Site();
+            siteToBuild.setArtifactId( siteBuilderConfDto.getArtifactId( ) );
+            siteToBuild.setComponentType( siteBuilderConfDto.getComponentType( ) );
+            siteToBuild.setGroupId( siteBuilderConfDto.getGroupId( ) );
+            siteToBuild.setName( siteBuilderConfDto.getSiteName( ) );
+            siteToBuild.setVersion( siteBuilderConfDto.getVersion( ) );
 
-            return Response.ok( DependenciesService.process( listFullComponent, "pom" ) ).build( );
+            return Response.ok( DependenciesService.process( listFullComponent, "pom", siteToBuild ) ).build( );
         }
         catch( IOException e )
         {
