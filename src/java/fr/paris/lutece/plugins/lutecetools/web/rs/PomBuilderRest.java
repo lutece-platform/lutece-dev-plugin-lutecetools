@@ -84,8 +84,8 @@ public class PomBuilderRest
                     listFullComponent.add( fullCompo );
                 }
             }
-            
-            Site siteToBuild = new Site();
+
+            Site siteToBuild = new Site( );
             siteToBuild.setArtifactId( siteBuilderConfDto.getArtifactId( ) );
             siteToBuild.setComponentType( siteBuilderConfDto.getComponentType( ) );
             siteToBuild.setGroupId( siteBuilderConfDto.getGroupId( ) );

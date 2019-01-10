@@ -247,15 +247,15 @@ public final class DependenciesService
      *            the dependency list
      * @param strArtifactId
      *            the artifact id
-     * @return the site POM.
-     *            the site name
+     * @return the site POM. the site name
      */
-    private static String getDependenciesPOM( List<Dependency> list, Site site)
+    private static String getDependenciesPOM( List<Dependency> list, Site site )
     {
         // Check if core is in given dependency list
         provideCoreDependency( list );
-        
-        if ( site == null ) site = new Site();
+
+        if ( site == null )
+            site = new Site( );
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_SITE, site );
         model.put( MARK_DEPENDENCIES, list );

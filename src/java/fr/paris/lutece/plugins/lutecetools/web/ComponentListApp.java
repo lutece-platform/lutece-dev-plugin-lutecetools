@@ -108,7 +108,7 @@ public class ComponentListApp extends MVCApplication
         {
             listFilterPlatform.add( PLATFORM_GITHUB );
         }
-	 if ( ( strGitLabFilter != null ) && ( strGitLabFilter.equals( VALUE_ON ) ) )
+        if ( ( strGitLabFilter != null ) && ( strGitLabFilter.equals( VALUE_ON ) ) )
         {
             listFilterPlatform.add( PLATFORM_GITLAB );
         }
@@ -155,7 +155,7 @@ public class ComponentListApp extends MVCApplication
         model.put( MARK_GITHUB_FILTER, listFilterPlatform.contains( PLATFORM_GITHUB ) );
         model.put( MARK_GITLAB_FILTER, listFilterPlatform.contains( PLATFORM_GITLAB ) );
         model.put( MARK_DISPLAY_CORE_VERSIONS, bDisplayCoreVersions );
-        model.put( MARK_LOGS, MavenRepoService.instance().getLogs( ) );
+        model.put( MARK_LOGS, MavenRepoService.instance( ).getLogs( ) );
 
         return getXPage( TEMPLATE_XPAGE, request.getLocale( ), model );
     }
@@ -184,7 +184,7 @@ public class ComponentListApp extends MVCApplication
     public XPage clearCache( HttpServletRequest request )
     {
         ComponentService.clearCache( );
-        MavenRepoService.instance().clearLogs( );
+        MavenRepoService.instance( ).clearLogs( );
 
         return redirect( request, VIEW_HOME, getViewParameters( request ) );
     }

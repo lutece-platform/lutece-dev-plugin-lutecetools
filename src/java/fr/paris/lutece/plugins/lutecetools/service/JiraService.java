@@ -221,7 +221,7 @@ public class JiraService implements ComponentInfoFiller
         {
             sbErrors.append( "JIRA key is missing in the pom.xml. \n" );
         }
-        if ( component.getObject( JIRA_KEY_ERROR )!=null && component.getInt( JIRA_KEY_ERROR ) == JIRAKEY_ERROR_INVALID )
+        if ( component.getObject( JIRA_KEY_ERROR ) != null && component.getInt( JIRA_KEY_ERROR ) == JIRAKEY_ERROR_INVALID )
         {
             sbErrors.append( "JIRA key '" ).append( component.get( Component.JIRA_KEY ) ).append( "' is invalid. \n" );
         }

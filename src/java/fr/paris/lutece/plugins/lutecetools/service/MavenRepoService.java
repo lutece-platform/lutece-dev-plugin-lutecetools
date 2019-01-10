@@ -140,7 +140,7 @@ public final class MavenRepoService
      * @param component
      *            The component
      */
-    public  void setReleaseVersion( Dependency component )
+    public void setReleaseVersion( Dependency component )
     {
         component.setVersion( getVersion( URL_PLUGINS + component.getArtifactId( ) ) );
     }
@@ -148,7 +148,7 @@ public final class MavenRepoService
     /**
      * Set the POM site version
      */
-    public  void setPomSiteVersion( )
+    public void setPomSiteVersion( )
     {
         String strVersion = getVersion( URL_SITE_POM );
         DatastoreService.setDataValue( KEY_SITE_POM_VERSION, strVersion );
@@ -161,7 +161,7 @@ public final class MavenRepoService
      *            The maven repository URL
      * @return The version
      */
-    public  String getVersion( String strUrl )
+    public String getVersion( String strUrl )
     {
         String strVersion = RELEASE_NOT_FOUND;
 
@@ -169,7 +169,7 @@ public final class MavenRepoService
         {
             HttpAccess httpAccess = new HttpAccess( );
             String strHtml = httpAccess.doGet( strUrl );
-            
+
             List<String> listElement = getAnchorsList( strHtml );
             List<String> listVersions = new ArrayList<String>( );
             for ( String strAnchor : listElement )
@@ -228,7 +228,7 @@ public final class MavenRepoService
      * 
      * @return The list
      */
-    public  List<String> getComponentsListFromRepository( )
+    public List<String> getComponentsListFromRepository( )
     {
         List<String> list = new ArrayList<>( );
 
@@ -263,7 +263,7 @@ public final class MavenRepoService
      * @param bFetch
      * @return The component
      */
-    public  Component getComponent( String strArtifactId, boolean bFetch )
+    public Component getComponent( String strArtifactId, boolean bFetch )
     {
         return getComponent( strArtifactId, bFetch, false );
     }
@@ -277,7 +277,7 @@ public final class MavenRepoService
      * @param bForceReload
      * @return The component
      */
-    public  Component getComponent( String strArtifactId, boolean bFetch, boolean bForceReload )
+    public Component getComponent( String strArtifactId, boolean bFetch, boolean bForceReload )
     {
         return getComponent( strArtifactId, bFetch, bForceReload, null );
     }
@@ -292,7 +292,7 @@ public final class MavenRepoService
      *            the component type
      * @return
      */
-    public  Component getComponent( String strArtifactId, boolean bFetch, boolean bForceReload, String strType )
+    public Component getComponent( String strArtifactId, boolean bFetch, boolean bForceReload, String strType )
     {
 
         Component component = bForceReload ? null : ComponentService.load( strArtifactId );
@@ -337,7 +337,7 @@ public final class MavenRepoService
      *            Logs
      * @return The component
      */
-    private  Component fetchComponent( String strArtifactId, String strType, StringBuilder sbLogs )
+    private Component fetchComponent( String strArtifactId, String strType, StringBuilder sbLogs )
     {
         Component component = new Component( );
         component.setArtifactId( strArtifactId );
@@ -345,14 +345,15 @@ public final class MavenRepoService
         {
             component.setVersion( getVersion( URL_CORE ) );
         }
-        else  if ( Constants.MAVEN_REPO_LUTECE_SITE.equals( getMavenRepoDirectoryType( strArtifactId, strType ) ) )
-        {
-            component.setVersion( getVersion( URL_THEMES + strArtifactId ) );
-        }
         else
-        {
-            component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
-        }
+            if ( Constants.MAVEN_REPO_LUTECE_SITE.equals( getMavenRepoDirectoryType( strArtifactId, strType ) ) )
+            {
+                component.setVersion( getVersion( URL_THEMES + strArtifactId ) );
+            }
+            else
+            {
+                component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
+            }
 
         long lTime1 = new Date( ).getTime( );
         getPomInfos( component, strType, sbLogs );
@@ -377,7 +378,7 @@ public final class MavenRepoService
      * @param sbLogs
      *            Logs
      */
-    private  void getPomInfos( Component component, String strType, StringBuilder sbLogs )
+    private void getPomInfos( Component component, String strType, StringBuilder sbLogs )
     {
         StringBuilder sbPomUrl;
 
@@ -428,7 +429,7 @@ public final class MavenRepoService
      * @param sbLogs
      *            Logs
      */
-    private  void getPomInfos( Component component, String strPomUrl, boolean bSnapshot, StringBuilder sbLogs )
+    private void getPomInfos( Component component, String strPomUrl, boolean bSnapshot, StringBuilder sbLogs )
     {
         try
         {
@@ -483,7 +484,7 @@ public final class MavenRepoService
      *            The logs
      * @return The URL
      */
-    private  String getSnapshotPomUrl( Component component, StringBuilder sbLogs, String strType )
+    private String getSnapshotPomUrl( Component component, StringBuilder sbLogs, String strType )
     {
         String strPomUrl = null;
         String strSnapshotsDirUrl;
@@ -549,7 +550,7 @@ public final class MavenRepoService
      *            The HTML code
      * @return The list
      */
-     List<String> getAnchorsList2( String strHtml )
+    List<String> getAnchorsList2( String strHtml )
     {
         List<String> list = new ArrayList<String>( );
         String strPattern = "<a[^>]*>(.+?)</a>";
@@ -571,7 +572,7 @@ public final class MavenRepoService
      *            The HTML code
      * @return The list
      */
-    private  List<String> getAnchorsList( String strHtml )
+    private List<String> getAnchorsList( String strHtml )
     {
         List<String> list = new ArrayList<String>( );
         String strCurrent = strHtml;
@@ -592,7 +593,7 @@ public final class MavenRepoService
         return list;
     }
 
-    private  String getMavenRepoDirectoryType( String strArtifactId, String strComponentType )
+    private String getMavenRepoDirectoryType( String strArtifactId, String strComponentType )
     {
 
         String strTypeRepo = null;
@@ -659,12 +660,12 @@ public final class MavenRepoService
         }
     }
 
-    public  String getLogs( )
+    public String getLogs( )
     {
         return _sbLogs.toString( );
     }
 
-    public  void clearLogs( )
+    public void clearLogs( )
     {
         _sbLogs = new StringBuilder( );
     }
@@ -690,7 +691,7 @@ public final class MavenRepoService
         return ( lNow - component.getLastUpdate( ) ) > UPDATE_DELAY;
     }
 
-    public  String getLatestCoreVersion( )
+    public String getLatestCoreVersion( )
     {
         return getVersion( URL_CORE );
     }

@@ -114,7 +114,7 @@ public class ComponentRest
         StringBuffer sbXML = new StringBuffer( XmlUtil.getXmlHeader( ) );
         XmlUtil.beginElement( sbXML, KEY_COMPONENTS );
 
-        for ( String strArtifactId : MavenRepoService.instance().getComponentsListFromRepository( ) )
+        for ( String strArtifactId : MavenRepoService.instance( ).getComponentsListFromRepository( ) )
         {
             XmlUtil.addElement( sbXML, KEY_ID, strArtifactId );
         }
@@ -134,7 +134,7 @@ public class ComponentRest
         JSONObject json = new JSONObject( );
         JSONArray jsonComponents = new JSONArray( );
 
-        for ( String strArtifactId : MavenRepoService.instance().getComponentsListFromRepository( ) )
+        for ( String strArtifactId : MavenRepoService.instance( ).getComponentsListFromRepository( ) )
         {
             JSONObject jsonComponent = new JSONObject( );
             jsonComponent.accumulate( KEY_ID, strArtifactId );
@@ -202,7 +202,7 @@ public class ComponentRest
 
         try
         {
-            Component component = MavenRepoService.instance().getComponent( strArtifactId, true, !bCache, strType );
+            Component component = MavenRepoService.instance( ).getComponent( strArtifactId, true, !bCache, strType );
 
             if ( component != null )
             {
@@ -241,7 +241,7 @@ public class ComponentRest
         try
         {
 
-            Component component = MavenRepoService.instance().getComponent( strArtifactId, true, !bCache, strType );
+            Component component = MavenRepoService.instance( ).getComponent( strArtifactId, true, !bCache, strType );
 
             if ( component != null )
             {
@@ -306,10 +306,10 @@ public class ComponentRest
     private void addComponentJson( JSONObject json, Component component )
     {
         JSONObject jsonComponent = new JSONObject( );
-        int nJiraIssueCount=component.getObject( JiraService.JIRA_ISSUES_COUNT )!=null ?  component.getInt( JiraService.JIRA_ISSUES_COUNT ) :0;
-        int nJiraIssueUnresolved=component.getObject( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT )!=null ?  component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) :0;
-          
-        
+        int nJiraIssueCount = component.getObject( JiraService.JIRA_ISSUES_COUNT ) != null ? component.getInt( JiraService.JIRA_ISSUES_COUNT ) : 0;
+        int nJiraIssueUnresolved = component.getObject( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) != null ? component
+                .getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) : 0;
+
         jsonComponent.accumulate( KEY_ID, component.getArtifactId( ) );
         jsonComponent.accumulate( KEY_VERSION, component.getVersion( ) );
         jsonComponent.accumulate( KEY_CORE_VERSION, component.get( Component.CORE_VERSION ) );
@@ -322,8 +322,7 @@ public class ComponentRest
         jsonComponent.accumulate( KEY_JIRA_CODE, component.get( Component.JIRA_KEY ) );
         jsonComponent.accumulate( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/projects/" + component.get( Component.JIRA_KEY )
                 + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
-        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES,
-                nJiraIssueCount - nJiraIssueUnresolved );
+        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, nJiraIssueCount - nJiraIssueUnresolved );
         jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, nJiraIssueUnresolved );
         jsonComponent.accumulate( KEY_SCM_URL, component.get( Component.SCM_URL ) );
         jsonComponent.accumulate( KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
