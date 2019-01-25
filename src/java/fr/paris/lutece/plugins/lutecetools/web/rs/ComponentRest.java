@@ -40,12 +40,19 @@ import fr.paris.lutece.plugins.lutecetools.service.SonarService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
 import fr.paris.lutece.plugins.rest.util.json.JSONUtil;
 import fr.paris.lutece.plugins.rest.util.xml.XMLUtil;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.util.xml.XmlUtil;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -81,6 +88,13 @@ public class ComponentRest
     private static final String KEY_SCM_SNAPSHOT_URL = "scm_snapshot_url";
     private static final String KEY_SCM_CONNECTION = "scm_connection";
     private static final String KEY_SCM_DEVELOPER_CONNECTION = "scm_developer_connection";
+    private static final String KEY_KEYWORDS = "keywords";
+    private static final String KEY_KEYWORD = "keyword";
+    private static final String KEY_INTRODUCTION = "description";
+    private static final String KEY_METADATA = "metadata";
+    private static final String KEY_DATA = "data";
+    private static final String KEY_LANG = "lang";
+    
 
     @GET
     @Path( Constants.PATH_ALL )
@@ -291,7 +305,30 @@ public class ComponentRest
         XmlUtil.addElement( sbXML, KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
         XmlUtil.addElement( sbXML, KEY_SCM_CONNECTION, component.get( Component.SCM_CONNECTION ) );
         XmlUtil.addElement( sbXML, KEY_SCM_DEVELOPER_CONNECTION, component.get( Component.SCM_DEVELOPER_CONNECTION ) );
+        
+        List<Locale> locales = I18nService.getAdminAvailableLocales( );
+        for ( Locale locale : locales )
+        {
+            Map<String,String> attributeList = new HashMap<>( );
+            attributeList.put( KEY_LANG, locale.getLanguage( ) );
 
+            XmlUtil.beginElement( sbXML, KEY_METADATA, attributeList );
+            XmlUtil.addElementHtml( sbXML, KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ).toUpperCase( ) )==null?"": component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ).toUpperCase( ) ) ) );
+            
+            Set<String> keywords = (HashSet<String>)component.getObject( Component.SITE_KEYWORDS + "_" + locale.getLanguage( ).toUpperCase( ) );
+            if (keywords != null )
+            {
+                XmlUtil.beginElement( sbXML, KEY_KEYWORDS );
+                for ( String keyword : keywords )
+                {
+                    XmlUtil.addElement( sbXML, KEY_KEYWORD, keyword );
+                }
+                XmlUtil.endElement( sbXML, KEY_KEYWORDS );            
+            }
+            
+            XmlUtil.endElement( sbXML, KEY_METADATA );
+        }
+        
         XmlUtil.endElement( sbXML, KEY_COMPONENT );
     }
 
@@ -328,7 +365,33 @@ public class ComponentRest
         jsonComponent.accumulate( KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
         jsonComponent.accumulate( KEY_SCM_CONNECTION, component.get( Component.SCM_CONNECTION ) );
         jsonComponent.accumulate( KEY_SCM_DEVELOPER_CONNECTION, component.get( Component.SCM_DEVELOPER_CONNECTION ) );
+        jsonComponent.accumulate( KEY_KEYWORDS, ( component.get( Component.SITE_KEYWORDS )==null?"": component.get( Component.SITE_KEYWORDS ) ) );
+        jsonComponent.accumulate( KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION )==null?"": component.get( Component.SITE_INTRODUCTION ) ) );
 
+        List<Locale> locales = I18nService.getAdminAvailableLocales( );
+        for ( Locale locale : locales )
+        {
+            JSONObject jsonLang = new JSONObject( );
+            JSONObject jsonMeta = new JSONObject( );
+            JSONObject jsonKeywords = new JSONObject( );
+            
+            Set<String> keywords = (HashSet<String>)component.getObject( Component.SITE_KEYWORDS + "_" + locale.getLanguage( ).toUpperCase( ) );
+            if (keywords != null )
+            {
+                for ( String keyword : keywords )
+                {
+                    jsonKeywords.accumulate( KEY_KEYWORD, keyword );
+                }
+            }
+            jsonMeta.accumulate( KEY_KEYWORDS, jsonKeywords );
+            jsonMeta.accumulate( KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ).toUpperCase( ) )==null?"": component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ).toUpperCase( ) ) ) );
+            
+            jsonLang.accumulate( KEY_LANG, locale.getLanguage( ) );
+            jsonLang.accumulate( KEY_DATA, jsonMeta );
+            
+            jsonComponent.accumulate( KEY_METADATA, jsonLang );
+        }
+        
         json.accumulate( KEY_COMPONENT, jsonComponent );
     }
 }

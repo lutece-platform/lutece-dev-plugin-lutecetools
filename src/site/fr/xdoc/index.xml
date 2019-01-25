@@ -20,6 +20,7 @@
                     <li>Génération d'un POM de site à partir d'une liste de plugins</li>
                     <li>Gestion des dépendances d'un POM : Mise à jour à la dernière version stable des dépendances d'un POM</li>
                     <li>Gestion des versions de dépendances : Génerer les dépendances à partir d'une liste de composants.</li>
+                    <li> Rest Json / Xml API: (...) /rest/lutecetools/component/PLUGIN-NAME?[cache=true|false]&amp;[format=json|xml]</li>
                 </ul>
 
             </subsection>

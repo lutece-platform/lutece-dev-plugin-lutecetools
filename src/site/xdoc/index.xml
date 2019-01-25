@@ -20,6 +20,7 @@
                     <li> Generating a site POM from a list of plugins </li>
                     <li> Dependency management of a POM: Update to the last stable version of the dependencies of a POM </li>
                     <li> Managing dependency versions: Generate dependencies from a list of components. </li>
+                    <li> Rest Json / Xml API: (...) /rest/lutecetools/component/PLUGIN-NAME?[cache=true|false]&amp;[format=json|xml]</li>
                 </ul>
             </subsection>
             <subsection name="Configuration">

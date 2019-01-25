@@ -53,6 +53,9 @@ public class GitLabService extends AbstractGitPlatformService
     private static final String PROPERTY_GITLAB_URL = "lutecetools.gitlab.url";
     private static final String PROPERTY_GITLAB_ACCOUNT_TOKEN = "lutecetools.gitlab.account.token";
 
+    private static final String SITE_INDEX_PATH_PART1 = "/raw/develop/src/site/" ;
+    private static final String SITE_INDEX_PATH_PART2 = "xdoc/index.xml" ;
+
     private static Map<String, GitlabProject> _mapRepositories;
 
     /**
@@ -84,7 +87,8 @@ public class GitLabService extends AbstractGitPlatformService
 
             incrementItemCount( );
             incrementItemOk( );
-
+            
+            fillSiteInfos( component, sbLogs );
         }
 
     }
@@ -159,4 +163,21 @@ public class GitLabService extends AbstractGitPlatformService
         return "";
     }
 
+        /**
+     * fill site infos from xdox site index
+     *
+     * @param component
+     *            The component
+     */
+    private void fillSiteInfos( Component component, StringBuilder sbLogs )
+    {
+        String strScmUrl = component.get( Component.SCM_URL );
+        if ( strScmUrl.endsWith( ".git" ) ) strScmUrl = strScmUrl.substring( 0, strScmUrl.length() - 4);
+        
+        String strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + SITE_INDEX_PATH_PART2 ;
+        SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "en", sbLogs );
+        
+        strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + "fr/" + SITE_INDEX_PATH_PART2 ;
+        SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "fr", sbLogs );
+    }
 }
