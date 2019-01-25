@@ -3,6 +3,9 @@
     <properties>
         <title>Plugin lutecetools</title>
     </properties>
+    <head>
+        <meta name="keywords" content="dev, pom, repository, component, maven, sonar, jenkins, github, gitlab, rest " />
+    </head>
     <body>
         <section name="Plugin lutecetools">
             <!--
@@ -11,7 +14,13 @@
             </p>
             -->
             <subsection name="Introduction">
-                <p></p>
+                <p>Lutece tools for integrators and developers </p>
+                <ul>
+                    <li> Repository of components: List of Lutece components present in the Maven repository, with Github, Gitlab, Jenkins, JIRA, SONAR information .... </li>
+                    <li> Generating a site POM from a list of plugins </li>
+                    <li> Dependency management of a POM: Update to the last stable version of the dependencies of a POM </li>
+                    <li> Managing dependency versions: Generate dependencies from a list of components. </li>
+                </ul>
             </subsection>
             <subsection name="Configuration">
                 <p></p>

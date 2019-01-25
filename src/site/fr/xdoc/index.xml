@@ -3,6 +3,9 @@
     <properties>
         <title>Plugin lutecetools</title>
     </properties>
+    <head>
+        <meta name="keywords" content="dev, pom, référentiel, composants, maven, sonar, jenkins, github, gitlab, rest " />
+    </head>
     <body>
         <section name="Plugin lutecetools">
             <!--
@@ -11,7 +14,14 @@
             </p>
             -->
             <subsection name="Introduction">
-                <p></p>
+                <p>Outils Lutece pour intégrateurs et développeurs</p>
+                <ul>
+                    <li>Repository des composants : Liste des composants Lutece présents dans le repository Maven, avec informations Github, Gitlab, Jenkins, JIRA, SONAR....</li>
+                    <li>Génération d'un POM de site à partir d'une liste de plugins</li>
+                    <li>Gestion des dépendances d'un POM : Mise à jour à la dernière version stable des dépendances d'un POM</li>
+                    <li>Gestion des versions de dépendances : Génerer les dépendances à partir d'une liste de composants.</li>
+                </ul>
+
             </subsection>
             <subsection name="Configuration">
                 <p></p>
