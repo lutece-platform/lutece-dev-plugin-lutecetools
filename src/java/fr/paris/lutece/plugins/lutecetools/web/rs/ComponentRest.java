@@ -133,7 +133,7 @@ public class ComponentRest
             XmlUtil.addElement( sbXML, KEY_ID, strArtifactId );
         }
 
-        XmlUtil.beginElement( sbXML, KEY_COMPONENTS );
+        XmlUtil.endElement( sbXML, KEY_COMPONENTS );
 
         return sbXML.toString( );
     }
