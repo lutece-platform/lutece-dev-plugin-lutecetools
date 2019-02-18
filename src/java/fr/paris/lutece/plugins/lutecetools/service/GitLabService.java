@@ -172,12 +172,15 @@ public class GitLabService extends AbstractGitPlatformService
     private void fillSiteInfos( Component component, StringBuilder sbLogs )
     {
         String strScmUrl = component.get( Component.SCM_URL );
-        if ( strScmUrl.endsWith( ".git" ) ) strScmUrl = strScmUrl.substring( 0, strScmUrl.length() - 4);
-        
-        String strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + SITE_INDEX_PATH_PART2 ;
-        SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "en", sbLogs );
-        
-        strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + "fr/" + SITE_INDEX_PATH_PART2 ;
-        SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "fr", sbLogs );
+        if ( strScmUrl != null )
+        {
+            if ( strScmUrl.endsWith( ".git" ) ) strScmUrl = strScmUrl.substring( 0, strScmUrl.length() - 4);
+
+            String strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + SITE_INDEX_PATH_PART2 ;
+            SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "en", sbLogs );
+
+            strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + "fr/" + SITE_INDEX_PATH_PART2 ;
+            SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "fr", sbLogs );
+        }
     }
 }
