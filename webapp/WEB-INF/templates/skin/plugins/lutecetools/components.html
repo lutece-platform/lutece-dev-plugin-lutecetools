@@ -276,7 +276,11 @@
                         <td class="small">
                             <#attempt>
                                 <a href="http://dev.lutece.paris.fr/sonar/overview?id=fr.paris.lutece.plugins%3A${component.artifactId}">
-                                <#assign nb = "${component.attributes.sonarRci!'0'}"?replace("%", "")?number>
+                                <#if component.attributes.sonarRci??>
+                                    <#assign nb = "${component.attributes.sonarRci!'0'}"?replace("%", "")?number>
+                                <#else>
+                                    <#assign nb = 0 >
+                                </#if>
                                 <#if nb gte "${rci_color_success}"?number>
                                         <span class="fa fa-check-circle" style="color:#00b300;font-size:2em;"></span>
                                         <#assign RCIOk = RCIOk + 1>
@@ -287,8 +291,8 @@
                                         <span class="fa fa-exclamation-triangle" style="color:red;font-size:2em;"></span>
                                         <#assign RCIDanger = RCIDanger + 1>
                                 </#if>
-                                </a>
-                                ${component.attributes.sonarRci}
+                                </a>                                
+                                ${nb}
                                 <#recover>
                                 Not found
                             </#attempt>
@@ -325,8 +329,6 @@
                                 <#assign fixed = 0 />
                                 <#assign unresolved = 0 />
                             </#if>
-                            <assign fixed = 1 />
-                            <assign unresolved = 1 />
                             <a href="https://dev.lutece.paris.fr/jira/projects/${component.attributes.jiraKey!''}#selectedTab=com.atlassian.jira.plugin.system.project%3Aroadmap-panel" >
                                 <span class="label label-success"> ${fixed}</span>
                                 <#if unresolved == 0>
