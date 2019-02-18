@@ -179,20 +179,26 @@ public final class SiteInfoService {
         }
         catch( IOException e )
         {
-            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage( ), e );
+            AppLogService.error( EXCEPTION_MESSAGE + component.getArtifactId( ) + " : " + e.getMessage( ), e );
         }
         catch( HttpAccessException e )
         {
-            sbLogs.append( "\n*** ERROR *** Error reading site index for component " ).append( component.getArtifactId( ) ).append( EXCEPTION_MESSAGE )
-                    .append( e.getMessage( ) );
+            sbLogs.append( "\n*** ERROR *** Error reading site index for component :" )
+                    .append( component.getArtifactId( ) )
+                    .append(" [url : " + strXdocSiteIndexUrl +"]" )
+                    .append( EXCEPTION_MESSAGE );
         }
         catch( ParserConfigurationException e )
         {
-            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage( ), e );
+            AppLogService.error( EXCEPTION_MESSAGE + component.getArtifactId( ) + " : " + e.getMessage( ), e );
         }
         catch( SAXException e )
         {
-            AppLogService.error( EXCEPTION_MESSAGE + e.getMessage( ), e );
+            AppLogService.error( EXCEPTION_MESSAGE + component.getArtifactId( ) + " : " + e.getMessage( ), e );
+        }
+        catch( Exception e )
+        {
+            AppLogService.error( EXCEPTION_MESSAGE + component.getArtifactId( ) + " : " + e.getMessage( ), e );
         }
     }
     
