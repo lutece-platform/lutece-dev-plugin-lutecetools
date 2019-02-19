@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.lutecetools.web.rs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.service.JiraService;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
@@ -62,6 +63,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 /**
  * Page resource
@@ -95,7 +97,8 @@ public class ComponentRest
     private static final String KEY_DATA = "data";
     private static final String KEY_LANG = "lang";
     
-
+    private static final ObjectMapper _mapper = new ObjectMapper( );
+    
     @GET
     @Path(  Constants.PATH_COMPONENT + Constants.PATH_ALL )
     public Response getComponents( @HeaderParam( HttpHeaders.ACCEPT ) String accept, @QueryParam( Constants.PARAMETER_FORMAT ) String format )
@@ -259,7 +262,8 @@ public class ComponentRest
 
             if ( component != null )
             {
-                addComponentJson( json, component );
+                // Jackson automatic serialization to allow automatic deserialization
+                addComponentJsonAuto(json, component );
                 strJson = json.toString( );
             }
         }
@@ -394,4 +398,26 @@ public class ComponentRest
         
         json.accumulate( KEY_COMPONENT, jsonComponent );
     }
+    
+    
+    /**
+     * Write a component into a JSON Object
+     * 
+     * @param json
+     *            The JSON Object
+     * @param component
+     *            The component
+     */
+    private void addComponentJsonAuto( JSONObject json, Component component )
+    {
+        try 
+        {
+            json.accumulate( KEY_COMPONENT, JSONObject.fromObject( _mapper.writeValueAsString( component ) ) );
+            
+        } catch ( Exception e ) {
+            AppLogService.error( "ERROR serializing component" , e );
+        }
+       
+    }
+
 }
