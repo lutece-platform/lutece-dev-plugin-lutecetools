@@ -102,7 +102,7 @@ public final class SiteInfoService {
             HttpAccess httpAccess = new HttpAccess( );
             String strSiteIndex = httpAccess.doGet( strXdocSiteIndexUrl );
             
-            String strLANG = "_" + strLang.toUpperCase( );
+            String strLANG = "_" + strLang;
             
             DocumentBuilderFactory documentBuilder = DocumentBuilderFactory.newInstance();
             InputStream is = new ByteArrayInputStream(strSiteIndex.getBytes()); // use inputstream to ignore BOM when parsing

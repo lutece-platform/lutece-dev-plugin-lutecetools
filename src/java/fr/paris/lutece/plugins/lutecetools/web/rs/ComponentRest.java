@@ -317,9 +317,9 @@ public class ComponentRest
             attributeList.put( KEY_LANG, locale.getLanguage( ) );
 
             XmlUtil.beginElement( sbXML, KEY_METADATA, attributeList );
-            XmlUtil.addElementHtml( sbXML, KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ).toUpperCase( ) )==null?"": component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ).toUpperCase( ) ) ) );
+            XmlUtil.addElementHtml( sbXML, KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ) )==null?"": component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ) ) ) );
             
-            Set<String> keywords = (HashSet<String>)component.getObject( Component.SITE_KEYWORDS + "_" + locale.getLanguage( ).toUpperCase( ) );
+            Set<String> keywords = (HashSet<String>)component.getObject( Component.SITE_KEYWORDS + "_" + locale.getLanguage( ) );
             if (keywords != null )
             {
                 XmlUtil.beginElement( sbXML, KEY_KEYWORDS );
@@ -379,7 +379,7 @@ public class ComponentRest
             JSONObject jsonMeta = new JSONObject( );
             JSONObject jsonKeywords = new JSONObject( );
             
-            Set<String> keywords = (HashSet<String>)component.getObject( Component.SITE_KEYWORDS + "_" + locale.getLanguage( ).toUpperCase( ) );
+            Set<String> keywords = (HashSet<String>)component.getObject( Component.SITE_KEYWORDS + "_" + locale.getLanguage( ) );
             if (keywords != null )
             {
                 for ( String keyword : keywords )
@@ -388,7 +388,7 @@ public class ComponentRest
                 }
             }
             jsonMeta.accumulate( KEY_KEYWORDS, jsonKeywords );
-            jsonMeta.accumulate( KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ).toUpperCase( ) )==null?"": component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ).toUpperCase( ) ) ) );
+            jsonMeta.accumulate( KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ) )==null?"": component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ) ) ) );
             
             jsonLang.accumulate( KEY_LANG, locale.getLanguage( ) );
             jsonLang.accumulate( KEY_DATA, jsonMeta );
