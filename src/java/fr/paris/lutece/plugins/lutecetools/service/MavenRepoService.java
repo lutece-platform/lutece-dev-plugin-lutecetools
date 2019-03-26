@@ -404,12 +404,15 @@ public final class MavenRepoService
 
             sbPomUrl.append( component.getArtifactId( ) ).append( '-' ).append( component.getVersion( ) ).append( ".pom" );
             getPomInfos( component, sbPomUrl.toString( ), false, sbLogs );
+            
+            PomService.instance( ).getLuteceDependencies( component, sbPomUrl.toString( ), false, sbLogs );
         }
         String strSnapshotPomUrl = getSnapshotPomUrl( component, sbLogs, strType );
 
         if ( strSnapshotPomUrl != null )
         {
             getPomInfos( component, strSnapshotPomUrl, true, sbLogs );
+            PomService.instance( ).getLuteceDependencies( component, strSnapshotPomUrl, true, sbLogs );
         }
         else
         {
