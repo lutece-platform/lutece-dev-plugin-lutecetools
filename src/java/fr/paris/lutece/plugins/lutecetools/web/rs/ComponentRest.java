@@ -33,6 +33,11 @@
  */
 package fr.paris.lutece.plugins.lutecetools.web.rs;
 
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.service.JiraService;
@@ -43,9 +48,6 @@ import fr.paris.lutece.plugins.rest.util.json.JSONUtil;
 import fr.paris.lutece.plugins.rest.util.xml.XMLUtil;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.util.xml.XmlUtil;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -148,17 +150,17 @@ public class ComponentRest
      */
     public String getComponentsJson( )
     {
-        JSONObject json = new JSONObject( );
-        JSONArray jsonComponents = new JSONArray( );
+        JsonNode json = _mapper.createObjectNode( );
+        ArrayNode jsonComponents = _mapper.createArrayNode( );
 
         for ( String strArtifactId : MavenRepoService.instance( ).getComponentsListFromRepository( ) )
         {
-            JSONObject jsonComponent = new JSONObject( );
-            jsonComponent.accumulate( KEY_ID, strArtifactId );
+            JsonNode jsonComponent = _mapper.createObjectNode( );
+            ((ObjectNode)jsonComponent).put( KEY_ID, strArtifactId );
             jsonComponents.add( jsonComponent );
         }
 
-        json.accumulate( KEY_COMPONENTS, jsonComponents );
+        ((ObjectNode)json).set( KEY_COMPONENTS , jsonComponents );
 
         return json.toString( );
     }
@@ -252,7 +254,7 @@ public class ComponentRest
      */
     public String getComponentJson( String strArtifactId, boolean bCache, String strType )
     {
-        JSONObject json = new JSONObject( );
+        JsonNode json = _mapper.createObjectNode( );
         String strJson = "";
 
         try
@@ -344,59 +346,59 @@ public class ComponentRest
      * @param component
      *            The component
      */
-    private void addComponentJson( JSONObject json, Component component )
+    private void addComponentJson( JsonNode json, Component component )
     {
-        JSONObject jsonComponent = new JSONObject( );
+        JsonNode jsonComponent = _mapper.createObjectNode( );
         int nJiraIssueCount = component.getObject( JiraService.JIRA_ISSUES_COUNT ) != null ? component.getInt( JiraService.JIRA_ISSUES_COUNT ) : 0;
         int nJiraIssueUnresolved = component.getObject( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) != null ? component
                 .getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) : 0;
 
-        jsonComponent.accumulate( KEY_ID, component.getArtifactId( ) );
-        jsonComponent.accumulate( KEY_VERSION, component.getVersion( ) );
-        jsonComponent.accumulate( KEY_CORE_VERSION, component.get( Component.CORE_VERSION ) );
-        jsonComponent.accumulate( KEY_PARENT_POM_VERSION, component.get( Component.PARENT_POM_VERSION ) );
-        jsonComponent.accumulate( KEY_SNAPSHOT_VERSION, component.get( Component.SNAPSHOT_VERSION ) );
-        jsonComponent.accumulate( KEY_SNAPSHOT_CORE_VERSION, component.get( Component.SNAPSHOT_CORE_VERSION ) );
-        jsonComponent.accumulate( KEY_SNAPSHOT_PARENT_POM_VERSION, component.get( Component.SNAPSHOT_PARENT_POM_VERSION ) );
-        jsonComponent.accumulate( KEY_SONAR_NB_LINES, component.get( SonarService.SONAR_NB_LINES ) );
-        jsonComponent.accumulate( KEY_SONAR_RCI, component.get( SonarService.SONAR_RCI ) );
-        jsonComponent.accumulate( KEY_JIRA_CODE, component.get( Component.JIRA_KEY ) );
-        jsonComponent.accumulate( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/projects/" + component.get( Component.JIRA_KEY )
+        ((ObjectNode)jsonComponent).put( KEY_ID, component.getArtifactId( ) );
+        ((ObjectNode)jsonComponent).put( KEY_VERSION, component.getVersion( ) );
+        ((ObjectNode)jsonComponent).put( KEY_CORE_VERSION, component.get( Component.CORE_VERSION ) );
+        ((ObjectNode)jsonComponent).put( KEY_PARENT_POM_VERSION, component.get( Component.PARENT_POM_VERSION ) );
+        ((ObjectNode)jsonComponent).put( KEY_SNAPSHOT_VERSION, component.get( Component.SNAPSHOT_VERSION ) );
+        ((ObjectNode)jsonComponent).put( KEY_SNAPSHOT_CORE_VERSION, component.get( Component.SNAPSHOT_CORE_VERSION ) );
+        ((ObjectNode)jsonComponent).put( KEY_SNAPSHOT_PARENT_POM_VERSION, component.get( Component.SNAPSHOT_PARENT_POM_VERSION ) );
+        ((ObjectNode)jsonComponent).put( KEY_SONAR_NB_LINES, component.get( SonarService.SONAR_NB_LINES ) );
+        ((ObjectNode)jsonComponent).put( KEY_SONAR_RCI, component.get( SonarService.SONAR_RCI ) );
+        ((ObjectNode)jsonComponent).put( KEY_JIRA_CODE, component.get( Component.JIRA_KEY ) );
+        ((ObjectNode)jsonComponent).put( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/projects/" + component.get( Component.JIRA_KEY )
                 + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
-        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, nJiraIssueCount - nJiraIssueUnresolved );
-        jsonComponent.accumulate( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, nJiraIssueUnresolved );
-        jsonComponent.accumulate( KEY_SCM_URL, component.get( Component.SCM_URL ) );
-        jsonComponent.accumulate( KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
-        jsonComponent.accumulate( KEY_SCM_CONNECTION, component.get( Component.SCM_CONNECTION ) );
-        jsonComponent.accumulate( KEY_SCM_DEVELOPER_CONNECTION, component.get( Component.SCM_DEVELOPER_CONNECTION ) );
-        jsonComponent.accumulate( KEY_KEYWORDS, ( component.get( Component.SITE_KEYWORDS )==null?"": component.get( Component.SITE_KEYWORDS ) ) );
-        jsonComponent.accumulate( KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION )==null?"": component.get( Component.SITE_INTRODUCTION ) ) );
+        ((ObjectNode)jsonComponent).put( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, nJiraIssueCount - nJiraIssueUnresolved );
+        ((ObjectNode)jsonComponent).put( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, nJiraIssueUnresolved );
+        ((ObjectNode)jsonComponent).put( KEY_SCM_URL, component.get( Component.SCM_URL ) );
+        ((ObjectNode)jsonComponent).put( KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
+        ((ObjectNode)jsonComponent).put( KEY_SCM_CONNECTION, component.get( Component.SCM_CONNECTION ) );
+        ((ObjectNode)jsonComponent).put( KEY_SCM_DEVELOPER_CONNECTION, component.get( Component.SCM_DEVELOPER_CONNECTION ) );
+        ((ObjectNode)jsonComponent).put( KEY_KEYWORDS, ( component.get( Component.SITE_KEYWORDS )==null?"": component.get( Component.SITE_KEYWORDS ) ) );
+        ((ObjectNode)jsonComponent).put( KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION )==null?"": component.get( Component.SITE_INTRODUCTION ) ) );
 
         List<Locale> locales = I18nService.getAdminAvailableLocales( );
         for ( Locale locale : locales )
         {
-            JSONObject jsonLang = new JSONObject( );
-            JSONObject jsonMeta = new JSONObject( );
-            JSONObject jsonKeywords = new JSONObject( );
+            JsonNode jsonLang = _mapper.createObjectNode( );
+            JsonNode jsonMeta = _mapper.createObjectNode( );
+            JsonNode jsonKeywords = _mapper.createObjectNode( );
             
             Set<String> keywords = (HashSet<String>)component.getObject( Component.SITE_KEYWORDS + "_" + locale.getLanguage( ) );
             if (keywords != null )
             {
                 for ( String keyword : keywords )
                 {
-                    jsonKeywords.accumulate( KEY_KEYWORD, keyword );
+                    ((ObjectNode)jsonKeywords).put( KEY_KEYWORD, keyword );
                 }
             }
-            jsonMeta.accumulate( KEY_KEYWORDS, jsonKeywords );
-            jsonMeta.accumulate( KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ) )==null?"": component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ) ) ) );
+            ((ObjectNode)jsonMeta).set( KEY_KEYWORDS, jsonKeywords );
+            ((ObjectNode)jsonMeta).put( KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ) )==null?"": component.get( Component.SITE_INTRODUCTION+ "_" + locale.getLanguage( ) ) ) );
             
-            jsonLang.accumulate( KEY_LANG, locale.getLanguage( ) );
-            jsonLang.accumulate( KEY_DATA, jsonMeta );
+            ((ObjectNode)jsonLang).put( KEY_LANG, locale.getLanguage( ) );
+            ((ObjectNode)jsonLang).set( KEY_DATA, jsonMeta );
             
-            jsonComponent.accumulate( KEY_METADATA, jsonLang );
+            ((ObjectNode)jsonComponent).set( KEY_METADATA,  jsonLang );
         }
         
-        json.accumulate( KEY_COMPONENT, jsonComponent );
+        ((ObjectNode)json).set( KEY_COMPONENT, jsonComponent );
     }
     
     
@@ -408,16 +410,27 @@ public class ComponentRest
      * @param component
      *            The component
      */
-    private void addComponentJsonAuto( JSONObject json, Component component )
+    private void addComponentJsonAuto( JsonNode json, Component component )
     {
-        try 
+        try
         {
-            json.accumulate( KEY_COMPONENT, JSONObject.fromObject( _mapper.writeValueAsString( component ) ) );
-            
-        } catch ( Exception e ) {
+
+            String strJson =  _mapper.writeValueAsString( component );
+
+            JsonNode jsonComponent = null;
+
+            try {
+                jsonComponent = _mapper.readTree( strJson );
+            } catch ( IOException e) {
+                AppLogService.error( "ERROR serializing component" , e );
+            }
+
+            ((ObjectNode)json).set( KEY_COMPONENT, jsonComponent );
+
+        } catch ( JsonProcessingException e ) {
             AppLogService.error( "ERROR serializing component" , e );
         }
-       
+
     }
 
 }
