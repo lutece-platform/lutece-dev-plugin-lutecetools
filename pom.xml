@@ -30,20 +30,10 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-	    <id>atlassian-public</id>
-            <!-- url>https://maven.atlassian.com/content/repositories/atlassian-public/</url -->
-	    <url>https://dev.lutece.paris.fr/nexus/content/repositories/atlassian-public/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-            </releases>
-        </repository>
+		<repository>
+			<id>atlassian-public</id>
+			<url>https://packages.atlassian.com/maven/repository/public</url>
+		</repository>
         
     </repositories>
 
