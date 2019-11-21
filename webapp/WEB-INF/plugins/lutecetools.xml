@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?><plug-in>
+<?xml version="1.0" encoding="UTF-8"?><plug-in>
     <name>lutecetools</name>
     <class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.1</version>
     <documentation/>
     <installation/>
     <changes/>
