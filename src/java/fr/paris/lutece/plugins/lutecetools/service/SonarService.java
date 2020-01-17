@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -42,9 +45,6 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
-
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Get sonar metrics from json data
@@ -70,10 +70,10 @@ public class SonarService implements ComponentInfoFiller
     private static final String TAG_LUTECE_CORE = "lutece-core";
 
     // Keys
-    private static final String KEY_MSR = "msr";
-    private static final String KEY_KEY = "key";
-    private static final String KEY_FRMT_VAL = "frmt_val";
-    private static final String KEY_VAL = "val";
+    private static final String KEY_COMPONENT = "component";
+    private static final String KEY_MEASURES = "measures";
+    private static final String KEY_METRIC = "metric";
+    private static final String KEY_VALUE = "value";
     private static final String KEY_NCLOC = "ncloc";
     private static final String KEY_SQALE_DEBT_RATIO = "sqale_debt_ratio";
 
@@ -134,22 +134,23 @@ public class SonarService implements ComponentInfoFiller
         try
         {
             String strHtml = httpAccess.doGet( sbJSONUrl.toString( ) );
-            JSONObject json = new JSONObject( strHtml.substring( 1, strHtml.lastIndexOf( ']' ) ) );
-            JSONArray msr = json.getJSONArray( KEY_MSR );
+            JSONObject json = new JSONObject( strHtml );
+            JSONObject component = json.getJSONObject( KEY_COMPONENT );
+            
+            JSONArray measures = component.getJSONArray( KEY_MEASURES );
 
-            for ( int i = 0; i < msr.length( ); i++ )
+            for ( int i = 0; i < measures.length( ); i++ )
             {
-                JSONObject key = msr.getJSONObject( i );
+                JSONObject key = measures.getJSONObject( i );
 
-                if ( key.getString( KEY_KEY ).equals( KEY_NCLOC ) )
+                if ( key.getString( KEY_METRIC ).equals( KEY_NCLOC ) )
                 {
-                    metrics.put( KEY_NCLOC, key.getString( KEY_FRMT_VAL ) );
+                    metrics.put( KEY_NCLOC, key.getString( KEY_VALUE ) );
                 }
-                else
-                    if ( key.getString( KEY_KEY ).equals( KEY_SQALE_DEBT_RATIO ) )
-                    {
-                        metrics.put( KEY_SQALE_DEBT_RATIO, String.valueOf( 100 - key.getInt( KEY_VAL ) ) + "%" );
-                    }
+                else if ( key.getString( KEY_METRIC ).equals( KEY_SQALE_DEBT_RATIO ) )
+                {
+                    metrics.put( KEY_SQALE_DEBT_RATIO, String.valueOf( 100 - key.getInt( KEY_VALUE ) ) + "%" );
+                }
             }
         }
         catch( HttpAccessException | JSONException e )
