@@ -82,13 +82,17 @@ public class XMLParser
     private static final String RELEASE_NOT_FOUND = "Release not found";
 
     private static final String LUTECE_CORE = "lutece-core";
+    
+    private XMLParser( )
+    {
+    }
 
-    public static String updatePOM( FileItem _inputFile )
+    public static String updatePOM( FileItem inputFile )
     {
         String strUpdated = "";
         try
         {
-            strUpdated = process( _inputFile );
+            strUpdated = process( inputFile );
         }
         catch( IOException | ParserConfigurationException | SAXException | TransformerException e )
         {
@@ -98,11 +102,11 @@ public class XMLParser
         return strUpdated;
     }
 
-    private static String process( FileItem _inputFile ) throws ParserConfigurationException, SAXException, IOException, TransformerException
+    private static String process( FileItem inputFile ) throws ParserConfigurationException, SAXException, IOException, TransformerException
     {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance( );
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder( );
-        Document doc = dBuilder.parse( _inputFile.getInputStream( ) );
+        Document doc = dBuilder.parse( inputFile.getInputStream( ) );
         doc.getDocumentElement( ).normalize( );
         NodeList nList = doc.getElementsByTagName( TAG_DEPENDENCY );
 
@@ -151,8 +155,6 @@ public class XMLParser
         StringWriter writer = new StringWriter( );
         StreamResult streamResult = new StreamResult( writer );
         transformer.transform( domSource, streamResult );
-        String strOutput = writer.toString( );
-
-        return strOutput;
+        return writer.toString( );
     }
 }

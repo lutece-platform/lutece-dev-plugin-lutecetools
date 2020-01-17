@@ -102,11 +102,9 @@ public final class PomService
     /**
      * Retreive SITE infos for a given component
      * 
-     * @param component
-     *            The component
+     * @param component The component
      * @param strPomUrl
-     * @param sbLogs
-     *            Logs
+     * @param sbLogs    Logs
      */
     public void getLuteceDependencies( Component component, String strPomUrl, boolean bSnapshot, StringBuilder sbLogs )
     {
@@ -116,7 +114,8 @@ public final class PomService
             String strPom = httpAccess.doGet( strPomUrl );
 
             DocumentBuilderFactory documentBuilder = DocumentBuilderFactory.newInstance( );
-            InputStream is = new ByteArrayInputStream( strPom.getBytes( ) ); // use inputstream to ignore BOM when parsing
+            InputStream is = new ByteArrayInputStream( strPom.getBytes( ) ); // use inputstream to ignore BOM when
+                                                                             // parsing
 
             DocumentBuilder builder = documentBuilder.newDocumentBuilder( );
             Document document = builder.parse( new InputSource( is ) );
@@ -135,54 +134,54 @@ public final class PomService
                     Element groupElement = (Element) groupList.item( 0 );
                     strGroupId = groupElement.getTextContent( );
                 }
-                if ( strGroupId != null && strGroupId.startsWith( CONSTANT_LUTECE_GROUP ) )
+                if ( strGroupId == null || !strGroupId.startsWith( CONSTANT_LUTECE_GROUP ) )
                 {
-                    NodeList artifactIdList = elmt.getElementsByTagName( TAG_DEPENDENCY_ARTIFACT_ID );
-                    String strArtifactId = null;
-                    if ( artifactIdList != null && artifactIdList.getLength( ) > 0 )
-                    {
-                        Element artifactElement = (Element) artifactIdList.item( 0 );
-                        strArtifactId = artifactElement.getTextContent( );
-                    }
-
-                    NodeList versionList = elmt.getElementsByTagName( TAG_DEPENDENCY_VERSION );
-                    String strVersion = null;
-                    if ( versionList != null && versionList.getLength( ) > 0 )
-                    {
-                        Element versionElement = (Element) versionList.item( 0 );
-                        strVersion = versionElement.getTextContent( );
-                    }
-
-                    NodeList typeList = elmt.getElementsByTagName( TAG_DEPENDENCY_TYPE );
-                    String strType = null;
-                    if ( typeList != null && typeList.getLength( ) > 0 )
-                    {
-                        Element typeElement = (Element) typeList.item( 0 );
-                        strType = typeElement.getTextContent( );
-                    }
-
-                    HashMap<String, String> dependencyMap = new HashMap<>( );
-                    dependencyMap.put( TAG_DEPENDENCY_GROUPID, strGroupId );
-                    dependencyMap.put( TAG_DEPENDENCY_ARTIFACT_ID, strArtifactId );
-                    dependencyMap.put( TAG_DEPENDENCY_VERSION, strVersion );
-                    dependencyMap.put( TAG_DEPENDENCY_TYPE, strType );
-
-                    dependencyList.add( dependencyMap );
-
+                    continue;
                 }
+                NodeList artifactIdList = elmt.getElementsByTagName( TAG_DEPENDENCY_ARTIFACT_ID );
+                String strArtifactId = null;
+                if ( artifactIdList != null && artifactIdList.getLength( ) > 0 )
+                {
+                    Element artifactElement = (Element) artifactIdList.item( 0 );
+                    strArtifactId = artifactElement.getTextContent( );
+                }
+
+                NodeList versionList = elmt.getElementsByTagName( TAG_DEPENDENCY_VERSION );
+                String strVersion = null;
+                if ( versionList != null && versionList.getLength( ) > 0 )
+                {
+                    Element versionElement = (Element) versionList.item( 0 );
+                    strVersion = versionElement.getTextContent( );
+                }
+
+                NodeList typeList = elmt.getElementsByTagName( TAG_DEPENDENCY_TYPE );
+                String strType = null;
+                if ( typeList != null && typeList.getLength( ) > 0 )
+                {
+                    Element typeElement = (Element) typeList.item( 0 );
+                    strType = typeElement.getTextContent( );
+                }
+
+                HashMap<String, String> dependencyMap = new HashMap<>( );
+                dependencyMap.put( TAG_DEPENDENCY_GROUPID, strGroupId );
+                dependencyMap.put( TAG_DEPENDENCY_ARTIFACT_ID, strArtifactId );
+                dependencyMap.put( TAG_DEPENDENCY_VERSION, strVersion );
+                dependencyMap.put( TAG_DEPENDENCY_TYPE, strType );
+
+                dependencyList.add( dependencyMap );
             }
 
             component.set( ( bSnapshot ? "SNAPSHOT_" : "" ) + Component.DEPENDENCY_LIST, dependencyList );
 
         }
-        catch( IOException | ParserConfigurationException | DOMException | SAXException e )
+        catch ( IOException | ParserConfigurationException | DOMException | SAXException e )
         {
             AppLogService.error( EXCEPTION_MESSAGE + component.getArtifactId( ) + " : " + e.getMessage( ), e );
         }
-        catch( HttpAccessException e )
+        catch ( HttpAccessException e )
         {
-            sbLogs.append( "\n*** ERROR *** Error reading pom for component :" ).append( component.getArtifactId( ) ).append( " [url : " ).append( strPomUrl )
-                    .append( "]" ).append( EXCEPTION_MESSAGE );
+            sbLogs.append( "\n*** ERROR *** Error reading pom for component :" ).append( component.getArtifactId( ) )
+                    .append( " [url : " ).append( strPomUrl ).append( "]" ).append( EXCEPTION_MESSAGE );
         }
     }
 

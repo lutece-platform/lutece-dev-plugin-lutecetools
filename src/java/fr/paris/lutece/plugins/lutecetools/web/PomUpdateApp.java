@@ -55,6 +55,7 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 @Controller( xpageName = "pomupdate", pageTitleI18nKey = "lutecetools.xpage.pomupdate.pageTitle", pagePathI18nKey = "lutecetools.xpage.pomupdate.pagePath" )
 public class PomUpdateApp extends MVCApplication
 {
+    private static final long serialVersionUID = 1871701739284867751L;
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/pomupdate.html";
     private static final String VIEW_HOME = "home";
 
@@ -100,13 +101,13 @@ public class PomUpdateApp extends MVCApplication
     @Action( ACTION_PROCESS )
     public XPage process( HttpServletRequest request )
     {
-        FileItem _fileInput = _lutecetoolsAsynchronousUploadHandler.getFile( request, INPUT_FIELD_NAME );
+        FileItem fileInput = _lutecetoolsAsynchronousUploadHandler.getFile( request, INPUT_FIELD_NAME );
 
-        if ( _fileInput != null )
+        if ( fileInput != null )
         {
-            if ( _fileInput.getContentType( ).endsWith( "xml" ) )
+            if ( fileInput.getContentType( ).endsWith( "xml" ) )
             {
-                _strOutput = XMLParser.updatePOM( _fileInput );
+                _strOutput = XMLParser.updatePOM( fileInput );
                 if ( _strOutput.isEmpty( ) )
                 {
                     _strOutput = ERROR_XML_PARSING;

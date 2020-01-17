@@ -103,7 +103,6 @@ public class ComponentRest
     @GET
     @Path( Constants.PATH_COMPONENT + Constants.PATH_ALL )
     public Response getComponents( @HeaderParam( HttpHeaders.ACCEPT ) String accept, @QueryParam( Constants.PARAMETER_FORMAT ) String format )
-            throws IOException
     {
         String entity;
         String mediaType;

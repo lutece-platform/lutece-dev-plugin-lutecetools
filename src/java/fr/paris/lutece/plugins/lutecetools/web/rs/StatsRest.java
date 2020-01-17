@@ -108,7 +108,7 @@ public class StatsRest
         return _mapper.writeValueAsString( stats );
     }
 
-    private String getStatsXml( ) throws IOException
+    private String getStatsXml( )
     {
         Stats stats = StatsService.getStats( );
         StringBuffer sbXML = new StringBuffer( XmlUtil.getXmlHeader( ) );

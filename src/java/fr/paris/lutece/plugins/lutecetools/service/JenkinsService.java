@@ -84,12 +84,11 @@ public class JenkinsService implements ComponentInfoFiller
             String strJobName = getJobName( strScmInfos.trim( ) );
             String strJenkinsJobUrl = AppPropertiesService.getProperty( PROPERTY_JENKINS_JOB_URL );
             String strJenkinsBadgeUrl = AppPropertiesService.getProperty( PROPERTY_JENKINS_BADGE_URL );
-            String strBadgeUrl = DEFAULT_BADGE_URL;
             if ( strJobName != null )
             {
                 String strJobUrl = strJenkinsJobUrl + strJobName;
                 component.set( JENKINS_JOB_BUILD_URL, strJobUrl );
-                strBadgeUrl = strJenkinsBadgeUrl + strJobName;
+                String strBadgeUrl = strJenkinsBadgeUrl + strJobName;
                 component.set( JENKINS_JOB_BADGE_ICON_URL, strBadgeUrl );
             }
             component.set( JENKINS_JOB_STATUS, String.valueOf( strJobName != null ) );

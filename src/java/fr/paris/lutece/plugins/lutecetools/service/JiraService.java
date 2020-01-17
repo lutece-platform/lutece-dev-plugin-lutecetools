@@ -116,104 +116,107 @@ public class JiraService implements ComponentInfoFiller
         JiraRestClient client = null;
         String strJiraKey = component.get( Component.JIRA_KEY );
 
-        if ( strJiraKey != null )
-        {
-            try
-            {
-                client = _factory.create( new URI( URL_JIRA_SERVER ), _auth );
-
-                Project project = client.getProjectClient( ).getProject( strJiraKey ).claim( );
-                Version versionLastReleased = null;
-                Version versionLastUnreleased = null;
-                for ( Version version : project.getVersions( ) )
-                {
-                    if ( !version.isReleased( ) )
-                    {
-                        versionLastUnreleased = version;
-                    }
-                    else
-                    {
-                        versionLastReleased = version;
-                    }
-                }
-                if ( versionLastReleased != null )
-                {
-                    component.set( JIRA_LAST_RELEASED_VERSION, versionLastReleased.getName( ) );
-                }
-                if ( versionLastUnreleased != null )
-                {
-                    component.set( JIRA_LAST_UNRELEASED_VERSION, versionLastUnreleased.getName( ) );
-                    String strURI = URL_API_VERSION + versionLastUnreleased.getId( );
-                    URI uriVersion = new URI( strURI );
-                    VersionRestClient clientVersion = client.getVersionRestClient( );
-                    int nUnresolvedIssues = clientVersion.getNumUnresolvedIssues( uriVersion ).claim( );
-                    component.set( JIRA_UNRESOLVED_ISSUES_COUNT, nUnresolvedIssues );
-                    VersionRelatedIssuesCount vRelatedIssues = clientVersion.getVersionRelatedIssuesCount( uriVersion ).claim( );
-                    component.set( JIRA_ISSUES_COUNT, vRelatedIssues.getNumFixedIssues( ) );
-                    component.set( JIRA_FIXED_ISSUES_COUNT, vRelatedIssues.getNumFixedIssues( ) - nUnresolvedIssues );
-                    if ( AppLogService.isDebugEnabled( ) )
-                    {
-                        StringBuilder sbDebug = new StringBuilder( );
-                        sbDebug.append( "LuteceTools : JiraService - Project " ).append( strJiraKey ).append( " AffectedIssues : " )
-                                .append( vRelatedIssues.getNumAffectedIssues( ) ).append( " FixedIssues : " ).append( vRelatedIssues.getNumFixedIssues( ) )
-                                .append( " Unresolved : " ).append( nUnresolvedIssues );
-                        AppLogService.debug( sbDebug.toString( ) );
-                    }
-                }
-                component.set( JIRA_STATUS, getJiraStatus( component ) );
-                component.set( JIRA_ERRORS, getJiraErrors( component ) );
-            }
-            catch( RestClientException ex )
-            {
-                component.set( JIRA_KEY_ERROR, JIRAKEY_ERROR_INVALID );
-                sbLogs.append( "\n*** ERROR *** Invalid Jira Key '" ).append( strJiraKey ).append( " for component " ).append( component.getArtifactId( ) );
-            }
-
-            catch( Exception ex )
-            {
-                sbLogs.append( "\n*** ERROR *** Error getting Jira Infos for Key : '" ).append( strJiraKey ).append( "' : " ).append( ex.getMessage( ) )
-                        .append( " for component " ).append( component.getArtifactId( ) );
-            }
-            finally
-            {
-                if ( client != null )
-                {
-                    try
-                    {
-                        client.close( );
-                    }
-                    catch( IOException ex )
-                    {
-                        AppLogService.error( "LuteceTools : Error using Jira Client API : " + ex.getMessage( ), ex );
-                    }
-                }
-            }
-        }
-        else
+        if ( strJiraKey == null )
         {
             component.set( JIRA_KEY_ERROR, JIRAKEY_ERROR_MISSING );
-            sbLogs.append( "\n*** ERROR *** Error no Jira key defined for component " ).append( component.getArtifactId( ) );
+            sbLogs.append( "\n*** ERROR *** Error no Jira key defined for component " )
+                    .append( component.getArtifactId( ) );
+            return;
+        }
+        try
+        {
+            client = _factory.create( new URI( URL_JIRA_SERVER ), _auth );
+
+            Project project = client.getProjectClient( ).getProject( strJiraKey ).claim( );
+            Version versionLastReleased = null;
+            Version versionLastUnreleased = null;
+            for ( Version version : project.getVersions( ) )
+            {
+                if ( !version.isReleased( ) )
+                {
+                    versionLastUnreleased = version;
+                }
+                else
+                {
+                    versionLastReleased = version;
+                }
+            }
+            if ( versionLastReleased != null )
+            {
+                component.set( JIRA_LAST_RELEASED_VERSION, versionLastReleased.getName( ) );
+            }
+            if ( versionLastUnreleased != null )
+            {
+                component.set( JIRA_LAST_UNRELEASED_VERSION, versionLastUnreleased.getName( ) );
+                String strURI = URL_API_VERSION + versionLastUnreleased.getId( );
+                URI uriVersion = new URI( strURI );
+                VersionRestClient clientVersion = client.getVersionRestClient( );
+                int nUnresolvedIssues = clientVersion.getNumUnresolvedIssues( uriVersion ).claim( );
+                component.set( JIRA_UNRESOLVED_ISSUES_COUNT, nUnresolvedIssues );
+                VersionRelatedIssuesCount vRelatedIssues = clientVersion.getVersionRelatedIssuesCount( uriVersion )
+                        .claim( );
+                component.set( JIRA_ISSUES_COUNT, vRelatedIssues.getNumFixedIssues( ) );
+                component.set( JIRA_FIXED_ISSUES_COUNT, vRelatedIssues.getNumFixedIssues( ) - nUnresolvedIssues );
+                if ( AppLogService.isDebugEnabled( ) )
+                {
+                    StringBuilder sbDebug = new StringBuilder( );
+                    sbDebug.append( "LuteceTools : JiraService - Project " ).append( strJiraKey )
+                            .append( " AffectedIssues : " ).append( vRelatedIssues.getNumAffectedIssues( ) )
+                            .append( " FixedIssues : " ).append( vRelatedIssues.getNumFixedIssues( ) )
+                            .append( " Unresolved : " ).append( nUnresolvedIssues );
+                    AppLogService.debug( sbDebug.toString( ) );
+                }
+            }
+            component.set( JIRA_STATUS, getJiraStatus( component ) );
+            component.set( JIRA_ERRORS, getJiraErrors( component ) );
+        }
+        catch ( RestClientException ex )
+        {
+            component.set( JIRA_KEY_ERROR, JIRAKEY_ERROR_INVALID );
+            sbLogs.append( "\n*** ERROR *** Invalid Jira Key '" ).append( strJiraKey ).append( " for component " )
+                    .append( component.getArtifactId( ) );
         }
 
+        catch ( Exception ex )
+        {
+            sbLogs.append( "\n*** ERROR *** Error getting Jira Infos for Key : '" ).append( strJiraKey )
+                    .append( "' : " ).append( ex.getMessage( ) ).append( " for component " )
+                    .append( component.getArtifactId( ) );
+        }
+        finally
+        {
+            if ( client != null )
+            {
+                try
+                {
+                    client.close( );
+                }
+                catch ( IOException ex )
+                {
+                    AppLogService.error( "LuteceTools : Error using Jira Client API : " + ex.getMessage( ), ex );
+                }
+            }
+        }
     }
 
     /**
      * Returns Jira Errors
      * 
-     * @param component
-     *            The component
+     * @param component The component
      * @return The errors
      */
     public String getJiraErrors( Component component )
     {
         StringBuilder sbErrors = new StringBuilder( );
 
-        if ( ( component.getVersion( ) != null ) && !component.getVersion( ).equals( component.get( JIRA_LAST_RELEASED_VERSION ) ) )
+        if ( ( component.getVersion( ) != null )
+                && !component.getVersion( ).equals( component.get( JIRA_LAST_RELEASED_VERSION ) ) )
         {
             sbErrors.append( "Last Jira released version is not matching the last version in maven repository. \n" );
         }
-        if ( ( component.get( Component.SNAPSHOT_VERSION ) != null ) && ( component.get( JIRA_LAST_UNRELEASED_VERSION ) != null )
-                && !component.get( Component.SNAPSHOT_VERSION ).startsWith( component.get( JIRA_LAST_UNRELEASED_VERSION ) ) )
+        if ( ( component.get( Component.SNAPSHOT_VERSION ) != null )
+                && ( component.get( JIRA_LAST_UNRELEASED_VERSION ) != null ) && !component
+                        .get( Component.SNAPSHOT_VERSION ).startsWith( component.get( JIRA_LAST_UNRELEASED_VERSION ) ) )
         {
             sbErrors.append( "Current Jira roadmap version is not matching current snapshot version. \n" );
         }
@@ -221,7 +224,8 @@ public class JiraService implements ComponentInfoFiller
         {
             sbErrors.append( "JIRA key is missing in the pom.xml. \n" );
         }
-        if ( component.getObject( JIRA_KEY_ERROR ) != null && component.getInt( JIRA_KEY_ERROR ) == JIRAKEY_ERROR_INVALID )
+        if ( component.getObject( JIRA_KEY_ERROR ) != null
+                && component.getInt( JIRA_KEY_ERROR ) == JIRAKEY_ERROR_INVALID )
         {
             sbErrors.append( "JIRA key '" ).append( component.get( Component.JIRA_KEY ) ).append( "' is invalid. \n" );
         }
@@ -232,20 +236,21 @@ public class JiraService implements ComponentInfoFiller
     /**
      * Gets Jira status
      * 
-     * @param component
-     *            The component
+     * @param component The component
      * @return The status
      */
     public int getJiraStatus( Component component )
     {
         int nStatus = 0;
 
-        if ( ( component.getVersion( ) != null ) && component.getVersion( ).equals( component.get( JIRA_LAST_RELEASED_VERSION ) ) )
+        if ( ( component.getVersion( ) != null )
+                && component.getVersion( ).equals( component.get( JIRA_LAST_RELEASED_VERSION ) ) )
         {
             nStatus++;
         }
-        if ( ( component.get( Component.SNAPSHOT_VERSION ) != null ) && ( component.get( JIRA_LAST_UNRELEASED_VERSION ) != null )
-                && component.get( Component.SNAPSHOT_VERSION ).startsWith( component.get( JIRA_LAST_UNRELEASED_VERSION ) ) )
+        if ( ( component.get( Component.SNAPSHOT_VERSION ) != null )
+                && ( component.get( JIRA_LAST_UNRELEASED_VERSION ) != null ) && component
+                        .get( Component.SNAPSHOT_VERSION ).startsWith( component.get( JIRA_LAST_UNRELEASED_VERSION ) ) )
         {
             nStatus++;
         }

@@ -52,13 +52,12 @@ public abstract class VersionUtils
     /**
      * Get latest version
      * 
-     * @param listVersions
-     *            The list of versions
+     * @param listVersions The list of versions
      * @return The latest
      */
     public static String getLatestVersion( List<String> listVersions )
     {
-        List<Version> list = new ArrayList<Version>( );
+        List<Version> list = new ArrayList<>( );
         for ( String strVersion : listVersions )
         {
             try
@@ -66,7 +65,7 @@ public abstract class VersionUtils
                 Version version = Version.parse( strVersion );
                 list.add( version );
             }
-            catch( VersionParsingException ex )
+            catch ( VersionParsingException ex )
             {
                 AppLogService.info( ex.getMessage( ) );
             }

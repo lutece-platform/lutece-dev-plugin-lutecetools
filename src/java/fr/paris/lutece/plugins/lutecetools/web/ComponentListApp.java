@@ -114,11 +114,11 @@ public class ComponentListApp extends MVCApplication
         String strGitLabFilter = request.getParameter( PARAMETER_GITLAB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
         boolean bDisplayCoreVersions = ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON );
-        if ( ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) ) )
+        if ( VALUE_ON.equals( strGitHubFilter ) )
         {
             listFilterPlatform.add( PLATFORM_GITHUB );
         }
-        if ( ( strGitLabFilter != null ) && ( strGitLabFilter.equals( VALUE_ON ) ) )
+        if ( VALUE_ON.equals( strGitLabFilter ) )
         {
             listFilterPlatform.add( PLATFORM_GITLAB );
         }
@@ -185,7 +185,9 @@ public class ComponentListApp extends MVCApplication
         boolean refresh = ( request.getParameter( PARAMETER_REFRESH ) != null );
         Map<String, Object> model = getModel( );
 
-        long nTotal = 0, nTotalPRs = 0, oldestPR = 0;
+        long nTotal = 0;
+        long nTotalPRs = 0;
+        long oldestPR = 0;
         Component c = MavenRepoService.instance( ).getComponent( strArtifactId, true, refresh );
 
         if ( c.get( SonarService.SONAR_NB_LINES ) != null )

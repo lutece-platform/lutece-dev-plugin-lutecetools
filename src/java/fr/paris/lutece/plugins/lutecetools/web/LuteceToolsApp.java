@@ -46,6 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( xpageName = "lutecetools", pageTitleI18nKey = "lutecetools.xpage.lutecetools.pageTitle", pagePathI18nKey = "lutecetools.xpage.lutecetools.pagePath" )
 public class LuteceToolsApp extends MVCApplication
 {
+    private static final long serialVersionUID = 7398923537143589341L;
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/lutecetools.html";
     private static final String VIEW_HOME = "home";
 

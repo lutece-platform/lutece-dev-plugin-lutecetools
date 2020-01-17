@@ -54,6 +54,10 @@ public class ComponentService
     private static final String DAEMON_KEY = "lutecetoolsCacheUpdater";
     private static final ObjectMapper _mapper = new ObjectMapper( );
 
+    private ComponentService( )
+    {
+    }
+    
     /**
      * Save a component into the Datastore as JSON format
      * 

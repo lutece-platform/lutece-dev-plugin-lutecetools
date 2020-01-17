@@ -38,32 +38,26 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -72,17 +66,10 @@ import org.xml.sax.SAXException;
 public final class SiteInfoService
 {
 
-    private static final String TAG_DOCUMENT = "document";
-    private static final String TAG_PROPERTIES = "properties";
     private static final String TAG_TITLE = "title";
     private static final String TAG_META = "meta";
-    private static final String TAG_HEAD = "head";
-    private static final String TAG_BODY = "body";
-    private static final String TAG_SECTION = "section";
     private static final String TAG_IMG = "img";
     private static final String TAG_SUBSECTION = "subsection";
-    private static final String TAG_P = "p";
-    private static final String TAG_LI = "li";
 
     private static final String ATTRIBUTE_NAME = "name";
     private static final String ATTRIBUTE_CONTENT = "content";
@@ -121,13 +108,10 @@ public final class SiteInfoService
     /**
      * Retreive SITE infos for a given component
      * 
-     * @param component
-     *            The component
-     * @param strXdocSiteIndexUrl
-     *            The Xdoc Site Index URL
+     * @param component           The component
+     * @param strXdocSiteIndexUrl The Xdoc Site Index URL
      * @param strLang
-     * @param sbLogs
-     *            Logs
+     * @param sbLogs              Logs
      */
     public void getSiteInfos( Component component, String strXdocSiteIndexUrl, String strLang, StringBuilder sbLogs )
     {
@@ -139,7 +123,8 @@ public final class SiteInfoService
             String strLANG = "_" + strLang;
 
             DocumentBuilderFactory documentBuilder = DocumentBuilderFactory.newInstance( );
-            InputStream is = new ByteArrayInputStream( strSiteIndex.getBytes( ) ); // use inputstream to ignore BOM when parsing
+            InputStream is = new ByteArrayInputStream( strSiteIndex.getBytes( ) ); // use inputstream to ignore BOM when
+                                                                                   // parsing
 
             DocumentBuilder builder = documentBuilder.newDocumentBuilder( );
             Document document = builder.parse( new InputSource( is ) );
@@ -151,7 +136,9 @@ public final class SiteInfoService
                 Element elmt = (Element) titleList.item( i );
                 String title = elmt.getTextContent( );
                 if ( title != null )
+                {
                     component.set( Component.SITE_TITLE + strLANG, title );
+                }
             }
 
             NodeList metaList = root.getElementsByTagName( TAG_META );
@@ -159,16 +146,20 @@ public final class SiteInfoService
             for ( int i = 0; i < metaList.getLength( ); i++ )
             {
                 Element elmt = (Element) metaList.item( i );
-                if ( elmt.hasAttribute( ATTRIBUTE_NAME ) && ATTRIBUTE_KEYWORDS_VALUE.equals( elmt.getAttribute( ATTRIBUTE_NAME ) ) )
+                if ( elmt.hasAttribute( ATTRIBUTE_NAME )
+                        && ATTRIBUTE_KEYWORDS_VALUE.equals( elmt.getAttribute( ATTRIBUTE_NAME ) ) )
+                {
                     strKeywords = elmt.getAttribute( ATTRIBUTE_CONTENT );
+                }
             }
 
-            component.set( Component.HAS_KEYWORDS + strLANG, ( StringUtils.isBlank( strKeywords ) ? "false" : "true" ) );
+            component.set( Component.HAS_KEYWORDS + strLANG,
+                    ( StringUtils.isBlank( strKeywords ) ? "false" : "true" ) );
 
             // split keywords
             if ( strKeywords != null )
             {
-                String [ ] strTempKeywords = strKeywords.split( "," );
+                String[] strTempKeywords = strKeywords.split( "," );
                 Set<String> keywords = new HashSet<>( );
                 for ( String keyword : strTempKeywords )
                 {
@@ -187,14 +178,23 @@ public final class SiteInfoService
             {
                 Element elmt = (Element) subSections.item( i );
 
-                if ( elmt.hasAttribute( ATTRIBUTE_NAME ) && ATTRIBUTE_INTRODUCTION_VALUE.equals( elmt.getAttribute( ATTRIBUTE_NAME ) ) )
+                if ( elmt.hasAttribute( ATTRIBUTE_NAME )
+                        && ATTRIBUTE_INTRODUCTION_VALUE.equals( elmt.getAttribute( ATTRIBUTE_NAME ) ) )
+                {
                     strIntroduction.append( elmt.getTextContent( ) );
+                }
 
-                if ( elmt.hasAttribute( ATTRIBUTE_NAME ) && ATTRIBUTE_CONFIGURATION_VALUE.equals( elmt.getAttribute( ATTRIBUTE_NAME ) ) )
+                if ( elmt.hasAttribute( ATTRIBUTE_NAME )
+                        && ATTRIBUTE_CONFIGURATION_VALUE.equals( elmt.getAttribute( ATTRIBUTE_NAME ) ) )
+                {
                     strConfiguration.append( elmt.getTextContent( ) );
+                }
 
-                if ( elmt.hasAttribute( ATTRIBUTE_NAME ) && ATTRIBUTE_USAGE_VALUE.equals( elmt.getAttribute( ATTRIBUTE_NAME ) ) )
+                if ( elmt.hasAttribute( ATTRIBUTE_NAME )
+                        && ATTRIBUTE_USAGE_VALUE.equals( elmt.getAttribute( ATTRIBUTE_NAME ) ) )
+                {
                     strUsage.append( elmt.getTextContent( ) );
+                }
             }
 
             component.set( Component.SITE_INTRODUCTION + strLANG, strIntroduction.toString( ) );
@@ -211,24 +211,13 @@ public final class SiteInfoService
             component.set( Component.SITE_IMGS + strLANG, imagesSrcList );
 
         }
-        catch( IOException e )
+        catch ( HttpAccessException e )
         {
-            AppLogService.error( EXCEPTION_MESSAGE + component.getArtifactId( ) + " : " + e.getMessage( ), e );
+            sbLogs.append( "\n*** ERROR *** Error reading site index for component :" )
+                    .append( component.getArtifactId( ) ).append( " [url : " + strXdocSiteIndexUrl + "]" )
+                    .append( EXCEPTION_MESSAGE );
         }
-        catch( HttpAccessException e )
-        {
-            sbLogs.append( "\n*** ERROR *** Error reading site index for component :" ).append( component.getArtifactId( ) )
-                    .append( " [url : " + strXdocSiteIndexUrl + "]" ).append( EXCEPTION_MESSAGE );
-        }
-        catch( ParserConfigurationException e )
-        {
-            AppLogService.error( EXCEPTION_MESSAGE + component.getArtifactId( ) + " : " + e.getMessage( ), e );
-        }
-        catch( SAXException e )
-        {
-            AppLogService.error( EXCEPTION_MESSAGE + component.getArtifactId( ) + " : " + e.getMessage( ), e );
-        }
-        catch( Exception e )
+        catch ( Exception e )
         {
             AppLogService.error( EXCEPTION_MESSAGE + component.getArtifactId( ) + " : " + e.getMessage( ), e );
         }

@@ -33,6 +33,12 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import fr.paris.lutece.plugins.lutecetools.business.AbstractComponent;
 import fr.paris.lutece.plugins.lutecetools.business.Dependency;
 import fr.paris.lutece.plugins.lutecetools.business.Site;
@@ -40,12 +46,6 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.l10n.LocaleService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.xml.XmlUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Dependencies Service
@@ -78,15 +78,13 @@ public final class DependenciesService
     /**
      * Process dependencies generation
      * 
-     * @param strSource
-     *            The source
-     * @param strFormat
-     *            The output
+     * @param strSource The source
+     * @param strFormat The output
      * @return The dependencies
      */
     public static String process( String strSource, String strFormat )
     {
-        String [ ] components = strSource.split( "\\s+" );
+        String[] components = strSource.split( "\\s+" );
 
         List<Dependency> list = getDependenciesList( components );
 
@@ -96,14 +94,10 @@ public final class DependenciesService
     /**
      * Process dependencies generation
      * 
-     * @param listComponents
-     *            The list of components for building the pom
-     * @param strFormat
-     *            The output
-     * @param site
-     *            The site to build
-     * @param strArtifactId
-     *            The artifact Id
+     * @param listComponents The list of components for building the pom
+     * @param strFormat      The output
+     * @param site           The site to build
+     * @param strArtifactId  The artifact Id
      * @return The dependencies
      */
     public static String process( List<? extends AbstractComponent> listComponents, String strFormat, Site site )
@@ -114,16 +108,14 @@ public final class DependenciesService
         {
             return getDependenciesText( listDependencies );
         }
-        else
-            if ( ( strFormat != null ) && strFormat.equals( FORMAT_XML ) )
-            {
-                return getDependenciesXML( listDependencies );
-            }
-            else
-                if ( ( strFormat != null ) && strFormat.equals( FORMAT_POM ) )
-                {
-                    return getDependenciesPOM( listDependencies, site );
-                }
+        else if ( ( strFormat != null ) && strFormat.equals( FORMAT_XML ) )
+        {
+            return getDependenciesXML( listDependencies );
+        }
+        else if ( ( strFormat != null ) && strFormat.equals( FORMAT_POM ) )
+        {
+            return getDependenciesPOM( listDependencies, site );
+        }
 
         return "Invalid format";
     }
@@ -131,11 +123,10 @@ public final class DependenciesService
     /**
      * Get the dependency list from a list of artifact id
      * 
-     * @param components
-     *            a list of artifact id
+     * @param components a list of artifact id
      * @return the list of dependency
      */
-    private static List<Dependency> getDependenciesList( String [ ] components )
+    private static List<Dependency> getDependenciesList( String[] components )
     {
         List<Dependency> list = new ArrayList<>( );
         for ( String name : components )
@@ -154,8 +145,7 @@ public final class DependenciesService
     /**
      * Gets the dependencies list from a component list
      * 
-     * @param components
-     *            The array of components
+     * @param components The array of components
      * @return The list
      */
     private static List<Dependency> getDependenciesList( List<? extends AbstractComponent> listComponents )
@@ -176,8 +166,7 @@ public final class DependenciesService
     /**
      * Get a dependency from an abstractComponent
      * 
-     * @param component
-     *            The component
+     * @param component The component
      * @return a dependency
      */
     private static Dependency getDependency( AbstractComponent component )
@@ -200,8 +189,7 @@ public final class DependenciesService
     /**
      * Returns the dependencies formatted with XML format
      * 
-     * @param list
-     *            The dependencies list
+     * @param list The dependencies list
      * @return The output
      */
     private static String getDependenciesXML( List<Dependency> list )
@@ -224,8 +212,7 @@ public final class DependenciesService
     /**
      * Returns the dependencies formatted with Text format
      * 
-     * @param list
-     *            The dependencies list
+     * @param list The dependencies list
      * @return The output
      */
     private static String getDependenciesText( List<Dependency> list )
@@ -243,10 +230,8 @@ public final class DependenciesService
     /**
      * Get the site POM from a list of dependency
      * 
-     * @param list
-     *            the dependency list
-     * @param strArtifactId
-     *            the artifact id
+     * @param list          the dependency list
+     * @param strArtifactId the artifact id
      * @return the site POM. the site name
      */
     private static String getDependenciesPOM( List<Dependency> list, Site site )
@@ -255,7 +240,9 @@ public final class DependenciesService
         provideCoreDependency( list );
 
         if ( site == null )
+        {
             site = new Site( );
+        }
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_SITE, site );
         model.put( MARK_DEPENDENCIES, list );
@@ -267,8 +254,7 @@ public final class DependenciesService
     /**
      * Provide core dependency
      * 
-     * @param list
-     *            the list of dependencies
+     * @param list the list of dependencies
      */
     private static void provideCoreDependency( List<Dependency> list )
     {

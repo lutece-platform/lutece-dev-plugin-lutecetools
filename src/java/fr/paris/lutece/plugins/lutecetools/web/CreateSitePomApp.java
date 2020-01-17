@@ -48,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( xpageName = "createsitepom", pageTitleI18nKey = "lutecetools.xpage.createsitepom.pageTitle", pagePathI18nKey = "lutecetools.xpage.createsitepom.pagePath" )
 public class CreateSitePomApp extends MVCApplication
 {
+    private static final long serialVersionUID = -3446209015952695499L;
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/createsitepom.html";
     private static final String MARK_INPUT = "inputsource";
     private static final String MARK_OUTPUT = "output";
