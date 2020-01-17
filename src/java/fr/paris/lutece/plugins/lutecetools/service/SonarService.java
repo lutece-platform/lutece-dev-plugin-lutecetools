@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -136,7 +136,7 @@ public class SonarService implements ComponentInfoFiller
             String strHtml = httpAccess.doGet( sbJSONUrl.toString( ) );
             JSONObject json = new JSONObject( strHtml );
             JSONObject component = json.getJSONObject( KEY_COMPONENT );
-            
+
             JSONArray measures = component.getJSONArray( KEY_MEASURES );
 
             for ( int i = 0; i < measures.length( ); i++ )
@@ -147,10 +147,11 @@ public class SonarService implements ComponentInfoFiller
                 {
                     metrics.put( KEY_NCLOC, key.getString( KEY_VALUE ) );
                 }
-                else if ( key.getString( KEY_METRIC ).equals( KEY_SQALE_DEBT_RATIO ) )
-                {
-                    metrics.put( KEY_SQALE_DEBT_RATIO, String.valueOf( 100 - key.getInt( KEY_VALUE ) ) + "%" );
-                }
+                else
+                    if ( key.getString( KEY_METRIC ).equals( KEY_SQALE_DEBT_RATIO ) )
+                    {
+                        metrics.put( KEY_SQALE_DEBT_RATIO, String.valueOf( 100 - key.getInt( KEY_VALUE ) ) + "%" );
+                    }
             }
         }
         catch( HttpAccessException | JSONException e )
