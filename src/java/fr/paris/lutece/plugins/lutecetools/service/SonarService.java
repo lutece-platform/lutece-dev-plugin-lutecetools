@@ -77,7 +77,7 @@ public class SonarService implements ComponentInfoFiller
     private static final String KEY_NCLOC = "ncloc";
     private static final String KEY_SQALE_DEBT_RATIO = "sqale_debt_ratio";
 
-    private static HttpAccess httpAccess = new HttpAccess( );
+    private static HttpAccess _httpAccess = new HttpAccess( );
 
     /**
      * {@inheritDoc }
@@ -133,7 +133,7 @@ public class SonarService implements ComponentInfoFiller
 
         try
         {
-            String strHtml = httpAccess.doGet( sbJSONUrl.toString( ) );
+            String strHtml = _httpAccess.doGet( sbJSONUrl.toString( ) );
             JSONObject json = new JSONObject( strHtml );
             JSONObject component = json.getJSONObject( KEY_COMPONENT );
 

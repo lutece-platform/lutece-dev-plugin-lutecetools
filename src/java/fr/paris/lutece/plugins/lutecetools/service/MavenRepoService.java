@@ -240,10 +240,7 @@ public final class MavenRepoService
             String strHtml = httpAccess.doGet( URL_SNAPSHOT_PLUGINS );
             list = getAnchorsList( strHtml );
 
-            // remove the 4 first links
-            // list.remove( 3 );
-            // list.remove( 2 );
-            // list.remove( 1 );
+            // remove the first link
             list.remove( 0 );
 
             // add lutece-core
@@ -604,16 +601,13 @@ public final class MavenRepoService
         else
         {
 
-            switch ( strArtifactId )
+            if ( TAG_LUTECE_CORE.equals( strArtifactId ) )
             {
-            case TAG_LUTECE_CORE:
-
                 strTypeRepo = Constants.MAVEN_REPO_LUTECE_CORE;
-                break;
-
-            default:
+            }
+            else
+            {
                 strTypeRepo = Constants.MAVEN_REPO_LUTECE_PLUGIN;
-                break;
             }
         }
 
@@ -651,7 +645,7 @@ public final class MavenRepoService
         return _sbLogs.toString( );
     }
 
-    public static void clearLogs( )
+    public static synchronized void clearLogs( )
     {
         _sbLogs = new StringBuilder( );
     }

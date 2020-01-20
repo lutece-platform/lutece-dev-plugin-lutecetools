@@ -167,7 +167,7 @@ public class GitHubService extends AbstractGitPlatformService
         fillGitHubStatus( component );
         fillGitHubErrors( component );
 
-        fillSiteInfos( component, sbLogs, null );
+        fillSiteInfos( component, sbLogs );
     }
 
     private static String getGitHubRepository( Component component )
@@ -338,7 +338,7 @@ public class GitHubService extends AbstractGitPlatformService
      *
      * @param component The component
      */
-    private void fillSiteInfos( Component component, StringBuilder sbLogs, String strLang )
+    private void fillSiteInfos( Component component, StringBuilder sbLogs )
     {
         String strScmUrl = component.get( Component.SCM_URL );
         if ( strScmUrl != null )

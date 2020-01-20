@@ -33,6 +33,14 @@
  */
 package fr.paris.lutece.plugins.lutecetools.web;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.http.HttpServletRequest;
+
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.service.AbstractGitPlatformService;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentService;
@@ -45,14 +53,6 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class provides a simple implementation of an XPage
@@ -243,7 +243,7 @@ public class ComponentListApp extends MVCApplication
     public XPage clearCache( HttpServletRequest request )
     {
         ComponentService.clearCache( );
-        MavenRepoService.instance( ).clearLogs( );
+        MavenRepoService.clearLogs( );
 
         return redirect( request, VIEW_HOME, getViewParameters( request ) );
     }

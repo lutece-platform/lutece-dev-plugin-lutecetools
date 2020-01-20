@@ -65,16 +65,17 @@ public class ComponentTypeService implements ComponentInfoFiller
         {
             case LIBRARY:
                 component.setComponentType( LIBRARY );
-                return;
+                break;
             case PLUGIN:
                 component.setComponentType( PLUGIN );
-                return;
+                break;
             case MODULE:
                 component.setComponentType( MODULE );
-                return;
+                break;
+            default:
+                sbLogs.append( "Component " ).append( component.getArtifactId( ) ).append( " has to be renamed to plugin-XXX, module-XXX ..." );
+                break;
         }
-
-        sbLogs.append( "Component " ).append( component.getArtifactId( ) ).append( " has to be renamed to plugin-XXX, module-XXX ..." );
     }
 
     /**

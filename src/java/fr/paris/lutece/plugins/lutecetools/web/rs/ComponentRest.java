@@ -95,7 +95,6 @@ public class ComponentRest
     private static final String KEY_KEYWORD = "keyword";
     private static final String KEY_INTRODUCTION = "description";
     private static final String KEY_METADATA = "metadata";
-    private static final String KEY_DATA = "data";
     private static final String KEY_LANG = "lang";
 
     private static final ObjectMapper _mapper = new ObjectMapper( );
@@ -187,15 +186,21 @@ public class ComponentRest
     {
         String entity;
         String mediaType;
+        
+        boolean cache = true;
+        if ( bCache != null )
+        {
+            cache = bCache;
+        }
 
         if ( ( ( accept != null ) && accept.contains( MediaType.APPLICATION_JSON ) ) || ( ( format != null ) && format.equals( Constants.MEDIA_TYPE_JSON ) ) )
         {
-            entity = getComponentJson( strArtifactId, bCache != null ? bCache : true, strType );
+            entity = getComponentJson( strArtifactId, cache, strType );
             mediaType = MediaType.APPLICATION_JSON;
         }
         else
         {
-            entity = getComponentXml( strArtifactId, bCache != null ? bCache : true, strType );
+            entity = getComponentXml( strArtifactId, cache, strType );
             mediaType = MediaType.APPLICATION_XML;
         }
 
@@ -335,73 +340,6 @@ public class ComponentRest
         }
 
         XmlUtil.endElement( sbXML, KEY_COMPONENT );
-    }
-
-    /**
-     * Write a component into a JSON Object
-     * 
-     * @param json
-     *            The JSON Object
-     * @param component
-     *            The component
-     */
-    private void addComponentJson( JsonNode json, Component component )
-    {
-        JsonNode jsonComponent = _mapper.createObjectNode( );
-        int nJiraIssueCount = component.getObject( JiraService.JIRA_ISSUES_COUNT ) != null ? component.getInt( JiraService.JIRA_ISSUES_COUNT ) : 0;
-        int nJiraIssueUnresolved = component.getObject( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT ) != null
-                ? component.getInt( JiraService.JIRA_UNRESOLVED_ISSUES_COUNT )
-                : 0;
-
-        ( (ObjectNode) jsonComponent ).put( KEY_ID, component.getArtifactId( ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_VERSION, component.getVersion( ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_CORE_VERSION, component.get( Component.CORE_VERSION ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_PARENT_POM_VERSION, component.get( Component.PARENT_POM_VERSION ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_SNAPSHOT_VERSION, component.get( Component.SNAPSHOT_VERSION ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_SNAPSHOT_CORE_VERSION, component.get( Component.SNAPSHOT_CORE_VERSION ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_SNAPSHOT_PARENT_POM_VERSION, component.get( Component.SNAPSHOT_PARENT_POM_VERSION ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_SONAR_NB_LINES, component.get( SonarService.SONAR_NB_LINES ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_SONAR_RCI, component.get( SonarService.SONAR_RCI ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_JIRA_CODE, component.get( Component.JIRA_KEY ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_JIRA_ROADMAP_URL, "https://dev.lutece.paris.fr/jira/projects/" + component.get( Component.JIRA_KEY )
-                + "/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel" );
-        ( (ObjectNode) jsonComponent ).put( KEY_JIRA_CURRENT_VERSION_CLOSED_ISSUES, nJiraIssueCount - nJiraIssueUnresolved );
-        ( (ObjectNode) jsonComponent ).put( KEY_JIRA_CURRENT_VERSION_OPENED_ISSUES, nJiraIssueUnresolved );
-        ( (ObjectNode) jsonComponent ).put( KEY_SCM_URL, component.get( Component.SCM_URL ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_SCM_SNAPSHOT_URL, component.get( Component.SNAPSHOT_SCM_URL ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_SCM_CONNECTION, component.get( Component.SCM_CONNECTION ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_SCM_DEVELOPER_CONNECTION, component.get( Component.SCM_DEVELOPER_CONNECTION ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_KEYWORDS,
-                ( component.get( Component.SITE_KEYWORDS ) == null ? "" : component.get( Component.SITE_KEYWORDS ) ) );
-        ( (ObjectNode) jsonComponent ).put( KEY_INTRODUCTION,
-                ( component.get( Component.SITE_INTRODUCTION ) == null ? "" : component.get( Component.SITE_INTRODUCTION ) ) );
-
-        List<Locale> locales = I18nService.getAdminAvailableLocales( );
-        for ( Locale locale : locales )
-        {
-            JsonNode jsonLang = _mapper.createObjectNode( );
-            JsonNode jsonMeta = _mapper.createObjectNode( );
-            JsonNode jsonKeywords = _mapper.createObjectNode( );
-
-            Set<String> keywords = (HashSet<String>) component.getObject( Component.SITE_KEYWORDS + "_" + locale.getLanguage( ) );
-            if ( keywords != null )
-            {
-                for ( String keyword : keywords )
-                {
-                    ( (ObjectNode) jsonKeywords ).put( KEY_KEYWORD, keyword );
-                }
-            }
-            ( (ObjectNode) jsonMeta ).set( KEY_KEYWORDS, jsonKeywords );
-            ( (ObjectNode) jsonMeta ).put( KEY_INTRODUCTION, ( component.get( Component.SITE_INTRODUCTION + "_" + locale.getLanguage( ) ) == null ? ""
-                    : component.get( Component.SITE_INTRODUCTION + "_" + locale.getLanguage( ) ) ) );
-
-            ( (ObjectNode) jsonLang ).put( KEY_LANG, locale.getLanguage( ) );
-            ( (ObjectNode) jsonLang ).set( KEY_DATA, jsonMeta );
-
-            ( (ObjectNode) jsonComponent ).set( KEY_METADATA, jsonLang );
-        }
-
-        ( (ObjectNode) json ).set( KEY_COMPONENT, jsonComponent );
     }
 
     /**
