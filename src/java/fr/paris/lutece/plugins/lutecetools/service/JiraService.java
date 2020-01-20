@@ -33,20 +33,23 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
+import java.io.IOException;
+import java.net.URI;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.VersionRestClient;
 import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Version;
 import com.atlassian.jira.rest.client.api.domain.VersionRelatedIssuesCount;
-import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
+import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import java.io.IOException;
-import java.net.URI;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * JIRA Service name
@@ -63,14 +66,21 @@ public class JiraService implements ComponentInfoFiller
     private static final String JIRA_KEY_ERROR = "jiraKeyError";
     private static final String JIRA_ERRORS = "jiraErrors";
 
-    private static final String URL_JIRA_SERVER = "http://dev.lutece.paris.fr/jira/";
-    private static final String URL_API_VERSION = URL_JIRA_SERVER + "rest/api/2/version/";
+    private static final String PROPERTY_URL_JIRA_SERVER = "lutecetools.jira.url";
+    private static final String URL_JIRA_SERVER = AppPropertiesService.getProperty( PROPERTY_URL_JIRA_SERVER );
+    private static final String PROPERTY_URL_API_VERSION = "lutecetools.jira.api";
+    private static final String URL_API_VERSION = URL_JIRA_SERVER + AppPropertiesService.getProperty( PROPERTY_URL_API_VERSION );
+    private static final String PROPERTY_JIRA_USR = "lutecetools.jira.user";
+    private static final String JIRA_USR = AppPropertiesService.getProperty( PROPERTY_JIRA_USR );
+    private static final String PROPERTY_JIRA_PWD = "lutecetools.jira.pwd";
+    private static final String JIRA_PWD = AppPropertiesService.getProperty( PROPERTY_JIRA_PWD );
+    
     private static final String SERVICE_NAME = "JIRA Info filler service registered";
     private static final int JIRAKEY_ERROR_MISSING = 1;
     private static final int JIRAKEY_ERROR_INVALID = 2;
 
-    private static AsynchronousJiraRestClientFactory _factory;
-    private static AnonymousAuthenticationHandler _auth;
+    private static final AsynchronousJiraRestClientFactory FACTORY = new AsynchronousJiraRestClientFactory( );
+    private static final BasicHttpAuthenticationHandler AUTH = new BasicHttpAuthenticationHandler( JIRA_USR, JIRA_PWD );
 
     /**
      * Constructor
@@ -92,10 +102,6 @@ public class JiraService implements ComponentInfoFiller
             System.getProperties( ).put( "https.proxySet", "true" );
             AppLogService.info( "LuteceTools : Using httpaccess.properties defined proxy to connect to JIRA." );
         }
-
-        _factory = new AsynchronousJiraRestClientFactory( );
-        _auth = new AnonymousAuthenticationHandler( );
-
     }
 
     /**
@@ -125,7 +131,7 @@ public class JiraService implements ComponentInfoFiller
         }
         try
         {
-            client = _factory.create( new URI( URL_JIRA_SERVER ), _auth );
+            client = FACTORY.create( new URI( URL_JIRA_SERVER ), AUTH );
 
             Project project = client.getProjectClient( ).getProject( strJiraKey ).claim( );
             Version versionLastReleased = null;
