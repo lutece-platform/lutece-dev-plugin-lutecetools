@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2015, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.lutecetools.web;
 
 import fr.paris.lutece.plugins.lutecetools.service.DependenciesService;
@@ -49,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( xpageName = "createsitepom", pageTitleI18nKey = "lutecetools.xpage.createsitepom.pageTitle", pagePathI18nKey = "lutecetools.xpage.createsitepom.pagePath" )
 public class CreateSitePomApp extends MVCApplication
 {
+    private static final long serialVersionUID = -3446209015952695499L;
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/createsitepom.html";
     private static final String MARK_INPUT = "inputsource";
     private static final String MARK_OUTPUT = "output";

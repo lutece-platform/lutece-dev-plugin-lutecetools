@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,31 +33,29 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
-import fr.paris.lutece.plugins.lutecetools.business.Component;
-import fr.paris.lutece.portal.service.datastore.DatastoreService;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
-
-import org.kohsuke.github.GitHubBuilder;
 import org.kohsuke.github.GHBranch;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHOrganization;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
 
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.SocketAddress;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 /**
  * GitHub Service
@@ -69,10 +67,10 @@ public class GitHubService extends AbstractGitPlatformService
     private static final String PROPERTY_GITHUB_ACCOUNT_TOKEN = "lutecetools.github.account.token";
     private static final String PROPERTY_GITHUB_ORGANIZATIONS = "lutecetools.github.organization";
     private static final String DSKEY_PARENT_POM_VERSION = "lutecetools.site_property.globalPom.version";
-    
-    private static final String SITE_INDEX_PATH_PART1 = "/raw/develop/src/site/" ;
-    private static final String SITE_INDEX_PATH_PART2 = "xdoc/index.xml" ;
-    
+
+    private static final String SITE_INDEX_PATH_PART1 = "/raw/develop/src/site/";
+    private static final String SITE_INDEX_PATH_PART2 = "xdoc/index.xml";
+
     private static String _strParentPomVersion;
     private static Map<String, GHRepository> _mapRepositories;
 
@@ -108,70 +106,71 @@ public class GitHubService extends AbstractGitPlatformService
     public void fill( Component component, StringBuilder sbLogs )
     {
         String strRepository = getGitHubRepository( component );
-        if ( strRepository != null )
+        if ( strRepository == null )
         {
-            component.set( Component.IS_GIT_REPO, true );
-
-            GHRepository repo = _mapRepositories.get( strRepository );
-
-            try
-            {
-                component.set( GIT_GROUP, repo.getOwner( ).getLogin( ) );
-                component.set( GIT_PLATFORM, getGitPlatform( ) );
-                Map<String, GHBranch> mapBranches = repo.getBranches( );
-                List<String> listBranches = new ArrayList<>( );
-
-                for ( String strBranch : mapBranches.keySet( ) )
-                {
-                    listBranches.add( strBranch );
-                }
-
-                component.set( BRANCHES_LIST, listBranches );
-            }
-            catch( Exception ex )
-            {
-                sbLogs.append( "\n*** ERROR *** Retrieving GitHub infos (branches , readme, ...) for component " ).append( component.getArtifactId( ) )
-                        .append( " : " ).append( ex.getMessage( ) );
-            }
-            try
-            {
-                repo.getReadme( );
-                component.set( HAS_README, true );
-            }
-            catch( Exception e )
-            {
-                if ( e instanceof FileNotFoundException )
-                {
-                    component.set( HAS_README, false );
-                }
-            }
-            try
-            {
-                List<GHPullRequest> prs = repo.getPullRequests( GHIssueState.OPEN );
-                component.set( PULL_REQUEST_COUNT, prs.size( ) );
-                long oldest = Long.MAX_VALUE;
-                for ( GHPullRequest pr : prs )
-                {
-                    if ( pr.getUpdatedAt( ).getTime( ) < oldest )
-                    {
-                        oldest = pr.getUpdatedAt( ).getTime( );
-                    }
-                }
-                component.set( OLDEST_PULL_REQUEST, oldest );
-            }
-            catch( IOException e )
-            {
-                sbLogs.append( "\n*** ERROR *** Retreiving Github pull requests for component " ).append( component.getArtifactId( ) ).append( " : " )
-                        .append( e.getMessage( ) );
-            }
-            fillGitHubStatus( component );
-            fillGitHubErrors( component );
-            
-            fillSiteInfos( component, sbLogs, null );
+            return;
         }
+        component.set( Component.IS_GIT_REPO, true );
+
+        GHRepository repo = _mapRepositories.get( strRepository );
+
+        try
+        {
+            component.set( GIT_GROUP, repo.getOwner( ).getLogin( ) );
+            component.set( GIT_PLATFORM, getGitPlatform( ) );
+            Map<String, GHBranch> mapBranches = repo.getBranches( );
+            List<String> listBranches = new ArrayList<>( );
+
+            for ( String strBranch : mapBranches.keySet( ) )
+            {
+                listBranches.add( strBranch );
+            }
+
+            component.set( BRANCHES_LIST, listBranches );
+        }
+        catch ( Exception ex )
+        {
+            sbLogs.append( "\n*** ERROR *** Retrieving GitHub infos (branches , readme, ...) for component " )
+                    .append( component.getArtifactId( ) ).append( " : " ).append( ex.getMessage( ) );
+        }
+        try
+        {
+            repo.getReadme( );
+            component.set( HAS_README, true );
+        }
+        catch ( Exception e )
+        {
+            if ( e instanceof FileNotFoundException )
+            {
+                component.set( HAS_README, false );
+            }
+        }
+        try
+        {
+            List<GHPullRequest> prs = repo.getPullRequests( GHIssueState.OPEN );
+            component.set( PULL_REQUEST_COUNT, prs.size( ) );
+            long oldest = Long.MAX_VALUE;
+            for ( GHPullRequest pr : prs )
+            {
+                if ( pr.getUpdatedAt( ).getTime( ) < oldest )
+                {
+                    oldest = pr.getUpdatedAt( ).getTime( );
+                }
+            }
+            component.set( OLDEST_PULL_REQUEST, oldest );
+        }
+        catch ( IOException e )
+        {
+            sbLogs.append( "\n*** ERROR *** Retreiving Github pull requests for component " )
+                    .append( component.getArtifactId( ) ).append( " : " ).append( e.getMessage( ) );
+        }
+        fillGitHubStatus( component );
+        fillGitHubErrors( component );
+
+        fillSiteInfos( component, sbLogs );
     }
 
-    private String getGitHubRepository( Component component )
+    private static String getGitHubRepository( Component component )
     {
         if ( _mapRepositories == null )
         {
@@ -198,7 +197,7 @@ public class GitHubService extends AbstractGitPlatformService
     {
         String strOrganizations = AppPropertiesService.getProperty( PROPERTY_GITHUB_ORGANIZATIONS );
 
-        String [ ] organizations = strOrganizations.split( "," );
+        String[] organizations = strOrganizations.split( "," );
 
         Map<String, GHRepository> mapRepositories = new ConcurrentHashMap<>( );
 
@@ -211,9 +210,10 @@ public class GitHubService extends AbstractGitPlatformService
                 GHOrganization organization = github.getOrganization( strOrganization );
                 mapRepositories.putAll( organization.getRepositories( ) );
                 int nSize = organization.getRepositories( ).size( );
-                AppLogService.info( "LuteceTools : GitHub Service initialized - " + nSize + " repositories found for organization " + strOrganization );
+                AppLogService.info( "LuteceTools : GitHub Service initialized - " + nSize
+                        + " repositories found for organization " + strOrganization );
             }
-            catch( IOException ex )
+            catch ( IOException ex )
             {
                 AppLogService.error( "LuteceTools : Unable to access GitHub repositories", ex );
             }
@@ -225,8 +225,7 @@ public class GitHubService extends AbstractGitPlatformService
      * Gets a GitHub object to request repositories
      * 
      * @return GitHub object
-     * @throws IOException
-     *             if an exception occurs
+     * @throws IOException if an exception occurs
      */
     private static GitHub getGitHub( ) throws IOException
     {
@@ -258,14 +257,13 @@ public class GitHubService extends AbstractGitPlatformService
     /**
      * Returns GitHub errors
      *
-     * @param component
-     *            The component
+     * @param component The component
      */
     private void fillGitHubErrors( Component component )
     {
         StringBuilder sbErrors = new StringBuilder( "" );
 
-        if ( component.getBoolean( Component.IS_GIT_REPO ) )
+        if ( Boolean.TRUE.equals( component.getBoolean( Component.IS_GIT_REPO ) ) )
         {
             String strScmUrl = component.get( Component.SCM_URL );
             if ( strScmUrl != null && strScmUrl.contains( "github" ) )
@@ -281,12 +279,14 @@ public class GitHubService extends AbstractGitPlatformService
 
             if ( !_strParentPomVersion.equals( component.get( Component.PARENT_POM_VERSION ) ) )
             {
-                sbErrors.append( "Bad parent POM in release POM. should be global-pom version " ).append( _strParentPomVersion ).append( '\n' );
+                sbErrors.append( "Bad parent POM in release POM. should be global-pom version " )
+                        .append( _strParentPomVersion ).append( '\n' );
             }
 
             if ( !_strParentPomVersion.equals( component.get( Component.SNAPSHOT_PARENT_POM_VERSION ) ) )
             {
-                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom version " ).append( _strParentPomVersion ).append( '\n' );
+                sbErrors.append( "Bad parent POM in snapshot POM. should be global-pom version " )
+                        .append( _strParentPomVersion ).append( '\n' );
             }
 
             List listBranches = (List) component.getObject( BRANCHES_LIST );
@@ -302,14 +302,13 @@ public class GitHubService extends AbstractGitPlatformService
     /**
      * Calculate GitHub status
      *
-     * @param component
-     *            The component
+     * @param component The component
      */
     private void fillGitHubStatus( Component component )
     {
         int nStatus = 0;
 
-        if ( component.getBoolean( Component.IS_GIT_REPO ) )
+        if ( Boolean.TRUE.equals( component.getBoolean( Component.IS_GIT_REPO ) ) )
         {
             nStatus++;
         }
@@ -334,27 +333,27 @@ public class GitHubService extends AbstractGitPlatformService
         component.set( GIT_REPO_STATUS, nStatus );
     }
 
-
-    
     /**
      * fill site infos from xdoc site index
      *
-     * @param component
-     *            The component
+     * @param component The component
      */
-    private void fillSiteInfos( Component component, StringBuilder sbLogs, String strLang )
+    private void fillSiteInfos( Component component, StringBuilder sbLogs )
     {
         String strScmUrl = component.get( Component.SCM_URL );
         if ( strScmUrl != null )
         {
-            if ( strScmUrl.endsWith( ".git" ) ) strScmUrl = strScmUrl.substring( 0, strScmUrl.length() - 4);
-        
-            String strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + SITE_INDEX_PATH_PART2 ;
+            if ( strScmUrl.endsWith( ".git" ) )
+            {
+                strScmUrl = strScmUrl.substring( 0, strScmUrl.length( ) - 4 );
+            }
+
+            String strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + SITE_INDEX_PATH_PART2;
             SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "en", sbLogs );
 
-            strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + "fr/" + SITE_INDEX_PATH_PART2 ;
+            strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + "fr/" + SITE_INDEX_PATH_PART2;
             SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "fr", sbLogs );
-            
+
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,6 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( xpageName = "dependenciesupgrade", pageTitleI18nKey = "lutecetools.xpage.dependencies.pageTitle", pagePathI18nKey = "lutecetools.xpage.dependencies.pagePath" )
 public class DependenciesUpgradeApp extends MVCApplication
 {
+    private static final long serialVersionUID = 3891074334152956337L;
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/dependenciesupgrade.html";
     private static final String MARK_INPUT = "inputsource";
     private static final String MARK_OUTPUT = "output";

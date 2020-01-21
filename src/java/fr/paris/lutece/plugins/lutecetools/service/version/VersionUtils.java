@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.lutecetools.service.version;
 
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -53,13 +52,12 @@ public abstract class VersionUtils
     /**
      * Get latest version
      * 
-     * @param listVersions
-     *            The list of versions
+     * @param listVersions The list of versions
      * @return The latest
      */
     public static String getLatestVersion( List<String> listVersions )
     {
-        List<Version> list = new ArrayList<Version>( );
+        List<Version> list = new ArrayList<>( );
         for ( String strVersion : listVersions )
         {
             try
@@ -67,7 +65,7 @@ public abstract class VersionUtils
                 Version version = Version.parse( strVersion );
                 list.add( version );
             }
-            catch( VersionParsingException ex )
+            catch ( VersionParsingException ex )
             {
                 AppLogService.info( ex.getMessage( ) );
             }

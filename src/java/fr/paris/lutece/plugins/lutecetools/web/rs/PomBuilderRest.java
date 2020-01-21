@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,20 @@
  */
 package fr.paris.lutece.plugins.lutecetools.web.rs;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.business.Site;
 import fr.paris.lutece.plugins.lutecetools.business.dto.SiteBuilderConfDto;
@@ -41,46 +54,40 @@ import fr.paris.lutece.plugins.lutecetools.service.DependenciesService;
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
 import fr.paris.lutece.portal.service.util.AppLogService;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Rest service for generating pom files or part of pom files.
  */
-@Path( RestConstants.BASE_PATH + Constants.PATH_PLUGIN + Constants.PATH_POM_BUILDER )
+@Path(RestConstants.BASE_PATH + Constants.PATH_PLUGIN + Constants.PATH_POM_BUILDER)
 public class PomBuilderRest
 {
     private static final ObjectMapper _mapper = new ObjectMapper( );
 
     /**
-     * Returns an XML representing the pom.xml file of the site whose informations are provided in the siteBuilderConfigDto object
+     * Returns an XML representing the pom.xml file of the site whose informations
+     * are provided in the siteBuilderConfigDto object
      * 
      * @param strSiteBuilderConfigDto
      * @return The badge URL
      */
     @POST
-    @Path( Constants.PATH_SITE )
-    @Produces( "application/xml" )
-    @Consumes( "application/json" )
+    @Path(Constants.PATH_SITE)
+    @Produces("application/xml")
+    @Consumes("application/json")
     public Response getSitePom( String strSiteBuilderConfigDto )
     {
         try
         {
-            SiteBuilderConfDto siteBuilderConfDto = _mapper.readValue( strSiteBuilderConfigDto, SiteBuilderConfDto.class );
-            List<Component> listFullComponent = new ArrayList<Component>( );
+            SiteBuilderConfDto siteBuilderConfDto = _mapper.readValue( strSiteBuilderConfigDto,
+                    SiteBuilderConfDto.class );
+            List<Component> listFullComponent = new ArrayList<>( );
             // Fill given components if there are missing infos in the config
             for ( Component comp : siteBuilderConfDto.getListComponents( ) )
             {
                 if ( StringUtils.isEmpty( comp.getVersion( ) ) || StringUtils.isEmpty( comp.getComponentType( ) ) )
                 {
-                    Component fullCompo = MavenRepoService.instance( ).getComponent( comp.getArtifactId( ), true, false );
+                    Component fullCompo = MavenRepoService.instance( ).getComponent( comp.getArtifactId( ), true,
+                            false );
                     listFullComponent.add( fullCompo );
                 }
             }
@@ -94,7 +101,7 @@ public class PomBuilderRest
 
             return Response.ok( DependenciesService.process( listFullComponent, "pom", siteToBuild ) ).build( );
         }
-        catch( IOException e )
+        catch ( IOException e )
         {
             AppLogService.error( " Wrong site builder config format ", e );
             return Response.serverError( ).build( );

@@ -1,3 +1,36 @@
+/*
+ * Copyright (c) 2002-2020, City of Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
 package fr.paris.lutece.plugins.lutecetools.web;
 
 import java.util.Map;
@@ -22,6 +55,7 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 @Controller( xpageName = "pomupdate", pageTitleI18nKey = "lutecetools.xpage.pomupdate.pageTitle", pagePathI18nKey = "lutecetools.xpage.pomupdate.pagePath" )
 public class PomUpdateApp extends MVCApplication
 {
+    private static final long serialVersionUID = 1871701739284867751L;
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/pomupdate.html";
     private static final String VIEW_HOME = "home";
 
@@ -67,13 +101,13 @@ public class PomUpdateApp extends MVCApplication
     @Action( ACTION_PROCESS )
     public XPage process( HttpServletRequest request )
     {
-        FileItem _fileInput = _lutecetoolsAsynchronousUploadHandler.getFile( request, INPUT_FIELD_NAME );
+        FileItem fileInput = _lutecetoolsAsynchronousUploadHandler.getFile( request, INPUT_FIELD_NAME );
 
-        if ( _fileInput != null )
+        if ( fileInput != null )
         {
-            if ( _fileInput.getContentType( ).endsWith( "xml" ) )
+            if ( fileInput.getContentType( ).endsWith( "xml" ) )
             {
-                _strOutput = XMLParser.updatePOM( _fileInput );
+                _strOutput = XMLParser.updatePOM( fileInput );
                 if ( _strOutput.isEmpty( ) )
                 {
                     _strOutput = ERROR_XML_PARSING;

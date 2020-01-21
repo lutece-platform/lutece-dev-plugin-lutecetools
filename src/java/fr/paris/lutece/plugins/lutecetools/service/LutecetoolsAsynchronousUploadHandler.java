@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,23 +31,25 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.lutecetools.service;
 
-import fr.paris.lutece.plugins.asynchronousupload.service.AbstractAsynchronousUploadHandler;
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.util.AppException;
-import fr.paris.lutece.util.filesystem.UploadUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.plugins.asynchronousupload.service.AbstractAsynchronousUploadHandler;
+import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.util.filesystem.UploadUtil;
 
 public class LutecetoolsAsynchronousUploadHandler extends AbstractAsynchronousUploadHandler
 {
@@ -57,30 +59,31 @@ public class LutecetoolsAsynchronousUploadHandler extends AbstractAsynchronousUp
 
     private static final String ERROR_MESSAGE_UNKNOWN_ERROR = "lutecetools.message.unknownError";
 
-    private static Map<String, Map<String, List<FileItem>>> _mapWebtiersUpload = new ConcurrentHashMap<String, Map<String, List<FileItem>>>( );
+    private static Map<String, Map<String, List<FileItem>>> _mapWebtiersUpload = new ConcurrentHashMap<>( );
 
     /**
      * Vérifie si une liste de fichiers uploadés pour un champ donné sont valides
      * 
-     * @param request
-     *            La requête effectuée
-     * @param strFieldName
-     *            Le nom du champ ayant servi à uploadé un fichier.
-     * @param listFileItemsToUpload
-     *            Liste des fichiers uploadés à verifier.
-     * @param locale
-     *            La locale à utiliser pour afficher les messages d'erreurs éventuels
-     * @return Le message d'erreur, ou null si aucune erreur n'a été détéctée et si les fichiers sont valides.
+     * @param request               La requête effectuée
+     * @param strFieldName          Le nom du champ ayant servi à uploadé un
+     *                              fichier.
+     * @param listFileItemsToUpload Liste des fichiers uploadés à verifier.
+     * @param locale                La locale à utiliser pour afficher les messages
+     *                              d'erreurs éventuels
+     * @return Le message d'erreur, ou null si aucune erreur n'a été détéctée et si
+     *         les fichiers sont valides.
      */
     @Override
-    public String canUploadFiles( HttpServletRequest request, String strFieldName, List<FileItem> listFileItemsToUpload, Locale locale )
+    public String canUploadFiles( HttpServletRequest request, String strFieldName, List<FileItem> listFileItemsToUpload,
+            Locale locale )
     {
         if ( StringUtils.isNotBlank( strFieldName ) )
         {
             initMap( request.getSession( ).getId( ), strFieldName );
             List<FileItem> listUploadedFileItems = getListUploadedFiles( strFieldName, request.getSession( ) );
 
-            if ( !listFileItemsToUpload.isEmpty( ) && listFileItemsToUpload.size( ) == 1 && listUploadedFileItems.isEmpty( )
+            if ( !listFileItemsToUpload.isEmpty( ) && listFileItemsToUpload.size( ) == 1
+                    && listUploadedFileItems.isEmpty( )
                     && compareTo( "text/", listFileItemsToUpload.get( 0 ).getContentType( ) ) )
             {
                 return null;
@@ -90,14 +93,16 @@ public class LutecetoolsAsynchronousUploadHandler extends AbstractAsynchronousUp
     }
 
     /**
-     * Permet de récupérer la liste des fichiers uploadés pour un champ donné. La liste doit être ordonnée chronologiquement par date d'upload. A chaque fichier
-     * un index sera associé correspondant à l'index du fichier dans la liste (le fichier le plus vieux aura l'index 0). Deux appels successifs de cette méthode
-     * doivent donc renvoyés une liste ordonnées de la même manière.
+     * Permet de récupérer la liste des fichiers uploadés pour un champ donné. La
+     * liste doit être ordonnée chronologiquement par date d'upload. A chaque
+     * fichier un index sera associé correspondant à l'index du fichier dans la
+     * liste (le fichier le plus vieux aura l'index 0). Deux appels successifs de
+     * cette méthode doivent donc renvoyés une liste ordonnées de la même manière.
      * 
-     * @param strFieldName
-     *            Le nom du champ dont on souhaite récupérer les fichiers
-     * @param session
-     *            la session de l'utilisateur utilisant le fichier. A n'utiliser que si les fichiers sont enregistrés en session.
+     * @param strFieldName Le nom du champ dont on souhaite récupérer les fichiers
+     * @param session      la session de l'utilisateur utilisant le fichier. A
+     *                     n'utiliser que si les fichiers sont enregistrés en
+     *                     session.
      * @return La liste des fichiers uploadés pour le champ donné
      */
     @Override
@@ -119,12 +124,11 @@ public class LutecetoolsAsynchronousUploadHandler extends AbstractAsynchronousUp
     /**
      * Permet de supprimer un fichier précédament uploadé
      * 
-     * @param strFieldName
-     *            Le nom du champ
-     * @param session
-     *            la session de l'utilisateur utilisant le fichier. A n'utiliser que si les fichiers sont enregistrés en session.
-     * @param nIndex
-     *            L'index du fichier dans la liste des fichiers uploadés.
+     * @param strFieldName Le nom du champ
+     * @param session      la session de l'utilisateur utilisant le fichier. A
+     *                     n'utiliser que si les fichiers sont enregistrés en
+     *                     session.
+     * @param nIndex       L'index du fichier dans la liste des fichiers uploadés.
      */
     @Override
     public void removeFileItem( String strFieldName, HttpSession session, int nIndex )
@@ -140,14 +144,12 @@ public class LutecetoolsAsynchronousUploadHandler extends AbstractAsynchronousUp
     }
 
     /**
-     * Permet de déclarer un fichier comme uploadé. L'implémentation de cette méthode est désormais en charge de la gestion du fichier.
+     * Permet de déclarer un fichier comme uploadé. L'implémentation de cette
+     * méthode est désormais en charge de la gestion du fichier.
      * 
-     * @param fileItem
-     *            Le fichier uploadé
-     * @param strFieldName
-     *            Le nom du champ auquel le fichier est associé
-     * @param request
-     *            La requête
+     * @param fileItem     Le fichier uploadé
+     * @param strFieldName Le nom du champ auquel le fichier est associé
+     * @param request      La requête
      */
     @Override
     public void addFileItemToUploadedFilesList( FileItem fileItem, String strFieldName, HttpServletRequest request )
@@ -176,7 +178,8 @@ public class LutecetoolsAsynchronousUploadHandler extends AbstractAsynchronousUp
                     // If we find a file with the same name and the same
                     // length, we consider that the current file has
                     // already been uploaded
-                    bNew = !( StringUtils.equals( strUploadedFileName, strFileName ) && ( uploadedFile.getSize( ) == fileItem.getSize( ) ) );
+                    bNew = !( StringUtils.equals( strUploadedFileName, strFileName )
+                            && ( uploadedFile.getSize( ) == fileItem.getSize( ) ) );
                 }
             }
 
@@ -188,8 +191,10 @@ public class LutecetoolsAsynchronousUploadHandler extends AbstractAsynchronousUp
     }
 
     /**
-     * Permet de définir le nom du handler. Ce nom doit être unique, et ne contenir que des caractères numériques (pas de points, de virgule, ...). Il est
-     * recommandé de préfixer le nom du plugin, puis de suffixer un nom fonctionnel. Attention, le nom du handler est différent du nom du bean Spring associé !
+     * Permet de définir le nom du handler. Ce nom doit être unique, et ne contenir
+     * que des caractères numériques (pas de points, de virgule, ...). Il est
+     * recommandé de préfixer le nom du plugin, puis de suffixer un nom fonctionnel.
+     * Attention, le nom du handler est différent du nom du bean Spring associé !
      */
     @Override
     public String getHandlerName( )
@@ -200,10 +205,8 @@ public class LutecetoolsAsynchronousUploadHandler extends AbstractAsynchronousUp
     /**
      * Init the map
      * 
-     * @param strSessionId
-     *            the session id
-     * @param strFieldName
-     *            the field name
+     * @param strSessionId the session id
+     * @param strFieldName the field name
      */
     private void initMap( String strSessionId, String strFieldName )
     {
@@ -213,14 +216,15 @@ public class LutecetoolsAsynchronousUploadHandler extends AbstractAsynchronousUp
         // create map if not exists
         if ( mapFileItemsSession == null )
         {
-            synchronized( this )
+            synchronized ( this )
             {
-                // Ignore double check locking error : assignation and instanciation of objects are separated.
+                // Ignore double check locking error : assignation and instanciation of objects
+                // are separated.
                 mapFileItemsSession = _mapWebtiersUpload.get( strSessionId );
 
                 if ( mapFileItemsSession == null )
                 {
-                    mapFileItemsSession = new ConcurrentHashMap<String, List<FileItem>>( );
+                    mapFileItemsSession = new ConcurrentHashMap<>( );
                     _mapWebtiersUpload.put( strSessionId, mapFileItemsSession );
                 }
             }
@@ -230,18 +234,16 @@ public class LutecetoolsAsynchronousUploadHandler extends AbstractAsynchronousUp
 
         if ( listFileItems == null )
         {
-            listFileItems = new ArrayList<FileItem>( );
+            listFileItems = new ArrayList<>( );
             mapFileItemsSession.put( strFieldName, listFileItems );
         }
     }
 
-    private Boolean compareTo( String mime, String fileContent )
+    private boolean compareTo( String mime, String fileContent )
     {
         // create for check mime type upload image in createImage
         String s = fileContent.substring( 0, mime.length( ) );
-        if ( s.equals( mime ) )
-            return ( true );
-        return ( false );
+        return s.equals( mime );
     }
 
     public boolean hasFile( HttpServletRequest request, String strFieldName )

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,9 +53,9 @@ public class SaxPomHandler extends DefaultHandler
     private String _strParentPomVersion;
     private String _strCoreVersion;
     private String _strJiraKey;
-    private StringBuffer _sbScmUrl = new StringBuffer( );
-    private StringBuffer _sbScmConnection = new StringBuffer( );
-    private StringBuffer _sbScmDeveloperConnection = new StringBuffer( );
+    private StringBuilder _sbScmUrl = new StringBuilder( );
+    private StringBuilder _sbScmConnection = new StringBuilder( );
+    private StringBuilder _sbScmDeveloperConnection = new StringBuilder( );
 
     private boolean _bPomParent;
     private boolean _bVersion;

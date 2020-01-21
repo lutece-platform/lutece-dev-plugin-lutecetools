@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,10 @@ public class ComponentService
     private static final String DAEMON_KEY = "lutecetoolsCacheUpdater";
     private static final ObjectMapper _mapper = new ObjectMapper( );
 
+    private ComponentService( )
+    {
+    }
+    
     /**
      * Save a component into the Datastore as JSON format
      * 

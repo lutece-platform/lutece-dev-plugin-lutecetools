@@ -1,3 +1,36 @@
+/*
+ * Copyright (c) 2002-2020, City of Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import java.io.IOException;
@@ -49,13 +82,17 @@ public class XMLParser
     private static final String RELEASE_NOT_FOUND = "Release not found";
 
     private static final String LUTECE_CORE = "lutece-core";
+    
+    private XMLParser( )
+    {
+    }
 
-    public static String updatePOM( FileItem _inputFile )
+    public static String updatePOM( FileItem inputFile )
     {
         String strUpdated = "";
         try
         {
-            strUpdated = process( _inputFile );
+            strUpdated = process( inputFile );
         }
         catch( IOException | ParserConfigurationException | SAXException | TransformerException e )
         {
@@ -65,11 +102,11 @@ public class XMLParser
         return strUpdated;
     }
 
-    private static String process( FileItem _inputFile ) throws ParserConfigurationException, SAXException, IOException, TransformerException
+    private static String process( FileItem inputFile ) throws ParserConfigurationException, SAXException, IOException, TransformerException
     {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance( );
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder( );
-        Document doc = dBuilder.parse( _inputFile.getInputStream( ) );
+        Document doc = dBuilder.parse( inputFile.getInputStream( ) );
         doc.getDocumentElement( ).normalize( );
         NodeList nList = doc.getElementsByTagName( TAG_DEPENDENCY );
 
@@ -118,8 +155,6 @@ public class XMLParser
         StringWriter writer = new StringWriter( );
         StreamResult streamResult = new StreamResult( writer );
         transformer.transform( domSource, streamResult );
-        String strOutput = writer.toString( );
-
-        return strOutput;
+        return writer.toString( );
     }
 }

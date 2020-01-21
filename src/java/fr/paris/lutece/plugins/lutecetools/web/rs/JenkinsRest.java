@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,19 +33,19 @@
  */
 package fr.paris.lutece.plugins.lutecetools.web.rs;
 
-import fr.paris.lutece.plugins.lutecetools.service.JenkinsService;
-import fr.paris.lutece.plugins.rest.service.RestConstants;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.util.httpaccess.HttpAccess;
-import fr.paris.lutece.util.httpaccess.HttpAccessException;
 import java.net.URI;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Response;
+
+import fr.paris.lutece.plugins.lutecetools.service.JenkinsService;
+import fr.paris.lutece.plugins.rest.service.RestConstants;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.util.httpaccess.HttpAccess;
+import fr.paris.lutece.util.httpaccess.HttpAccessException;
 
 /**
  * JenkinsRest

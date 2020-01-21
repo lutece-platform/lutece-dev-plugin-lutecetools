@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,16 +65,17 @@ public class ComponentTypeService implements ComponentInfoFiller
         {
             case LIBRARY:
                 component.setComponentType( LIBRARY );
-                return;
+                break;
             case PLUGIN:
                 component.setComponentType( PLUGIN );
-                return;
+                break;
             case MODULE:
                 component.setComponentType( MODULE );
-                return;
+                break;
+            default:
+                sbLogs.append( "Component " ).append( component.getArtifactId( ) ).append( " has to be renamed to plugin-XXX, module-XXX ..." );
+                break;
         }
-
-        sbLogs.append( "Component " ).append( component.getArtifactId( ) ).append( " has to be renamed to plugin-XXX, module-XXX ..." );
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,14 @@
  */
 package fr.paris.lutece.plugins.lutecetools.web;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.http.HttpServletRequest;
+
 import fr.paris.lutece.plugins.lutecetools.business.Component;
 import fr.paris.lutece.plugins.lutecetools.service.AbstractGitPlatformService;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentService;
@@ -46,14 +54,6 @@ import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * This class provides a simple implementation of an XPage
  */
@@ -63,7 +63,7 @@ public class ComponentListApp extends MVCApplication
 
     private static final String TEMPLATE_XPAGE = "/skin/plugins/lutecetools/components.html";
     private static final String TEMPLATE_XPAGE_DETAIL = "/skin/plugins/lutecetools/component.html";
-    
+
     private static final String MARK_COMPONENTS_LIST = "components_list";
     private static final String MARK_COMPONENT = "component";
     private static final String MARK_GITHUB_FILTER = "github_filter";
@@ -75,19 +75,19 @@ public class ComponentListApp extends MVCApplication
     private static final String MARK_TOTAL_LINES = "total_lines";
     private static final String MARK_TOTAL_PRS = "total_prs";
     private static final String MARK_OLDEST_PR = "oldest_pr";
-    
+
     private static final String VIEW_HOME = "home";
     private static final String VIEW_DETAIL = "detail";
-    
+
     private static final String ACTION_REFRESH = "refresh";
     private static final String ACTION_CLEAR_CACHE = "clearCache";
-    
+
     private static final String PARAMETER_GITHUB = "github";
     private static final String PARAMETER_GITLAB = "gitlab";
     private static final String PARAMETER_CORE_VERSIONS = "core";
     private static final String PARAMETER_ARTIFACT_ID = "artifact_id";
     private static final String PARAMETER_REFRESH = "refresh";
-    
+
     private static final String VALUE_ON = "on";
     private static final String PLATFORM_GITHUB = "github";
     private static final String PLATFORM_GITLAB = "gitlab";
@@ -114,11 +114,11 @@ public class ComponentListApp extends MVCApplication
         String strGitLabFilter = request.getParameter( PARAMETER_GITLAB );
         String strDisplayCoreVersions = request.getParameter( PARAMETER_CORE_VERSIONS );
         boolean bDisplayCoreVersions = ( strDisplayCoreVersions != null ) && strDisplayCoreVersions.equals( VALUE_ON );
-        if ( ( strGitHubFilter != null ) && ( strGitHubFilter.equals( VALUE_ON ) ) )
+        if ( VALUE_ON.equals( strGitHubFilter ) )
         {
             listFilterPlatform.add( PLATFORM_GITHUB );
         }
-        if ( ( strGitLabFilter != null ) && ( strGitLabFilter.equals( VALUE_ON ) ) )
+        if ( VALUE_ON.equals( strGitLabFilter ) )
         {
             listFilterPlatform.add( PLATFORM_GITLAB );
         }
@@ -169,7 +169,7 @@ public class ComponentListApp extends MVCApplication
 
         return getXPage( TEMPLATE_XPAGE, request.getLocale( ), model );
     }
-    
+
     /**
      * Returns the content of the page lutecetools.
      *
@@ -180,29 +180,29 @@ public class ComponentListApp extends MVCApplication
     @View( value = VIEW_DETAIL )
     public XPage viewDetail( HttpServletRequest request )
     {
-        
+
         String strArtifactId = request.getParameter( PARAMETER_ARTIFACT_ID );
         boolean refresh = ( request.getParameter( PARAMETER_REFRESH ) != null );
         Map<String, Object> model = getModel( );
 
-        long nTotal=0, nTotalPRs=0, oldestPR=0 ;
-        Component c = MavenRepoService.instance( ).getComponent( strArtifactId, true, refresh);
+        long nTotal = 0;
+        long nTotalPRs = 0;
+        long oldestPR = 0;
+        Component c = MavenRepoService.instance( ).getComponent( strArtifactId, true, refresh );
 
-
-            if ( c.get( SonarService.SONAR_NB_LINES ) != null )
+        if ( c.get( SonarService.SONAR_NB_LINES ) != null )
+        {
+            nTotal += Integer.parseInt( c.get( SonarService.SONAR_NB_LINES ).replace( ",", "" ) );
+        }
+        Integer iPullRequestCount = c.getInt( AbstractGitPlatformService.PULL_REQUEST_COUNT );
+        if ( iPullRequestCount != null && iPullRequestCount > 0 )
+        {
+            nTotalPRs = nTotalPRs + c.getInt( AbstractGitPlatformService.PULL_REQUEST_COUNT );
+            if ( c.getLong( AbstractGitPlatformService.OLDEST_PULL_REQUEST ) < oldestPR )
             {
-                nTotal += Integer.parseInt( c.get( SonarService.SONAR_NB_LINES ).replace( ",", "" ) );
+                oldestPR = c.getLong( AbstractGitPlatformService.OLDEST_PULL_REQUEST );
             }
-            Integer iPullRequestCount = c.getInt( AbstractGitPlatformService.PULL_REQUEST_COUNT );
-            if ( iPullRequestCount != null && iPullRequestCount > 0 )
-            {
-                nTotalPRs = nTotalPRs + c.getInt( AbstractGitPlatformService.PULL_REQUEST_COUNT );
-                if ( c.getLong( AbstractGitPlatformService.OLDEST_PULL_REQUEST ) < oldestPR )
-                {
-                    oldestPR = c.getLong( AbstractGitPlatformService.OLDEST_PULL_REQUEST );
-                }
-            }
-        
+        }
 
         model.put( MARK_INTEGER_SUCCESS, SONAR_RCI_SUCCESS );
         model.put( MARK_INTEGER_WARNING, SONAR_RCI_WARNING );
@@ -218,8 +218,7 @@ public class ComponentListApp extends MVCApplication
 
         return getXPage( TEMPLATE_XPAGE_DETAIL, request.getLocale( ), model );
     }
-    
-    
+
     /**
      * Refresh action processing
      *
@@ -244,7 +243,7 @@ public class ComponentListApp extends MVCApplication
     public XPage clearCache( HttpServletRequest request )
     {
         ComponentService.clearCache( );
-        MavenRepoService.instance( ).clearLogs( );
+        MavenRepoService.clearLogs( );
 
         return redirect( request, VIEW_HOME, getViewParameters( request ) );
     }

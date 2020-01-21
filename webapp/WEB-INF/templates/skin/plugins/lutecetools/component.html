@@ -162,7 +162,11 @@
                         <td class="small">${component.attributes.sonarNbLines!"Not found"}</td>
                         <td class="small">
                             <#attempt>
-                                <a href="http://dev.lutece.paris.fr/sonar/overview?id=fr.paris.lutece.plugins%3A${component.artifactId}">
+                                <#if component.artifactId=="lutece-core">
+                            		<a href="http://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece%3Alutece-core">
+                            	<#else>
+                                	<a href="http://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece.plugins%3A${component.artifactId}">
+                                </#if>
                                 <#if component.attributes.sonarRci??>
                                     <#assign nb = "${component.attributes.sonarRci!'0'}"?replace("%", "")?number>
                                 <#else>

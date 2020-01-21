@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,6 +41,10 @@ import fr.paris.lutece.plugins.lutecetools.business.Stats;
  */
 public class StatsService
 {
+    private StatsService( )
+    {
+    }
+    
     /**
      * Build stats
      * 
@@ -68,7 +72,7 @@ public class StatsService
             {
                 nJiraOK++;
             }
-            if ( component.getBoolean( AbstractGitPlatformService.HAS_README ) )
+            if ( Boolean.TRUE.equals( component.getBoolean( AbstractGitPlatformService.HAS_README ) ) )
             {
                 nReadmeOk++;
             }

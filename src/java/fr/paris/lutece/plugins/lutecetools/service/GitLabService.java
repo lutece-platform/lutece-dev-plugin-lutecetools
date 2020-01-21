@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,8 +53,8 @@ public class GitLabService extends AbstractGitPlatformService
     private static final String PROPERTY_GITLAB_URL = "lutecetools.gitlab.url";
     private static final String PROPERTY_GITLAB_ACCOUNT_TOKEN = "lutecetools.gitlab.account.token";
 
-    private static final String SITE_INDEX_PATH_PART1 = "/raw/develop/src/site/" ;
-    private static final String SITE_INDEX_PATH_PART2 = "xdoc/index.xml" ;
+    private static final String SITE_INDEX_PATH_PART1 = "/raw/develop/src/site/";
+    private static final String SITE_INDEX_PATH_PART2 = "xdoc/index.xml";
 
     private static Map<String, GitlabProject> _mapRepositories;
 
@@ -87,13 +87,13 @@ public class GitLabService extends AbstractGitPlatformService
 
             incrementItemCount( );
             incrementItemOk( );
-            
+
             fillSiteInfos( component, sbLogs );
         }
 
     }
 
-    private String getGitLabRepository( Component component )
+    private static String getGitLabRepository( Component component )
     {
         try
         {
@@ -110,7 +110,7 @@ public class GitLabService extends AbstractGitPlatformService
             }
 
         }
-        catch( IOException ex )
+        catch ( IOException ex )
         {
             AppLogService.error( "GitlabService - Error getting repositories : " + ex.getMessage( ), ex );
         }
@@ -122,8 +122,7 @@ public class GitLabService extends AbstractGitPlatformService
      * Fetch all repositories hosted by the platform
      * 
      * @return The repositories map
-     * @throws IOException
-     *             if an error occurs
+     * @throws IOException if an error occurs
      */
     public static Map<String, GitlabProject> getRepositories( ) throws IOException
     {
@@ -136,7 +135,8 @@ public class GitLabService extends AbstractGitPlatformService
         for ( GitlabProject project : listProjects )
         {
             String strGroup = getGroup( project );
-            AppLogService.debug( "GitlabService - fetching repository : " + project.getName( ) + " group : " + strGroup );
+            AppLogService
+                    .debug( "GitlabService - fetching repository : " + project.getName( ) + " group : " + strGroup );
             mapRepositories.put( project.getName( ), project );
         }
         return mapRepositories;
@@ -145,8 +145,7 @@ public class GitLabService extends AbstractGitPlatformService
     /**
      * Gets the group from a given GitLab project
      * 
-     * @param project
-     *            The project
+     * @param project The project
      * @return The group
      */
     static String getGroup( GitlabProject project )
@@ -163,23 +162,25 @@ public class GitLabService extends AbstractGitPlatformService
         return "";
     }
 
-        /**
+    /**
      * fill site infos from xdox site index
      *
-     * @param component
-     *            The component
+     * @param component The component
      */
     private void fillSiteInfos( Component component, StringBuilder sbLogs )
     {
         String strScmUrl = component.get( Component.SCM_URL );
         if ( strScmUrl != null )
         {
-            if ( strScmUrl.endsWith( ".git" ) ) strScmUrl = strScmUrl.substring( 0, strScmUrl.length() - 4);
+            if ( strScmUrl.endsWith( ".git" ) )
+            {
+                strScmUrl = strScmUrl.substring( 0, strScmUrl.length( ) - 4 );
+            }
 
-            String strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + SITE_INDEX_PATH_PART2 ;
+            String strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + SITE_INDEX_PATH_PART2;
             SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "en", sbLogs );
 
-            strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + "fr/" + SITE_INDEX_PATH_PART2 ;
+            strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + "fr/" + SITE_INDEX_PATH_PART2;
             SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "fr", sbLogs );
         }
     }
