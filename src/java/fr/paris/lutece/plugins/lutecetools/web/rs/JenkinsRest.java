@@ -35,12 +35,16 @@ package fr.paris.lutece.plugins.lutecetools.web.rs;
 
 import java.net.URI;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import fr.paris.lutece.plugins.lutecetools.business.JenkinsBuildResult;
+import fr.paris.lutece.plugins.lutecetools.business.JenkinsBuildResultHome;
 import fr.paris.lutece.plugins.lutecetools.service.JenkinsService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -91,5 +95,31 @@ public class JenkinsRest
             return Response.temporaryRedirect( URI.create( strRedirectURI ) ).build( );
         }
 
+    }
+    
+    /**
+     * Update the build result of an artifact
+     * @param strArtifact
+     * @param strResult
+     */
+    @POST
+    @Path( "/updateBuildResult" )
+    @Consumes
+    public void updateBuildResult( @QueryParam( "artifact" ) String strArtifact, @QueryParam( "result" ) String strResult  )
+    {
+        JenkinsBuildResult result = JenkinsBuildResultHome.findByPrimaryKey( strArtifact );
+        AppLogService.debug( "updateBuildResult for artifact " + strArtifact + " and result " + strResult );
+        if ( result == null )
+        {
+            result = new JenkinsBuildResult( );
+            result.setArtifactName( strArtifact );
+            result.setBuildResult( strResult );
+            JenkinsBuildResultHome.create( result );
+        }
+        else
+        {
+            result.setBuildResult( strResult );
+            JenkinsBuildResultHome.update( result );
+        }
     }
 }
