@@ -34,4 +34,6 @@
             <value>lutecetools.site_property.</value>
         </property>
     </bean>
+    
+    <bean id="lutecetools.jenkinsBuildResultDao" class="fr.paris.lutece.plugins.lutecetools.business.JenkinsBuildResultDao" />
 </beans>
