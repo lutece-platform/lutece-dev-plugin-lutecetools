@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.lutecetools.web.rs;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -114,11 +115,13 @@ public class JenkinsRest
             result = new JenkinsBuildResult( );
             result.setArtifactName( strArtifact );
             result.setBuildResult( strResult );
+            result.setBuildDate( LocalDateTime.now( ) );
             JenkinsBuildResultHome.create( result );
         }
         else
         {
             result.setBuildResult( strResult );
+            result.setBuildDate( LocalDateTime.now( ) );
             JenkinsBuildResultHome.update( result );
         }
     }

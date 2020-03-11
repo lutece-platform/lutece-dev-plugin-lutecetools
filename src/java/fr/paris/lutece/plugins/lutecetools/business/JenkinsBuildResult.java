@@ -33,10 +33,13 @@
  */
 package fr.paris.lutece.plugins.lutecetools.business;
 
+import java.time.LocalDateTime;
+
 public class JenkinsBuildResult
 {
     private String _artifactName;
     private String _buildResult;
+    private LocalDateTime _buildDate;
     
     /**
      * @return the artifactName
@@ -65,5 +68,19 @@ public class JenkinsBuildResult
     public void setBuildResult( String buildResult )
     {
         _buildResult = buildResult;
+    }
+    /**
+     * @return the _buildDate
+     */
+    public LocalDateTime getBuildDate( )
+    {
+        return _buildDate;
+    }
+    /**
+     * @param buildDate the _buildDate to set
+     */
+    public void setBuildDate( LocalDateTime buildDate )
+    {
+        _buildDate = buildDate;
     }
 }

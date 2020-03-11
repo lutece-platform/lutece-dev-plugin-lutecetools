@@ -33,15 +33,17 @@
  */
 package fr.paris.lutece.plugins.lutecetools.business;
 
+import java.sql.Timestamp;
+
 import fr.paris.lutece.util.sql.DAOUtil;
 
 public class JenkinsBuildResultDao implements IJenkinsBuildResultDao
 {
 
-    private static final String SQL_QUERY_SELECT = " SELECT artifact_name, build_result FROM tools_jenkins_build_result WHERE artifact_name = ?  ";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO tools_jenkins_build_result ( artifact_name, build_result ) VALUES ( ?, ? ) ";
+    private static final String SQL_QUERY_SELECT = " SELECT artifact_name, build_result,date_build FROM tools_jenkins_build_result WHERE artifact_name = ?  ";
+    private static final String SQL_QUERY_INSERT = " INSERT INTO tools_jenkins_build_result ( artifact_name, build_result,date_build ) VALUES ( ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM tools_jenkins_build_result WHERE artifact_name = ?  ";
-    private static final String SQL_QUERY_UPDATE = " UPDATE tools_jenkins_build_result SET build_result = ? WHERE artifact_name = ?  ";
+    private static final String SQL_QUERY_UPDATE = " UPDATE tools_jenkins_build_result SET build_result = ?, date_build = ? WHERE artifact_name = ?  ";
     
     
     @Override
@@ -61,6 +63,7 @@ public class JenkinsBuildResultDao implements IJenkinsBuildResultDao
         {
             daoUtil.setString( 1, buildResult.getArtifactName( ) );
             daoUtil.setString( 2, buildResult.getBuildResult( ) );
+            daoUtil.setTimestamp( 3, Timestamp.valueOf( buildResult.getBuildDate( ) ) );
             daoUtil.executeUpdate( );
         }
     }
@@ -79,6 +82,7 @@ public class JenkinsBuildResultDao implements IJenkinsBuildResultDao
                 buildResult = new JenkinsBuildResult( );
                 buildResult.setArtifactName(  daoUtil.getString( 1 ) );
                 buildResult.setBuildResult( daoUtil.getString( 2 ) );
+                buildResult.setBuildDate( daoUtil.getTimestamp( 3 ).toLocalDateTime( ) );
             }
         }
         return buildResult;
@@ -90,7 +94,8 @@ public class JenkinsBuildResultDao implements IJenkinsBuildResultDao
         try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
         {
             daoUtil.setString( 1, buildResult.getBuildResult( ) );
-            daoUtil.setString( 2, buildResult.getArtifactName( ) );
+            daoUtil.setTimestamp( 2, Timestamp.valueOf( buildResult.getBuildDate( ) ) );
+            daoUtil.setString( 3, buildResult.getArtifactName( ) );
 
             daoUtil.executeUpdate( );
         }
