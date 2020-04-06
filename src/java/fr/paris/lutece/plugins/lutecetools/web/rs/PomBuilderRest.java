@@ -81,6 +81,7 @@ public class PomBuilderRest
             SiteBuilderConfDto siteBuilderConfDto = _mapper.readValue( strSiteBuilderConfigDto,
                     SiteBuilderConfDto.class );
             List<Component> listFullComponent = new ArrayList<>( );
+
             // Fill given components if there are missing infos in the config
             for ( Component comp : siteBuilderConfDto.getListComponents( ) )
             {
@@ -89,6 +90,10 @@ public class PomBuilderRest
                     Component fullCompo = MavenRepoService.instance( ).getComponent( comp.getArtifactId( ), true,
                             false );
                     listFullComponent.add( fullCompo );
+                }
+                else
+                {
+                    listFullComponent.add( comp );
                 }
             }
 
