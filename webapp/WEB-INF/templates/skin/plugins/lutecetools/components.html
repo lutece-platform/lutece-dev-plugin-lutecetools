@@ -19,7 +19,7 @@
 
     <@messages errors=errors />
     <@messages infos=infos />
-    <h1>#i18n{lutecetools.components.title}<br><small>Liste provenant du repository Maven</small></h1>
+    <h1>#i18n{lutecetools.components.title}</h1>
 
     <br>
     <#if !components_list.complete>
@@ -40,7 +40,7 @@
                 <form method="GET" action="jsp/site/Portal.jsp">
                     <input type="hidden" name="page" value="components" />
                     <div class="col-md-3">
-                        <h4><i class="fa fa-filter"></i> Filtrer par plate-forme </h4> 
+                        <h4><i class="fa fa-filter"></i> #i18n{lutecetools.components.filterByPlatform}</h4> 
                     </div>
                     <div class="col-md-3">
                         <input type="checkbox" name="github" <#if github_filter> checked </#if> />  GitHub<br>
