@@ -181,7 +181,14 @@ public final class MavenRepoService
                 }
             }
 
-            return VersionUtils.getLatestVersion( listVersions );
+            if ( listVersions.isEmpty( ) )
+            {
+                return RELEASE_NOT_FOUND;
+            }
+            else
+            {
+                return VersionUtils.getLatestVersion( listVersions );
+            }
         }
         catch ( HttpAccessException e )
         {
@@ -505,6 +512,12 @@ public final class MavenRepoService
                 }
             }
 
+            if ( listVersions.isEmpty( ) )
+            {
+                sbLogs.append( "\n*** ERROR ***  Error retrieving snapshot pom URL : no versions found" );
+                return null;
+            }
+
             String strSnapshotVersion = VersionUtils.getLatestVersion( listVersions );
             component.set( Component.SNAPSHOT_VERSION, strSnapshotVersion );
 
@@ -522,7 +535,7 @@ public final class MavenRepoService
         }
         catch ( HttpAccessException e )
         {
-            sbLogs.append( "\n*** ERROR ***  Error retrieving release version : " ).append( e.getMessage( ) );
+            sbLogs.append( "\n*** ERROR ***  Error retrieving snapshot pom URL : " ).append( e.getMessage( ) );
         }
 
         return strPomUrl;
