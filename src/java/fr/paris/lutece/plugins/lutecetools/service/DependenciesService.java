@@ -63,6 +63,10 @@ public final class DependenciesService
     private static final String TAG_ARTIFACT_ID = "artifactId";
     private static final String TAG_VERSION = "version";
     private static final String TAG_TYPE = "type";
+    private static final String TYPE_LUTECE_CORE = "lutece-core";
+    private static final String TYPE_LUTECE_SITE = "lutece-site";
+    private static final String TYPE_LUTECE_PLUGIN = "lutece-plugin";
+    private static final String TYPE_LUTECE_LIBRARY = "jar";
     private static final String FORMAT_TEXT = "text";
     private static final String FORMAT_XML = "xml";
     private static final String FORMAT_POM = "pom";
@@ -134,7 +138,7 @@ public final class DependenciesService
             Dependency dependency = new Dependency( );
             dependency.setArtifactId( name );
             dependency.setGroupId( "fr.paris.lutece.plugins" );
-            dependency.setComponentType( "lutece-plugin" );
+            dependency.setComponentType( TYPE_LUTECE_PLUGIN );
             MavenRepoService.instance( ).setReleaseVersion( dependency );
             list.add( dependency );
         }
@@ -174,7 +178,7 @@ public final class DependenciesService
         Dependency dep = new Dependency( );
         dep.setArtifactId( component.getArtifactId( ) );
         dep.setVersion( component.getVersion( ) );
-        dep.setComponentType( component.getComponentType( ) );
+        dep.setComponentType( provideDependencyType( component.getComponentType( ) ) );
         if ( component.getComponentType( ).equals( LUTECE_CORE ) )
         {
             dep.setGroupId( GROUP_ID_CORE );
@@ -268,10 +272,36 @@ public final class DependenciesService
         String strLatestCoreVersion = MavenRepoService.instance( ).getLatestCoreVersion( );
         Dependency coreDependency = new Dependency( );
         coreDependency.setArtifactId( LUTECE_CORE );
-        coreDependency.setComponentType( LUTECE_CORE );
+        coreDependency.setComponentType( TYPE_LUTECE_CORE );
         coreDependency.setGroupId( GROUP_ID_CORE );
         coreDependency.setVersion( strLatestCoreVersion );
         list.add( 0, coreDependency );
+    }
+
+    /**
+     * provide Dependency Type
+     *
+     * @param componentType
+     * @return the type
+     */
+    public static String provideDependencyType( String componentType )
+    {
+    	if ( componentType.contains("library") )
+    	{
+    		return TYPE_LUTECE_LIBRARY;
+    	}
+    	else if ( componentType.contains("site") )
+    	{
+    		return TYPE_LUTECE_SITE;
+    	}
+    	else if ( componentType.contains("core") )
+    	{
+    		return TYPE_LUTECE_CORE;
+    	}
+    	else
+    	{
+    		return TYPE_LUTECE_PLUGIN;
+    	}
     }
 
 }
