@@ -452,6 +452,10 @@
 </div>
 <script>
 $(document).ready(function(){
+    
+  // Remove the container class to use the full width
+  $( "div" ).removeClass( "container" );
+  
   // Refresh the page every 30s
   var time = new Date().getTime();
   $(document.body).bind("mousemove keypress", function(e) {
