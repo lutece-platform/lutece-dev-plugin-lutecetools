@@ -565,12 +565,13 @@ public final class MavenRepoService
         		int nIteration = 0;
             	for ( String strDirname : listElement )
                 {
-            		String [ ] tab = strDirname.split("-");
+            		String [ ] tabDir = strDirname.split("-");
+            		String [ ] tabVer = strSnapshotVersion.split("-");
             		
-                    if ( tab[0].equals(strSnapshotVersion.substring(0, 5)) && Integer.parseInt( tab[tab.length -1] ) >= nIteration )
+                    if ( tabDir[0].equals(tabVer[0]) && Integer.parseInt( tabDir[tabDir.length -1] ) >= nIteration )
                     {
                     	strLastDirname = strDirname;
-                    	nIteration = Integer.parseInt( tab[tab.length -1] );
+                    	nIteration = Integer.parseInt( tabDir[tabDir.length -1] );
                     }                    
                 }
             	
