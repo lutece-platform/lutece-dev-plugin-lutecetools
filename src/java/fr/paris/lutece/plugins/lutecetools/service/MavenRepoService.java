@@ -65,61 +65,38 @@ import fr.paris.lutece.util.httpaccess.HttpAccessException;
  */
 public final class MavenRepoService
 {
-	// URLs to see the tree structure
+	// Url Maven repositories - to see the tree structure
     private static final String PROPERTY_MAVEN_REPO_URL = "lutecetools.maven.repository.url";
-    private static final String URL_MAVEN_REPO = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL );
-    private static final String PROPERTY_MAVEN_PATH_PLUGINS = "lutecetools.maven.repository.path.plugins";
-    private static final String URL_PLUGINS = URL_MAVEN_REPO
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
-    private static final String PROPERTY_MAVEN_PATH_SITE_POM = "lutecetools.maven.repository.path.site-pom";
-    private static final String URL_SITE_POM = URL_MAVEN_REPO
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_SITE_POM );
-    private static final String PROPERTY_MAVEN_PATH_CORE = "lutecetools.maven.repository.path.core";
-    private static final String PROPERTY_MAVEN_PATH_THEMES = "lutecetools.maven.repository.path.themes";
+	private static final String URL_MAVEN_REPO = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL );
 
-    private static final String URL_CORE = URL_MAVEN_REPO
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
-    private static final String URL_THEMES = URL_MAVEN_REPO
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_THEMES );
+    // Url Maven repositories - To get file
+	private static final String PROPERTY_MAVEN_REPO_URL_FILE = "lutecetools.maven.repository.url.file";
+    private static final String URL_MAVEN_REPO_FILE = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL_FILE );
+
+    // Path repo type (private/public)
+	private static final String PROPERTY_MAVEN_PATH_PREFIX = "lutecetools.maven.repository.releases";
+	private static final List<String> PROPERTIES_MAVEN_PATH = AppPropertiesService.getKeys( PROPERTY_MAVEN_PATH_PREFIX );
+    private static final String PROPERTY_SNAPSHOT_PATH_PREFIX = "lutecetools.maven.repository.snapshots";
+	private static final List<String> PROPERTIES_SNAPSHOT_PATH = AppPropertiesService.getKeys( PROPERTY_SNAPSHOT_PATH_PREFIX );
+
+    // Path Plugins
+    private static final String PROPERTY_MAVEN_PATH_PLUGINS = "lutecetools.maven.repository.path.plugins";
+    private static final String URL_MAVEN_PATH_PLUGINS = AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
+    
+    // Path Pom site
+    private static final String PROPERTY_MAVEN_PATH_SITE_POM = "lutecetools.maven.repository.path.site-pom";
+    private static final String URL_MAVEN_PATH_SITE_POM = AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_SITE_POM );
+    
+    // Path Lutece core
+    private static final String PROPERTY_MAVEN_PATH_CORE = "lutecetools.maven.repository.path.core";
+    private static final String URL_MAVEN_PATH_CORE = AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
+    
+    // Path Themes
+    private static final String PROPERTY_MAVEN_PATH_THEMES = "lutecetools.maven.repository.path.themes";
+    private static final String URL_MAVEN_PATH_THEMES = AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_THEMES );
 
     private static final String KEY_SITE_POM_VERSION = "lutecetools.pom.site.version";
     private static final String RELEASE_NOT_FOUND = "Release not found";
-    // SNAPSHOT
-    private static final String PROPERTY_SNAPSHOT_REPO_URL = "lutecetools.snapshot.repository.url";
-    private static final String URL_SNAPSHOT_REPO = AppPropertiesService.getProperty( PROPERTY_SNAPSHOT_REPO_URL );
-    private static final String URL_SNAPSHOT_PLUGINS = URL_SNAPSHOT_REPO
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS );
-    private static final String URL_SNAPSHOT_CORE = URL_SNAPSHOT_REPO
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE );
-    private static final String URL_SNAPSHOT_THEMES = URL_SNAPSHOT_REPO
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_THEMES );
-    
-    // URLs to retrieve the contents of the files    
-    private static final String PROPERTY_MAVEN_REPO_URL_FILE = "lutecetools.maven.repository.url.file";
-    private static final String URL_MAVEN_REPO_FILE = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL_FILE );
-    private static final String PROPERTY_MAVEN_PATH_PLUGINS_FILE = "lutecetools.maven.repository.path.plugins.file";
-    private static final String URL_PLUGINS_FILE = URL_MAVEN_REPO_FILE
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS_FILE );
-    private static final String PROPERTY_MAVEN_PATH_SITE_POM_FILE = "lutecetools.maven.repository.path.site-pom.file";
-    private static final String URL_SITE_POM_FILE = URL_MAVEN_REPO_FILE
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_SITE_POM_FILE );
-    private static final String PROPERTY_MAVEN_PATH_CORE_FILE = "lutecetools.maven.repository.path.core.file";
-    private static final String PROPERTY_MAVEN_PATH_THEMES_FILE = "lutecetools.maven.repository.path.themes.file";
-
-    private static final String URL_CORE_FILE = URL_MAVEN_REPO_FILE
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE_FILE );
-    private static final String URL_THEMES_FILE = URL_MAVEN_REPO_FILE
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_THEMES_FILE );
-    // SNAPSHOT
-    private static final String PROPERTY_SNAPSHOT_REPO_URL_FILE = "lutecetools.snapshot.repository.url.file";
-    private static final String URL_SNAPSHOT_REPO_FILE = AppPropertiesService.getProperty( PROPERTY_SNAPSHOT_REPO_URL_FILE );
-    private static final String URL_SNAPSHOT_PLUGINS_FILE = URL_SNAPSHOT_REPO_FILE
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_PLUGINS_FILE );
-    private static final String URL_SNAPSHOT_CORE_FILE = URL_SNAPSHOT_REPO_FILE
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_CORE_FILE );
-    private static final String URL_SNAPSHOT_THEMES_FILE = URL_SNAPSHOT_REPO_FILE
-            + AppPropertiesService.getProperty( PROPERTY_MAVEN_PATH_THEMES_FILE );
-	
 
     private static final String EXCEPTION_MESSAGE = "LuteceTools - MavenRepoService : Error retrieving pom infos : ";
     private static final String PROPERTY_NON_AVAILABLE = "lutecetools.nonAvailable";
@@ -163,7 +140,37 @@ public final class MavenRepoService
 
         return _singleton;
     }
-
+    
+    private String getAvailableUrl(String strRepoUrl, List<String> listRepoTypeProperties, String strPath, String strArtifactId)
+    {
+    	HttpAccess httpAccess = new HttpAccess( );
+    	String strHtml = null;
+    	
+    	for (String strProperty : listRepoTypeProperties)
+    	{
+    		String url =  strRepoUrl + AppPropertiesService.getProperty(strProperty) + strPath;    		
+    		    		
+    		if (strArtifactId != null && !strArtifactId.isEmpty())
+    			url = url + strArtifactId;
+    		
+    		try
+            {  
+    			strHtml = httpAccess.doGet( url );
+            }
+            catch ( HttpAccessException e )
+            {
+                AppLogService.info( "LuteceTools - MavenRepoService : Not available url : " + url );
+            }
+    		
+    		if ( strHtml != null && !strHtml.isEmpty())
+    		{
+    			return url;
+    		}    			
+    	}     
+    	
+    	return null;
+    }
+    
     /**
      * Set the component's version
      * 
@@ -171,7 +178,8 @@ public final class MavenRepoService
      */
     public void setReleaseVersion( Dependency component )
     {
-        component.setVersion( getVersion( URL_PLUGINS + component.getArtifactId( ) ) );
+    	String strUrls = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_PLUGINS, component.getArtifactId( ));
+    	component.setVersion( getVersion( strUrls ) );  
     }
 
     /**
@@ -179,8 +187,8 @@ public final class MavenRepoService
      */
     public void setPomSiteVersion( )
     {
-        String strVersion = getVersion( URL_SITE_POM );
-        DatastoreService.setDataValue( KEY_SITE_POM_VERSION, strVersion );
+    	String strUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_SITE_POM, null);
+        DatastoreService.setDataValue( KEY_SITE_POM_VERSION, getVersion( strUrl ) );
     }
 
     /**
@@ -193,35 +201,38 @@ public final class MavenRepoService
     {
         String strVersion = RELEASE_NOT_FOUND;
 
-        try
-        {
-            HttpAccess httpAccess = new HttpAccess( );
-            String strHtml = httpAccess.doGet( strUrl );
-
-            List<String> listElement = getAnchorsList( strHtml );
-            List<String> listVersions = new ArrayList<>( );
-            for ( String strAnchor : listElement )
+    	if (strUrl != null && !strUrl.isEmpty())
+    	{
+    		try
             {
-                if ( strAnchor.matches( "^[\\d].*" ) )
+                HttpAccess httpAccess = new HttpAccess( );
+                String strHtml = httpAccess.doGet( strUrl );
+
+                List<String> listElement = getAnchorsList( strHtml );
+                List<String> listVersions = new ArrayList<>( );
+                for ( String strAnchor : listElement )
                 {
-                    listVersions.add( strAnchor );
+                    if ( strAnchor.matches( "^[\\d].*" ) )
+                    {
+                        listVersions.add( strAnchor );
+                    }
+                }
+
+                if ( listVersions.isEmpty( ) )
+                {
+                    return RELEASE_NOT_FOUND;
+                }
+                else
+                {
+                    return VersionUtils.getLatestVersion( listVersions );
                 }
             }
-
-            if ( listVersions.isEmpty( ) )
+            catch ( HttpAccessException e )
             {
-                return RELEASE_NOT_FOUND;
+                AppLogService.error(
+                        "LuteceTools - MavenRepoService : Error retrieving release version : " + e.getMessage( ), e );
             }
-            else
-            {
-                return VersionUtils.getLatestVersion( listVersions );
-            }
-        }
-        catch ( HttpAccessException e )
-        {
-            AppLogService.error(
-                    "LuteceTools - MavenRepoService : Error retrieving release version : " + e.getMessage( ), e );
-        }
+    	}       
 
         return strVersion;
     }
@@ -271,7 +282,9 @@ public final class MavenRepoService
         try
         {
             HttpAccess httpAccess = new HttpAccess( );
-            String strHtml = httpAccess.doGet( URL_SNAPSHOT_PLUGINS );
+            
+            String strUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_SNAPSHOT_PATH, URL_MAVEN_PATH_PLUGINS, null);
+            String strHtml = httpAccess.doGet( strUrl ); 
             list = getAnchorsList( strHtml );
 
             // remove the first link
@@ -370,18 +383,23 @@ public final class MavenRepoService
         component.setArtifactId( strArtifactId );
         if ( Constants.MAVEN_REPO_LUTECE_CORE.equals( getMavenRepoDirectoryType( strArtifactId, strType ) ) )
         {
-            component.setVersion( getVersion( URL_CORE ) );
+        	String strUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_CORE, null);
+            component.setVersion( getVersion( strUrl ) );
         }
         else if ( Constants.MAVEN_REPO_LUTECE_SITE.equals( getMavenRepoDirectoryType( strArtifactId, strType ) ) )
         {
-            component.setVersion( getVersion( URL_THEMES + strArtifactId ) );
+        	String strUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_THEMES, strArtifactId);
+        	component.setVersion( getVersion( strUrl ) );
         }
-        else
+        else 
         {
-            component.setVersion( getVersion( URL_PLUGINS + strArtifactId ) );
+        	String strUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_PLUGINS, strArtifactId);
+        	component.setVersion( getVersion( strUrl ) );
         }
 
         long lTime1 = new Date( ).getTime( );
+        
+        //Get pom infos
         getPomInfos( component, strType, sbLogs );
 
         long lTime2 = new Date( ).getTime( );
@@ -411,20 +429,20 @@ public final class MavenRepoService
             if ( Constants.MAVEN_REPO_LUTECE_CORE
                     .equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
             {
-                sbPomUrl = new StringBuilder( URL_CORE_FILE );
+            	sbPomUrl = new StringBuilder( getAvailableUrl(URL_MAVEN_REPO_FILE, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_CORE, null) );
                 sbPomUrl.append( component.getVersion( ) ).append( '/' );
             }
             else if ( Constants.MAVEN_REPO_LUTECE_SITE
                     .equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
             {
-                sbPomUrl = new StringBuilder( URL_THEMES_FILE );
+            	sbPomUrl = new StringBuilder( getAvailableUrl(URL_MAVEN_REPO_FILE, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_THEMES, null) );
                 sbPomUrl.append( component.getArtifactId( ) ).append( '/' ).append( component.getVersion( ) )
                         .append( '/' );
 
             }
             else
             {
-                sbPomUrl = new StringBuilder( URL_PLUGINS_FILE );
+            	sbPomUrl = new StringBuilder( getAvailableUrl(URL_MAVEN_REPO_FILE, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_PLUGINS, null) );
                 sbPomUrl.append( component.getArtifactId( ) ).append( '/' ).append( component.getVersion( ) )
                         .append( '/' );
             }
@@ -435,6 +453,8 @@ public final class MavenRepoService
 
             PomService.instance( ).getLuteceDependencies( component, sbPomUrl.toString( ), false, sbLogs );
         }
+        
+        // Get SNAPSHOT pom url
         String strSnapshotPomUrl = getSnapshotPomUrl( component, sbLogs, strType );
 
         if ( strSnapshotPomUrl != null )
@@ -492,7 +512,6 @@ public final class MavenRepoService
         {
             AppLogService.error( EXCEPTION_MESSAGE + e.getMessage( ), e );
         }
-        
     }
 
     /**
@@ -510,26 +529,26 @@ public final class MavenRepoService
         if ( Constants.MAVEN_REPO_LUTECE_CORE
                 .equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
         {
-
-            strSnapshotsDirUrl = URL_SNAPSHOT_CORE;
+        	strSnapshotsDirUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_SNAPSHOT_PATH, URL_MAVEN_PATH_CORE, null);
         }
         else if ( Constants.MAVEN_REPO_LUTECE_SITE
                 .equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
         {
-            strSnapshotsDirUrl = URL_SNAPSHOT_THEMES + component.getArtifactId( );
-
+        	strSnapshotsDirUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_SNAPSHOT_PATH, URL_MAVEN_PATH_THEMES, component.getArtifactId( ));            
         }
         else
         {
-            strSnapshotsDirUrl = URL_SNAPSHOT_PLUGINS + component.getArtifactId( );
+        	strSnapshotsDirUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_SNAPSHOT_PATH, URL_MAVEN_PATH_PLUGINS, component.getArtifactId( ));
+            
         }
 
         try
         {
             HttpAccess httpAccess = new HttpAccess( );
+            List<String> listVersions = new ArrayList<>( );
+            
             String strHtml = httpAccess.doGet( strSnapshotsDirUrl );
             List<String> listElement = getAnchorsList( strHtml );
-            List<String> listVersions = new ArrayList<>( );
 
             for ( String strAnchor : listElement )
             {
@@ -549,17 +568,13 @@ public final class MavenRepoService
             component.set( Component.SNAPSHOT_VERSION, strSnapshotVersion );
 
             String strLastSnapshotDirUrl = strSnapshotsDirUrl + "/" + strSnapshotVersion;
-            String strPomComponentPath = component.getArtifactId( ) + "/" + strSnapshotVersion;
+            strPomUrl = strLastSnapshotDirUrl;
             
             strHtml = httpAccess.doGet( strLastSnapshotDirUrl );
             listElement = getAnchorsList( strHtml );
             String strPomFileName = getPomFileName(listElement);
             
-            if ( strPomFileName != null && !strPomFileName.isEmpty() )
-            {
-            	strPomComponentPath = strPomComponentPath + "/" + strPomFileName;
-            }
-            else
+            if ( strPomFileName == null || strPomFileName.isEmpty() )
             {
             	String strLastDirname = null;
         		int nIteration = 0;
@@ -578,12 +593,11 @@ public final class MavenRepoService
             	strLastSnapshotDirUrl = strLastSnapshotDirUrl + "/" + strLastDirname;
             	
                 strHtml = httpAccess.doGet( strLastSnapshotDirUrl );
-                listElement = getAnchorsList( strHtml );
+                listElement = getAnchorsList( strHtml );                
                 strPomFileName = getPomFileName(listElement);
-                strPomComponentPath = strPomComponentPath + "/" + strPomFileName;
             }
             
-            strPomUrl = URL_SNAPSHOT_PLUGINS_FILE + strPomComponentPath;
+            strPomUrl = strPomUrl.replace(URL_MAVEN_REPO, URL_MAVEN_REPO_FILE) + "/" + strPomFileName;
         }
         catch ( HttpAccessException e )
         {
@@ -605,7 +619,6 @@ public final class MavenRepoService
             }
         }
     	return strPomFileName;
-    	
     }
     
    
@@ -753,7 +766,7 @@ public final class MavenRepoService
 
     public String getLatestCoreVersion( )
     {
-        return getVersion( URL_CORE );
+    	return getVersion( getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_CORE, null) );
     }
 
 }
