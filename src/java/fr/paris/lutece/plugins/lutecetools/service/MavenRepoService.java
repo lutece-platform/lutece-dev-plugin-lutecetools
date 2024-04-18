@@ -65,19 +65,25 @@ import fr.paris.lutece.util.httpaccess.HttpAccessException;
  */
 public final class MavenRepoService
 {
-	// Url Maven repositories - to see the tree structure
-    private static final String PROPERTY_MAVEN_REPO_URL = "lutecetools.maven.repository.url";
-	private static final String URL_MAVEN_REPO = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL );
+    // Maven repos URLs
+	private static final String PROPERTY_MAVEN_URL_PREFIX = "lutecetools.maven.repository.url";
+	private static final List<String> PROPERTIES_MAVEN_URL = AppPropertiesService.getKeys( PROPERTY_MAVEN_URL_PREFIX );
+		
+	// Maven Releases Paths
+	private static final String PROPERTY_RELEASES_PATH_PREFIX = "lutecetools.maven.repository.releases";
+	private static final List<String> PROPERTIES_RELEASES_PATH = AppPropertiesService.getKeys( PROPERTY_RELEASES_PATH_PREFIX );
+	
+	// Maven Sanapshots Paths
+    private static final String PROPERTY_SNAPSHOTS_PATH_PREFIX = "lutecetools.maven.repository.snapshots";
+	private static final List<String> PROPERTIES_SNAPSHOTS_PATH = AppPropertiesService.getKeys( PROPERTY_SNAPSHOTS_PATH_PREFIX );
 
-    // Url Maven repositories - To get file
-	private static final String PROPERTY_MAVEN_REPO_URL_FILE = "lutecetools.maven.repository.url.file";
-    private static final String URL_MAVEN_REPO_FILE = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_URL_FILE );
+	// Maven path - to see the tree structure
+    private static final String PROPERTY_MAVEN_REPO_PATH_TREE = "lutecetools.maven.repository.treestructure.path";
+	private static final String PATH_MAVEN_REPO_TREE = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_PATH_TREE );
 
-    // Path repo type (private/public)
-	private static final String PROPERTY_MAVEN_PATH_PREFIX = "lutecetools.maven.repository.releases";
-	private static final List<String> PROPERTIES_MAVEN_PATH = AppPropertiesService.getKeys( PROPERTY_MAVEN_PATH_PREFIX );
-    private static final String PROPERTY_SNAPSHOT_PATH_PREFIX = "lutecetools.maven.repository.snapshots";
-	private static final List<String> PROPERTIES_SNAPSHOT_PATH = AppPropertiesService.getKeys( PROPERTY_SNAPSHOT_PATH_PREFIX );
+    // Maven path - To get file
+	private static final String PROPERTY_MAVEN_REPO_PATH_FILE = "lutecetools.maven.repository.getfile.path";
+    private static final String PATH_MAVEN_REPO_FILE = AppPropertiesService.getProperty( PROPERTY_MAVEN_REPO_PATH_FILE );	
 
     // Path Plugins
     private static final String PROPERTY_MAVEN_PATH_PLUGINS = "lutecetools.maven.repository.path.plugins";
@@ -141,31 +147,41 @@ public final class MavenRepoService
         return _singleton;
     }
     
-    private String getAvailableUrl(String strRepoUrl, List<String> listRepoTypeProperties, String strPath, String strArtifactId)
+    private String getAvailableUrl(List<String> listRepoPathTypeProperties, String strComponentPath, String strArtifactId)
     {
     	HttpAccess httpAccess = new HttpAccess( );
     	String strHtml = null;
     	
-    	for (String strProperty : listRepoTypeProperties)
-    	{
-    		String url =  strRepoUrl + AppPropertiesService.getProperty(strProperty) + strPath;    		
-    		    		
-    		if (strArtifactId != null && !strArtifactId.isEmpty())
-    			url = url + strArtifactId;
-    		
-    		try
-            {  
-    			strHtml = httpAccess.doGet( url );
-            }
-            catch ( HttpAccessException e )
-            {
-                AppLogService.info( "LuteceTools - MavenRepoService : Not available url : " + url );
-            }
-    		
-    		if ( strHtml != null && !strHtml.isEmpty())
-    		{
-    			return url;
-    		}    			
+    	for (String strUrlProperty : PROPERTIES_MAVEN_URL)
+    	{    		
+    		String[] tabUrl = strUrlProperty.split("\\.");
+    		for (String strTypeProperty : listRepoPathTypeProperties)
+        	{
+    			String[] tabRepoType = strTypeProperty.split("\\.");
+    			if ( tabRepoType[tabRepoType.length - 1].equals( tabUrl[tabUrl.length - 1] ) )
+    			{
+    				String url =  AppPropertiesService.getProperty(strUrlProperty) + PATH_MAVEN_REPO_TREE 
+    						+ AppPropertiesService.getProperty(strTypeProperty) + strComponentPath;
+    				
+    				if (strArtifactId != null && !strArtifactId.isEmpty())
+    	    			url = url + strArtifactId;
+    				
+    				try
+    	            {  
+    	    			strHtml = httpAccess.doGet( url );
+    	            }
+    	            catch ( HttpAccessException e )
+    	            {
+    	                AppLogService.info( "LuteceTools - MavenRepoService : Not available url : " + url );
+    	            }
+    	    		
+    	    		if ( strHtml != null && !strHtml.isEmpty())
+    	    		{
+    	    			return url;
+    	    		} 
+    			}	
+    			
+        	}    		   			
     	}     
     	
     	return null;
@@ -178,7 +194,7 @@ public final class MavenRepoService
      */
     public void setReleaseVersion( Dependency component )
     {
-    	String strUrls = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_PLUGINS, component.getArtifactId( ));
+    	String strUrls = getAvailableUrl(PROPERTIES_RELEASES_PATH, URL_MAVEN_PATH_PLUGINS, component.getArtifactId( ));
     	component.setVersion( getVersion( strUrls ) );  
     }
 
@@ -187,7 +203,7 @@ public final class MavenRepoService
      */
     public void setPomSiteVersion( )
     {
-    	String strUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_SITE_POM, null);
+    	String strUrl = getAvailableUrl(PROPERTIES_RELEASES_PATH, URL_MAVEN_PATH_SITE_POM, null);
         DatastoreService.setDataValue( KEY_SITE_POM_VERSION, getVersion( strUrl ) );
     }
 
@@ -283,7 +299,7 @@ public final class MavenRepoService
         {
             HttpAccess httpAccess = new HttpAccess( );
             
-            String strUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_SNAPSHOT_PATH, URL_MAVEN_PATH_PLUGINS, null);
+            String strUrl = getAvailableUrl(PROPERTIES_SNAPSHOTS_PATH, URL_MAVEN_PATH_PLUGINS, null);
             String strHtml = httpAccess.doGet( strUrl ); 
             list = getAnchorsList( strHtml );
 
@@ -383,17 +399,17 @@ public final class MavenRepoService
         component.setArtifactId( strArtifactId );
         if ( Constants.MAVEN_REPO_LUTECE_CORE.equals( getMavenRepoDirectoryType( strArtifactId, strType ) ) )
         {
-        	String strUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_CORE, null);
+        	String strUrl = getAvailableUrl(PROPERTIES_RELEASES_PATH, URL_MAVEN_PATH_CORE, null);
             component.setVersion( getVersion( strUrl ) );
         }
         else if ( Constants.MAVEN_REPO_LUTECE_SITE.equals( getMavenRepoDirectoryType( strArtifactId, strType ) ) )
         {
-        	String strUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_THEMES, strArtifactId);
+        	String strUrl = getAvailableUrl(PROPERTIES_RELEASES_PATH, URL_MAVEN_PATH_THEMES, strArtifactId);
         	component.setVersion( getVersion( strUrl ) );
         }
         else 
         {
-        	String strUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_PLUGINS, strArtifactId);
+        	String strUrl = getAvailableUrl(PROPERTIES_RELEASES_PATH, URL_MAVEN_PATH_PLUGINS, strArtifactId);
         	component.setVersion( getVersion( strUrl ) );
         }
 
@@ -428,28 +444,29 @@ public final class MavenRepoService
         {
             if ( Constants.MAVEN_REPO_LUTECE_CORE
                     .equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
-            {
-            	sbPomUrl = new StringBuilder( getAvailableUrl(URL_MAVEN_REPO_FILE, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_CORE, null) );
+            {           	
+            	sbPomUrl = new StringBuilder( getAvailableUrl(PROPERTIES_RELEASES_PATH, URL_MAVEN_PATH_CORE, null) );            	
                 sbPomUrl.append( component.getVersion( ) ).append( '/' );
             }
             else if ( Constants.MAVEN_REPO_LUTECE_SITE
                     .equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
             {
-            	sbPomUrl = new StringBuilder( getAvailableUrl(URL_MAVEN_REPO_FILE, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_THEMES, null) );
-                sbPomUrl.append( component.getArtifactId( ) ).append( '/' ).append( component.getVersion( ) )
-                        .append( '/' );
+            	sbPomUrl = new StringBuilder( getAvailableUrl(PROPERTIES_RELEASES_PATH, URL_MAVEN_PATH_THEMES, component.getArtifactId( )) );
+                sbPomUrl.append( '/' ).append( component.getVersion( ) ).append( '/' );
 
             }
             else
             {
-            	sbPomUrl = new StringBuilder( getAvailableUrl(URL_MAVEN_REPO_FILE, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_PLUGINS, null) );
-                sbPomUrl.append( component.getArtifactId( ) ).append( '/' ).append( component.getVersion( ) )
-                        .append( '/' );
+            	sbPomUrl = new StringBuilder( getAvailableUrl(PROPERTIES_RELEASES_PATH, URL_MAVEN_PATH_PLUGINS, component.getArtifactId( )) );
+                sbPomUrl.append( '/' ).append( component.getVersion( ) ).append( '/' );
             }
 
             sbPomUrl.append( component.getArtifactId( ) ).append( '-' ).append( component.getVersion( ) )
                     .append( ".pom" );
-            getPomInfos( component, sbPomUrl.toString( ), false, sbLogs );
+            
+            String strPomUrl = sbPomUrl.toString( ).replace(PATH_MAVEN_REPO_TREE, PATH_MAVEN_REPO_FILE);
+            
+            getPomInfos( component, strPomUrl, false, sbLogs );
 
             PomService.instance( ).getLuteceDependencies( component, sbPomUrl.toString( ), false, sbLogs );
         }
@@ -529,17 +546,16 @@ public final class MavenRepoService
         if ( Constants.MAVEN_REPO_LUTECE_CORE
                 .equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
         {
-        	strSnapshotsDirUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_SNAPSHOT_PATH, URL_MAVEN_PATH_CORE, null);
+        	strSnapshotsDirUrl = getAvailableUrl(PROPERTIES_SNAPSHOTS_PATH, URL_MAVEN_PATH_CORE, null);
         }
         else if ( Constants.MAVEN_REPO_LUTECE_SITE
                 .equals( getMavenRepoDirectoryType( component.getArtifactId( ), strType ) ) )
         {
-        	strSnapshotsDirUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_SNAPSHOT_PATH, URL_MAVEN_PATH_THEMES, component.getArtifactId( ));            
+        	strSnapshotsDirUrl = getAvailableUrl(PROPERTIES_SNAPSHOTS_PATH, URL_MAVEN_PATH_THEMES, component.getArtifactId( ));            
         }
         else
         {
-        	strSnapshotsDirUrl = getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_SNAPSHOT_PATH, URL_MAVEN_PATH_PLUGINS, component.getArtifactId( ));
-            
+        	strSnapshotsDirUrl = getAvailableUrl(PROPERTIES_SNAPSHOTS_PATH, URL_MAVEN_PATH_PLUGINS, component.getArtifactId( ));            
         }
 
         try
@@ -597,7 +613,7 @@ public final class MavenRepoService
                 strPomFileName = getPomFileName(listElement);
             }
             
-            strPomUrl = strPomUrl.replace(URL_MAVEN_REPO, URL_MAVEN_REPO_FILE) + "/" + strPomFileName;
+            strPomUrl = strPomUrl.replace(PATH_MAVEN_REPO_TREE, PATH_MAVEN_REPO_FILE) + "/" + strPomFileName;
         }
         catch ( HttpAccessException e )
         {
@@ -766,7 +782,7 @@ public final class MavenRepoService
 
     public String getLatestCoreVersion( )
     {
-    	return getVersion( getAvailableUrl(URL_MAVEN_REPO, PROPERTIES_MAVEN_PATH, URL_MAVEN_PATH_CORE, null) );
+    	return getVersion( getAvailableUrl(PROPERTIES_SNAPSHOTS_PATH, URL_MAVEN_PATH_CORE, null) );
     }
 
 }
