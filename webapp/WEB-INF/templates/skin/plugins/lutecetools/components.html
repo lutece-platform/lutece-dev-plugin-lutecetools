@@ -151,7 +151,7 @@
                         <th>&nbsp;</th>
                         <th colspan="3" id="7">Jira</th>
                         <th id="8">Release</th>
-                        <th id="9">Jenkins</th>
+<!--                        <th id="9">Jenkins</th>-->
                         <th id="10">#i18n{lutecetools.components.labelLinks}</th>
                     </tr>
                     <tr>
@@ -350,10 +350,10 @@
                                 <span class="hidden">0</span>
                             </#if>
                         </td>
-                        <td class="small">
-                            <span class="hidden">${component.attributes.jenkinsStatus!''}</span> 
+<!--                    <td class="small">
+                            <span class="hidden">${component.attributes.jenkinsStatus!''}</span>
                             <a href="${component.attributes.jenkinsJobBuildUrl!''}"><img src="${component.attributes.jenkinsJobBadgeIconUrl!''}"></a>
-                        </td>
+                        </td> -->
                         <td>
                             <a href="https://dev.lutece.paris.fr/jira/projects/${component.attributes.jiraKey!''}" title="JIRA">
                                 <img src="images/skin/plugins/lutecetools/jira.png" alt="Jira logo" width="24" height="24"/>
