@@ -127,6 +127,7 @@ public class GitHubService extends AbstractGitPlatformService
             }
 
             component.set( BRANCHES_LIST, listBranches );
+            component.set( CONTRIBUTORS_COUNT, repo.listContributors( ).asList( ).size( ) );
         }
         catch ( Exception ex )
         {

@@ -141,7 +141,7 @@
                 <thead>
                     <tr>
                         <th id="1">#i18n{lutecetools.components.labelComponent}</th>
-                        <th colspan="5" id="2">GitHub</th>
+                        <th colspan="6" id="2">GitHub</th>
                         <th colspan="2" id="3">#i18n{lutecetools.components.labelVersion}</th>
                         <th colspan="2" id="4">#i18n{lutecetools.components.labelParentPomVersion}</th>
                         <#if core_versions>
@@ -161,6 +161,7 @@
                         <th class="small" id="13">Branches</th>
                         <th class="small" id="14">Readme</th>
                         <th class="small" id="15">Pull Request</th>
+                        <th class="small" id="contributorsCount">Number of contributors</th>
                         <th class="small" id="16">Snapshot</th>
                         <th class="small" id="17">Release</th>
                         <th class="small" id="18">Snapshot</th>
@@ -179,8 +180,7 @@
                     </tr>
                 </thead>
                 <tboby>
-
-		    <#list components_list.listComponents as component>
+		            <#list components_list.listComponents as component>
                     <tr class="component-box" data-component="${component.artifactId}">
                         <td class="small"> 
                             <a href="jsp/site/Portal.jsp?page=components&view=detail&artifact_id=${component.artifactId}">${component.artifactId}</a></td>
@@ -241,6 +241,9 @@
                                 <img src="images/skin/plugins/lutecetools/pull-request.png" alt="Pull request icon" height="24">
                                 </a>
                             </#if>
+                        </td>
+                        <td class="small">
+                            ${component.attributes.contributorsCount!"Not found"}
                         </td>
                         <td class="small">
                             <#if component.attributes.snapshotScmUrl?? && component.attributes.snapshotScmUrl?contains(".git")>
