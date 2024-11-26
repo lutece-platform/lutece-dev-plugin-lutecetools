@@ -44,24 +44,18 @@ var dataGitlab = [
 ];
 
 
-var dataJira = [
+var dataRedmine = [
     {
-        value: $("#valJiraRed").val(),
-        color: "red",
-        highlight: "#FF5A5E",
-        label: "Jira DANGER"
-    },
-    {
-        value: $("#valJiraGreen").val(),
+        value: $("#valRedmineGreen").val(),
         color: "#00b300",
         highlight: "#47d147",
-        label: "Jira OK"
+        label: "Redmine closed"
     },
     {
-        value: $("#valJiraOrange").val(),
+        value: $("#valRedmineOrange").val(),
         color: "orange",
         highlight: "#FFC870",
-        label: "Jira WARNING"
+        label: "Redmine open"
     }
 ];
 
@@ -95,7 +89,7 @@ var ctx2 = $("#pieChart2").get(0).getContext("2d");
 var myDoughnutChart = new Chart(ctx2).Doughnut(dataGitlab)
 
 var ctx3 = $("#pieChart3").get(0).getContext("2d");
-var myDoughnutChart = new Chart(ctx3).Doughnut(dataJira)
+var myDoughnutChart = new Chart(ctx3).Doughnut(dataRedmine)
 
 var ctx5 = $("#pieChart4").get(0).getContext("2d");
 var myDoughnutChart = new Chart(ctx5).Doughnut(dataRCI);

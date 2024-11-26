@@ -8,6 +8,8 @@
 <#assign RCIWarning = 0 />
 <#assign RCIDanger = 0 />
 <#assign nbLinesTotal = 0 />
+<#assign redmineOpenIssues = 0 />
+<#assign redmineClosedIssues = 0 />
 
 <div id=luteceToolsComponents>
 <div class="container-fluid">
@@ -116,6 +118,10 @@
             <#else>
                 <canvas id="pieChart2" width="0"></canvas>
             </#if>
+            <div class="col-md-2">
+                <h4><i class="fa fa-redmine"></i> Redmine</h4>
+                <canvas id="pieChart3" width="250"></canvas>
+            </div>
             <div class="col-md-2">
                 <h4><i class="fa fa-sonar"></i> Sonar</h4>
                 <canvas id="pieChart5" width="250"></canvas>
@@ -260,9 +266,15 @@
                         </td>
                         <td>
                             ${component.attributes.redmineOpenIssuesCount!'0'}
+                            <#if component.attributes.redmineOpenIssuesCount?? && component.attributes.redmineOpenIssuesCount?has_content>
+                                <#assign redmineOpenIssues = redmineOpenIssues + component.attributes.redmineOpenIssuesCount>
+                            </#if>
                         </td>
                         <td>
                             ${component.attributes.redmineClosedIssuesCount!'0'}
+                            <#if component.attributes.redmineClosedIssuesCount?? && component.attributes.redmineClosedIssuesCount?has_content>
+                                <#assign redmineClosedIssues = redmineClosedIssues + component.attributes.redmineClosedIssuesCount>
+                            </#if>
                         </td>
                         <td class="small">
                             <#if component.attributes.jenkinsJobBadgeIconUrl??>
@@ -343,6 +355,8 @@
     <input type="hidden" id="valRCIGreen" value="${RCIOk}">
     <input type="hidden" id="valRCIOrange" value="${RCIWarning}">
     <input type="hidden" id="valRCIRed" value="${RCIDanger}">
+    <input type="hidden" id="valRedmineGreen" value="${redmineClosedIssues}">
+    <input type="hidden" id="valRedmineOrange" value="${redmineOpenIssues}">
 </div>
 </div>
 <script>
