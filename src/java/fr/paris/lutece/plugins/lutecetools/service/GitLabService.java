@@ -38,12 +38,21 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 import org.gitlab.api.GitlabAPI;
+import org.gitlab.api.models.GitlabCommit;
 import org.gitlab.api.models.GitlabProject;
+import org.gitlab.api.models.GitlabSession;
+import org.gitlab.api.models.GitlabTag;
 
 /**
  * GitlabService
@@ -57,7 +66,10 @@ public class GitLabService extends AbstractGitPlatformService
 
     private static final String SITE_INDEX_PATH_PART1 = "/raw/develop/src/site/";
     private static final String SITE_INDEX_PATH_PART2 = "xdoc/index.xml";
+    private static final String DEVELOP_BRANCH_NAME = "develop";
+    private static final String STATE_ACTIVE = "active";
 
+    private static GitlabAPI _gitLabApi;
     private static Map<String, GitlabProject> _mapRepositories;
 
     /**
@@ -89,6 +101,7 @@ public class GitLabService extends AbstractGitPlatformService
             incrementItemCount( );
             incrementItemOk( );
 
+            fillCommitsInfos( component, project.getId( ) );
             fillSiteInfos( component, sbLogs );
         }
 
@@ -128,10 +141,8 @@ public class GitLabService extends AbstractGitPlatformService
      */
     public static Map<String, GitlabProject> getRepositories( ) throws IOException
     {
-        String strUrl = AppPropertiesService.getProperty( PROPERTY_GITLAB_URL );
-        String strToken = AppPropertiesService.getProperty( PROPERTY_GITLAB_ACCOUNT_TOKEN );
-        GitlabAPI gitLabApi = GitlabAPI.connect( strUrl, strToken );
-        List<GitlabProject> listProjects = gitLabApi.getProjects( );
+        connectToGitlab( );
+        List<GitlabProject> listProjects = _gitLabApi.getProjects( );
         AppLogService.debug( "GitlabService - fetching Gitlab repositories " + listProjects.size( ) );
         Map<String, GitlabProject> mapRepositories = new HashMap<>( );
         for ( GitlabProject project : listProjects )
@@ -185,6 +196,115 @@ public class GitLabService extends AbstractGitPlatformService
 
             strXdocSiteIndexUrl = strScmUrl + SITE_INDEX_PATH_PART1 + "fr/" + SITE_INDEX_PATH_PART2;
             SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "fr", sbLogs );
+        }
+    }
+
+    /**
+     * fill the component with commits informations
+     *
+     * @param component The component
+     * @param nProjectId the project id
+     */
+    private void fillCommitsInfos( Component component, Integer nProjectId ) 
+    {
+        try
+        {
+            if ( !isSessionActive( ) )
+            {
+                connectToGitlab( );
+            }
+
+            List<GitlabCommit> commitsList = _gitLabApi.getAllCommits( nProjectId );
+
+            if ( CollectionUtils.isNotEmpty( commitsList ) )
+            {
+            	component.set( COMMITS_COUNT_SINCE_PROJECT_START, commitsList.size( ) );
+            	component.set( COMMITS_COUNT_SINCE_LAST_RELEASE, getNumberOfCommitsSinceLastRelease( nProjectId ) );
+                int nContributors = commitsList.stream( ).map( GitlabCommit::getAuthorName ).collect( Collectors.toSet( ) ).size( );
+                component.set( CONTRIBUTORS_COUNT, nContributors );
+            }
+		}
+        catch ( IOException ex )
+    	{
+			AppLogService.error( "GitlabService - error during the filling of commits infos of project id : {} " , nProjectId, ex );
+		}
+    }
+
+    /**
+     * Get the number of commits since the last release
+     *
+     * @param nProjectId the project id
+     *
+     * @return The number of commits
+     */
+    private int getNumberOfCommitsSinceLastRelease( Integer nProjectId ) throws IOException
+    {
+        if ( !isSessionActive( ) )
+        {
+            connectToGitlab( );
+        }
+
+        int nCommitsCountSinceLastRelease = NumberUtils.INTEGER_MINUS_ONE;
+
+        List<GitlabTag> tagsList = _gitLabApi.getTags( nProjectId );
+
+        if ( CollectionUtils.isNotEmpty( tagsList ) )
+        {
+            Collections.sort( tagsList, new TagCommittedDateComparator( ) );
+
+            String strTagName = tagsList.get( 0 ).getName( );
+            int nCommitsCountUntilLastRelease = _gitLabApi.getAllCommits( nProjectId, strTagName ).size( );
+            int nCommitsCountOfBranchDevelop = _gitLabApi.getAllCommits( nProjectId, DEVELOP_BRANCH_NAME ).size( );
+
+            nCommitsCountSinceLastRelease = nCommitsCountOfBranchDevelop - nCommitsCountUntilLastRelease;
+        }
+
+        return nCommitsCountSinceLastRelease;
+    }
+
+    /**
+     * connect to gitLab
+     * 
+     */
+    private static void connectToGitlab( )
+    {
+    	String strUrl = AppPropertiesService.getProperty( PROPERTY_GITLAB_URL );
+        String strToken = AppPropertiesService.getProperty( PROPERTY_GITLAB_ACCOUNT_TOKEN );
+        _gitLabApi = GitlabAPI.connect( strUrl, strToken );
+    }
+
+    /**
+     * check if the session is active
+     * 
+     * @return true if the session is active, false otherwise 
+     * @throws IOException if an error occurs
+     */
+    private static boolean isSessionActive( ) throws IOException
+    {
+        try 
+        {
+            GitlabSession session = _gitLabApi.getCurrentSession( );
+
+            return session != null && STATE_ACTIVE.equals( session.getState( ) );
+        }
+        catch ( IOException e )
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Comparator to sort gitlab tags by committed date in decremental order
+     */
+    private static class TagCommittedDateComparator implements Comparator<GitlabTag>
+    {
+        /**
+         * {@inheritDoc }
+         */
+        @Override
+        public int compare( GitlabTag tag1, GitlabTag tag2 )
+        {
+            return tag2.getCommit( ).getCommittedDate( ).compareTo( tag1.getCommit( ).getCommittedDate( ) );
         }
     }
 }

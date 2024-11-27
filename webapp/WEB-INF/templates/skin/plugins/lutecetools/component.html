@@ -27,7 +27,7 @@
                 <thead>
                     <tr>
                         <th id="1">#i18n{lutecetools.components.labelComponent}</th>
-                        <th colspan="3" id="2">#i18n{lutecetools.components.labelRepository}</th>
+                        <th colspan="6" id="2">#i18n{lutecetools.components.labelRepository}</th>
                         <th colspan="2" id="3">#i18n{lutecetools.components.labelVersion}</th>
                         <th colspan="2" id="4">#i18n{lutecetools.components.labelCoreVersion}</th>
                         <th id="5">Sonar</th>
@@ -41,15 +41,18 @@
                         <th class="small" id="9">Status</th>
                         <th class="small" id="10">Branches</th>
                         <th class="small" id="11">Pull Request</th>
-                        <th class="small" id="12">Snapshot</th>
-                        <th class="small" id="13">Release</th>
-                        <th class="small" id="14">Snapshot</th>
-                        <th class="small" id="15">Release</th>
-                        <th class="small" id="16">Lines of code</th>
-                        <th class="small" id="17">QA</th>
-                        <th class="small" id="18">Open issues</th>
-                        <th class="small" id="19">Closed issues</th>
-                        <th class="small" id="20">Build status</th>
+                        <th class="small" id="12">Contributors</th>
+                        <th class="small" id="13">Commits since the start of the project</th>
+                        <th class="small" id="14">Commits since the last release</th>
+                        <th class="small" id="15">Snapshot</th>
+                        <th class="small" id="16">Release</th>
+                        <th class="small" id="17">Snapshot</th>
+                        <th class="small" id="18">Release</th>
+                        <th class="small" id="19">Lines of code</th>
+                        <th class="small" id="20">QA</th>
+                        <th class="small" id="21">Open issues</th>
+                        <th class="small" id="22">Closed issues</th>
+                        <th class="small" id="23">Build status</th>
                         <th>&nbsp;</th>
                     </tr>
                 </thead>
@@ -107,6 +110,19 @@
                                 ${component.attributes.pullRequests}
                                 <img src="images/skin/plugins/lutecetools/pull-request.png" alt="Pull request icon" height="24">
                                 </a>
+                            </#if>
+                        </td>
+                        <td class="small">
+                            ${component.attributes.contributorsCount!"Not found"}
+                        </td>
+                        <td class="small">
+                            ${component.attributes.commitsCountSinceProjectStart!"Not found"}
+                        </td>
+                        <td class="small">
+                            <#if component.attributes.commitsCountSinceLastRelease?? && component.attributes.commitsCountSinceLastRelease gt -1>
+                               ${component.attributes.commitsCountSinceLastRelease}
+                            <#else>
+                               Not found
                             </#if>
                         </td>
                         <td class="small">

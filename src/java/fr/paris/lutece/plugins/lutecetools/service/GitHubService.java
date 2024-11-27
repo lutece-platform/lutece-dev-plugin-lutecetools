@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.kohsuke.github.GHBranch;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHOrganization;
@@ -70,6 +71,8 @@ public class GitHubService extends AbstractGitPlatformService
 
     private static final String SITE_INDEX_PATH_PART1 = "/raw/develop/src/site/";
     private static final String SITE_INDEX_PATH_PART2 = "xdoc/index.xml";
+
+    private static final int NUMBER_OF_COMMITS_TO_INIT_NEW_DEVELOPMENT_ITERATION = 2;
 
     private static String _strParentPomVersion;
     private static Map<String, GHRepository> _mapRepositories;
@@ -137,6 +140,9 @@ public class GitHubService extends AbstractGitPlatformService
             component.set( BRANCHES_LIST, listBranches );
             component.set( EXTRA_BRANCHES, extraBranches );
             component.set( HAS_EXTRA_BRANCHES, !extraBranches.isEmpty( ) );
+            component.set( CONTRIBUTORS_COUNT, repo.listContributors( ).asList( ).size( ) );
+            component.set( COMMITS_COUNT_SINCE_PROJECT_START, repo.listCommits( ).asList( ).size( ) );
+            component.set( COMMITS_COUNT_SINCE_LAST_RELEASE, getNumberOfCommitsSinceLastRelease( repo ) );
         }
         catch( Exception ex )
         {
@@ -354,5 +360,40 @@ public class GitHubService extends AbstractGitPlatformService
             SiteInfoService.instance( ).getSiteInfos( component, strXdocSiteIndexUrl, "fr", sbLogs );
 
         }
+    }
+
+    /**
+     * Get the number of commits since the last release
+     *
+     * @param repo The repository
+     *
+     * @return The number of commits
+     */
+    private int getNumberOfCommitsSinceLastRelease( GHRepository repo )
+    {
+        int nCommitsSinceLastRelease = NumberUtils.INTEGER_MINUS_ONE;
+
+		try
+		{
+			String strLatestTag = repo.listTags( ).iterator( ).hasNext( ) ?  
+					repo.listTags( ).iterator( ).next( ).getName( ) : null;
+
+			if ( strLatestTag != null )
+			{
+				// Count commits since the last tag
+		        nCommitsSinceLastRelease = repo.getCompare( strLatestTag, "HEAD" ).getTotalCommits( );
+
+		        if ( nCommitsSinceLastRelease >= NUMBER_OF_COMMITS_TO_INIT_NEW_DEVELOPMENT_ITERATION )
+		        {
+                    nCommitsSinceLastRelease = nCommitsSinceLastRelease - NUMBER_OF_COMMITS_TO_INIT_NEW_DEVELOPMENT_ITERATION;
+		        }
+			}
+		}
+		catch (IOException ex)
+		{
+			AppLogService.debug( "LuteceTools : Unable to access tags repo", ex );
+		}
+
+        return nCommitsSinceLastRelease;
     }
 }
