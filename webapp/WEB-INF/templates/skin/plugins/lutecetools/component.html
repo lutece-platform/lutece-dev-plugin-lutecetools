@@ -246,6 +246,9 @@
 </div>
 <script>
     $(document).ready(function() {
+        // Remove the container class to use the full width
+        $("main").removeClass("container");
+
         $(".see-more").on("click", function() {
             const extraBranches = $(this).prev(".extra-branches");
             if (extraBranches.is(":visible")) {
