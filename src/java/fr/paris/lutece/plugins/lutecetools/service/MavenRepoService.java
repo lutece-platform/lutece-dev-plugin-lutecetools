@@ -34,9 +34,11 @@
 package fr.paris.lutece.plugins.lutecetools.service;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -284,7 +286,7 @@ public final class MavenRepoService
                 nAvailable++;
             }
         }
-        Collections.sort( list );
+        Collections.sort( list, new LastReleaseDateComparator( ) );
 
         ciInfos.setComponentCount( nCount );
         ciInfos.setComponentAvailable( nAvailable );
@@ -825,6 +827,33 @@ public final class MavenRepoService
         }
 
         return lastReleaseDate;
+    }
+
+    /**
+     * Comparator to order components by last release date
+     */
+    private static class LastReleaseDateComparator implements Comparator<Component>, Serializable
+    {
+        private static final long serialVersionUID = 367663950193810638L;
+
+        @Override
+        public int compare( Component component1, Component component2 )
+        {
+            long lLastReleaseDateComponen1 = NumberUtils.LONG_ZERO;
+            long lLastReleaseDateComponen2 = NumberUtils.LONG_ZERO;
+
+            if ( component1.getLong( Component.LAST_RELEASE_DATE ) != null )
+            {
+                lLastReleaseDateComponen1 = component1.getLong( Component.LAST_RELEASE_DATE );
+            }
+
+            if ( component2.getLong( Component.LAST_RELEASE_DATE ) != null )
+            {
+                lLastReleaseDateComponen2 = component2.getLong( Component.LAST_RELEASE_DATE );
+            }
+
+            return Long.compare( lLastReleaseDateComponen2, lLastReleaseDateComponen1 );
+        }
     }
 
 }
