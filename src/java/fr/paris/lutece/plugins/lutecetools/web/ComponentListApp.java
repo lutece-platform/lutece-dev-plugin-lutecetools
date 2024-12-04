@@ -42,6 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.plugins.lutecetools.business.ComponentDependencyHome;
 import fr.paris.lutece.plugins.lutecetools.service.AbstractGitPlatformService;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentService;
 import fr.paris.lutece.plugins.lutecetools.service.ComponentsInfos;
@@ -75,6 +76,7 @@ public class ComponentListApp extends MVCApplication
     private static final String MARK_TOTAL_LINES = "total_lines";
     private static final String MARK_TOTAL_PRS = "total_prs";
     private static final String MARK_OLDEST_PR = "oldest_pr";
+    private static final String MARK_DEPENDENT_COMPONENTS = "dependent_components";
 
     private static final String VIEW_HOME = "home";
     private static final String VIEW_DETAIL = "detail";
@@ -215,6 +217,7 @@ public class ComponentListApp extends MVCApplication
         }
 
         model.put( MARK_LOGS, MavenRepoService.instance( ).getLogs( ) );
+        model.put( MARK_DEPENDENT_COMPONENTS, ComponentDependencyHome.getDependentComponentArtifactIdList( strArtifactId ) );
 
         return getXPage( TEMPLATE_XPAGE_DETAIL, request.getLocale( ), model );
     }

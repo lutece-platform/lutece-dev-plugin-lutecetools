@@ -25,6 +25,8 @@
     <bean id="lutecetools.lutecetoolsAsynchronousUploadHandler"
           class="fr.paris.lutece.plugins.lutecetools.service.LutecetoolsAsynchronousUploadHandler"/>
 
+    <bean id="lutecetools.componentDependencyDAO" class="fr.paris.lutece.plugins.lutecetools.business.ComponentDependencyDAO"/>
+
     <bean id="lutecetools.sitePropertiesGroup"
           class="fr.paris.lutece.portal.service.site.properties.SitePropertiesGroup">
         <property name="nameKey">

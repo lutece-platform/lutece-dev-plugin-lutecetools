@@ -33,17 +33,23 @@
  */
 package fr.paris.lutece.plugins.lutecetools.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+
+import org.apache.commons.collections4.CollectionUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import fr.paris.lutece.plugins.lutecetools.business.Component;
+import fr.paris.lutece.plugins.lutecetools.business.ComponentDependencyHome;
+import fr.paris.lutece.plugins.lutecetools.business.Dependency;
 import fr.paris.lutece.portal.service.daemon.AppDaemonService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
-import java.io.IOException;
-
-import java.util.Date;
 
 /**
  * ComponentService
@@ -52,6 +58,8 @@ public class ComponentService
 {
     private static final String DSKEY_PREFIX = "lutecetools.database.";
     private static final String DAEMON_KEY = "lutecetoolsCacheUpdater";
+    private static final String ARTIFACTID_KEY = "artifactId";
+    private static final String VERSION_KEY = "version";
     private static final ObjectMapper _mapper = new ObjectMapper( );
 
     private ComponentService( )
@@ -72,6 +80,7 @@ public class ComponentService
 
             String strJSON = getAsJSON( component );
             DatastoreService.setDataValue( DSKEY_PREFIX + component.getArtifactId( ), strJSON );
+            saveComponentDependencies( component );
         }
         catch( IOException ex )
         {
@@ -114,6 +123,7 @@ public class ComponentService
         AppLogService.info( "LuteceTools : clear the cache of the component list ..." );
         AppDaemonService.stopDaemon( DAEMON_KEY );
         DatastoreService.removeInstanceDataByPrefix( DSKEY_PREFIX );
+        ComponentDependencyHome.removeAll( );
         AppDaemonService.startDaemon( DAEMON_KEY );
         AppLogService.info( "LuteceTools : cache cleared." );
     }
@@ -145,5 +155,46 @@ public class ComponentService
     private static Component loadFromJSON( String strJson ) throws IOException
     {
         return _mapper.readValue( strJson, Component.class );
+    }
+
+    /**
+     * Save the dependencies of a component
+     *
+     * @param component
+     *            The component whose dependencies are to be saved
+     */
+    private static void saveComponentDependencies( Component component )
+    {
+        ComponentDependencyHome.remove( component.getArtifactId( ) );
+
+        ArrayList<Object> dependencyList = component.getArrayList( Component.DEPENDENCY_LIST );
+        if ( dependencyList == null )
+        {
+            dependencyList =  component.getArrayList( "SNAPSHOT_" + Component.DEPENDENCY_LIST );
+        }
+
+        if ( CollectionUtils.isNotEmpty( dependencyList ) )
+        {
+            for ( Object obj : dependencyList )
+            {
+                try
+                {
+                    HashMap<String,String> dep = (HashMap<String,String>) obj;
+
+                    if ( dep.get( ARTIFACTID_KEY ) != null )
+                    {
+                        Dependency dependency = new Dependency( );
+                        dependency.setArtifactId( dep.get( ARTIFACTID_KEY ) );
+                        dependency.setVersion( dep.get( VERSION_KEY ) );
+
+                        ComponentDependencyHome.create( component, dependency );
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLogService.error( "LuteceTools : error while saving component dependency : "+component.getArtifactId( ), ex );
+                }
+            }
+        }
     }
 }
