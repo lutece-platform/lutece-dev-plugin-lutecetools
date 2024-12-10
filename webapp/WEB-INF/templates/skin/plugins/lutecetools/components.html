@@ -47,6 +47,27 @@
                     <div class="col-md-3">
                         <input type="checkbox" name="core"  <#if core_versions> checked </#if> /> #i18n{lutecetools.components.displayCoreVersion}
                     </div>
+                    <div class="col-md-6">
+                        <h4><i class="fa fa-filter"></i> #i18n{lutecetools.components.filterBySonarMetrics}</h4>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <label for="minLines">Min Lines:</label>
+                                <input type="number" id="minLines" name="min_lines" value="${min_lines!}" min="0" />
+                            </div>
+                            <div>
+                                <label for="maxLines">Max Lines:</label>
+                                <input type="number" id="maxLines" name="max_lines" value="${max_lines!}" min="0" />
+                            </div>
+                            <div>
+                                <label for="minRci">Min QA (%):</label>
+                                <input type="number" id="minRci" name="min_rci" value="${min_rci!}" min="0" />
+                            </div>
+                            <div>
+                                <label for="maxRci">Max QA (%):</label>
+                                <input type="number" id="maxRci" name="max_rci" value="${max_rci!}" min="0" />
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-2">
                         <button class="btn btn-primary btn-lg" type="submit" title="Refresh" name="action_refresh">
                             <span class="fa fa-refresh" aria-hidden="true"></span>
