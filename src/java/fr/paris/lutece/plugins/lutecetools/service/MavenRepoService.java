@@ -38,7 +38,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +48,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.hc.client5.http.utils.DateUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -111,6 +116,7 @@ public final class MavenRepoService
     private static final long DEFAULT_UPDATE_DELAY = 7200000L; // 2 hours
     private static final long UPDATE_DELAY = AppPropertiesService.getPropertyLong( PROPERTY_UPDATE_DELAY,
             DEFAULT_UPDATE_DELAY );
+    private static final String PROPERTY_HEADER_LAST_MODIFIED = "Last-Modified";
 
     // Tags
     private static final String TAG_LUTECE_CORE = "lutece-core";
@@ -498,7 +504,18 @@ public final class MavenRepoService
         try
         {
             HttpAccess httpAccess = new HttpAccess( );
-            String strPom = httpAccess.doGet( strPomUrl );
+            Map<String, String> headersResponse = null;
+            String strPom = null;
+            if ( bSnapshot )
+            {
+        	    strPom = httpAccess.doGet( strPomUrl );
+            }
+            else
+            {
+                headersResponse = new HashMap<>( );
+                strPom = httpAccess.doGet( strPomUrl, null, null, null, headersResponse );
+            }
+            
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance( );
             SAXParser saxParser = saxParserFactory.newSAXParser( );
             SaxPomHandler handler = new SaxPomHandler( );
@@ -515,6 +532,7 @@ public final class MavenRepoService
                 component.set( Component.PARENT_POM_VERSION, handler.getParentPomVersion( ) );
                 component.set( Component.CORE_VERSION, handler.getCoreVersion( ) );
                 component.set( Component.SCM_URL, handler.getScmUrl( ) );
+                component.set( Component.LAST_RELEASE_DATE, getLastReleaseDate( headersResponse ) );
             }
             component.set( Component.SCM_CONNECTION, handler.getScmConnection( ) );
             component.set( Component.SCM_DEVELOPER_CONNECTION, handler.getScmDeveloperConnection( ) );
@@ -783,6 +801,29 @@ public final class MavenRepoService
     public String getLatestCoreVersion( )
     {
     	return getVersion( getAvailableUrl(PROPERTIES_SNAPSHOTS_PATH, URL_MAVEN_PATH_CORE, null) );
+    }
+
+    /**
+     * Get the last release date
+     *
+     * @param headersResponse map of the headers of an http response
+     * @return last release date
+     */
+    private long getLastReleaseDate( Map<String, String> headersResponse )
+    {
+        long lastReleaseDate = NumberUtils.LONG_ZERO;
+
+        if ( MapUtils.isNotEmpty( headersResponse ) && headersResponse.get( PROPERTY_HEADER_LAST_MODIFIED ) != null )
+        {
+            Date releaseDate = DateUtils.parseDate( headersResponse.get( PROPERTY_HEADER_LAST_MODIFIED ) );
+
+            if ( releaseDate != null )
+            {
+                lastReleaseDate = releaseDate.getTime( );
+            }
+        }
+
+        return lastReleaseDate;
     }
 
 }
